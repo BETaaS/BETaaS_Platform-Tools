@@ -23,13 +23,19 @@ This is the component in charge of interacting with things directly. It register
 
 Currently, there are plug-ins for interacting with ETSI platforms, with the CONVERGE Ecosystem platform and with CoAP sensors. BETaaS can be extended with more plug-ins, in case developers want to extend the BETaaS support for IoT protocols. 
 
+[More details about Things Adaptor](/betaas-docs/github/betaas-adaptation-things-adaptor.md)
+
 ### Adaptation Context Manager
 
 The Context Manager belonging to the Adaptation Layer is in charge of semantic things annotations. It uses the ontologies network designed in BETaaS in order to understand the purpose and characteristics of the things connected to the instance.
 
+[More details about Things Adaptor](/betaas-docs/github/betaas-adaptation-cm-component.md)
+
 ### Things Simulator
 
 Since we aim at facilitating the testing of the BETaaS Platform, the Adaptation Layer includes a things simulator which will register several things in an instance and will generate data as if it was produced by those things. It can be configured for simulating different things and different data easily.
+
+[How to use the things simulator](/betaas-docs/github/how_to_use_TA_simulator.md)
 
 ## About BETaaS Project
 
