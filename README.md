@@ -52,12 +52,26 @@ In order to star using BETaaS, first you will need to setup the environment:
 
 * [Setup and deployment of BETaaS](/betaas-docs/github/installationofBETaaS.md)
 
-### BETaaS Examples:
+### BETaaS Tutorials:
 
 The following examples are provided:
 
 * [How to build a things adapter for BETaaS](/betaas-docs/github/how_to_write_TA_Plugin.md)
-* [How to build a BETaaS application](/betaas-docs/github/how-to-AndroidApp.md)
+* [Step by Step BETaaS application How To](/betaas-docs/github/how-to-AndroidApp.md)
+
+### BETaaS Demo Applications:
+
+This application are provided in the current code release:
+
+* [BETaaS Intrusion detection application](/betaas-docs/github/how-to-IntrusionDetection.md)
+* [BETaaS LEZ application](/betaas-docs/github/how-to-LEZ.md)
+
+### BETaaS Thing Simulator:
+
+We do provide simulators for things. The following guides will help you to use them :
+
+* [How to use a BETaaS Thing Simulator](/betaas-docs/github/how_to_use_TA_simulator.md)
+* [How to use a BETaaS COAP Plugin](/betaas-docs/github/coap-plugin-how-to.md)
 
 ## About BETaaS Project
 
