@@ -13,15 +13,15 @@ The Projects implementing the Service BDM Manager are inside the folder:
     
 In particulare the following Apache Maven projects within the parent folder,implements the basic BDM services:
 
-  	-    betaas-service-bigdatamanager-data\betaas-service-bigdatamanager\betaas-service-bigdatamanager-service\betaas-service-bigdatamanager-service-core
-  	-	betaas-service-bigdatamanager-data\betaas-service-bigdatamanager-data-connector\betaas-service-bigdatamanager-data-connector-interface
+  	- betaas-service-bigdatamanager-data\betaas-service-bigdatamanager\betaas-service-bigdatamanager-service\betaas-service-bigdatamanager-service-core
+  	- betaas-service-bigdatamanager-data\betaas-service-bigdatamanager-data-connector\betaas-service-bigdatamanager-data-connector-interface
       -	betaas-service-bigdatamanager-data\betaas-service-bigdatamanager-data-connector\betaas-service-bigdatamanager-data-connector-database
    
     
 
 #### BETaaS services used
 
-The BETaaS Service BDM does use the BDM TaaS BETaaS, available under {LINK TO BetaaS TaaS database} to get TaaS data to be stored in Service database.
+The BETaaS Service BDM does use the BDM TaaS BETaaS, available [here](/betaas-docs/github/betaas-taas-bdm-component.md) to get TaaS data to be stored in Service database.
 
 #### BETaaS Services provided
 
@@ -69,7 +69,7 @@ These properties set by default allows to create a BDM service that stores H2 in
 It is possible to change the default H2 storage, to a MariaDB database instance. In this case the provided configuration should be:
 
 	bdm_jdbc_driver = org.mariadb.jdbc.Driver
-    bdm_url =  jdbc:mariadb://mariadbhost:3306
+        bdm_url =  jdbc:mariadb://mariadbhost:3306
 	bdm_db_user = username
 	bdm_db_pwd = passowrd
 	bdm_db_DBSetup = keep
@@ -80,19 +80,16 @@ Change localhost, username and passoword accordingly with your maria DB intallat
 
 The project defines the basice BDM Core Service, which implements a component that checks for available OSGi service implenting the betaas-service-bigdatamanager-data-connector-interface interface. If an instance of this service is found, it loads data from the TaaS BDM database in to this found service by using a JSON format.
 
-{ADD LINK}
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-data-connector-interface
 
 The project defines an interface for each service that implenents access to a SQL database. The project does not contain any concrete implementation of such interface.
 
-{ADD LINK}
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-data-connector-database
 
 The project implementes a service providing the interface defined in betaas-service-bigdatamanager-data-connector-interface. This service load the configuration from the *betaas.gateway.cfg* file in order to load JDBC drivers and creating a connection to a database which can be either maria DB or H2. 
 
-{ADD LINK}
 
 ###** About BETaaS Project**
 
