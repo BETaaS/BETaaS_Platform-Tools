@@ -34,9 +34,7 @@ At least one BETaaS ADS Service for instance is required for exectuing deployed 
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-service-application-data-service
 
-The project defines the ADS Service interfaces. It depends on the Data Task interface.
-
-{ADD LINK}
+The project defines the ADS Service interfaces. It depends on the Data Task interface. Details about its implementation are [here](/betaas-docs/github/betaas-service-datatask.md) 
 
 ###** About BETaaS Project**
 
