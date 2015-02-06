@@ -26,7 +26,7 @@ The BETaaS TaaS Security Manager provides services to BETaaS Instance Manager in
 It also provides APIs for accessing to trust evaluations of the things connected to the instance, according to the calculations performed.
 
 ### BETaaS TaaS Security Manager Software Components
-The BETaaS TaaS Security Manager is configured by the following properties inside the file *betaas.gateway.cfg* :
+The BETaaS TaaS Security Manager is configured by the following properties inside the file *betaas.gateway.cfg* [here](/betaas-configuration/configuration/betaas.gateway.cfg) :
   
     gwId
 This property indicates the gateway ID.
