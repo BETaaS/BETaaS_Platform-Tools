@@ -23,7 +23,7 @@ In particular the following Apache Maven projects within the parent folder,imple
 The BETaaS Analytic Manager, requires the BDM database service to create the Sqoop2 jobs. In fact for each available component that write data to SQL database, it loads data in to HDFS.
 It is mandatory that the following components are installed within the analytic platform:
 
-	- HDFS
+    - HDFS
     - Sqooop 2
     - Hive
     - Presto Database
@@ -39,7 +39,7 @@ The BETaaS AD Manager does not directly provide a database service to the data t
 The BD Analytic manager requires a Big Data platform, the following properties are defined inside the file *betaas.gateway.cfg* ti provide the required component configuration:
 
 	sqoopUrl = http://betaashadoop:12000/sqoop/
-    hiveUrl = jdbc:hive2://betaashadoop:10000/default
+        hiveUrl = jdbc:hive2://betaashadoop:10000/default
 	hiveUser = hive
 	hivePwd = hive
 	uploadToHDFSFrequency = 60000
@@ -52,7 +52,6 @@ Finally the frequency of the Job loading data into HDFS must be provided in mill
 
 The project defines the main Analytic Manager service. This runs a thread that at regular intervals checkscall for the hivejdbc service and the sqooploader service.
 
-{ADD LINK}
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-analytics-sqooploader
 
@@ -71,7 +70,6 @@ It also defines the following HDFS directory as the location where files improte
 	/output/
 
 
-{ADD LINK}
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-analytics-hivejdbc
 
@@ -81,8 +79,6 @@ Hive table is defined in this way:
 
 	CREATE EXTERNAL TABLE IF NOT EXISTS betaasbd (gateway string,thing string,dte string,loc string,test string,type string,value string)  ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 
-
-{ADD LINK}
 
 ###** About BETaaS Project**
 
