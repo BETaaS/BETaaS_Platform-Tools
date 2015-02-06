@@ -2,7 +2,8 @@
 ===================
 
 
-**BETaaS Android app** external application is an example showing how to use the Android SDK to interact with the BETaaS REST iterface and get sensor information to implement a simple alarm system.
+**BETaaS Android app** external [application](betaas-examples\BETaaSAndroidApp) is an example showing how to use the Android SDK to interact with the BETaaS REST iterface and get sensor information to implement a simple alarm system. 
+
 
 ### BETaaS software pre requirements
 
