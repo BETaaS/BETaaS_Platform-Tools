@@ -8,7 +8,9 @@ This file describes the basic steps for implementing a plugin module which will 
 ### BETaaS software pre requirements
 
 All BETaaS modules must be installed except betaas-adaptation-thingsadaptor which has as a prerequisite the TA plugin we are about to describe.
-For minimum testing the only required module is the plugin Interface modules located in the <font style='color:red'>betaas-activation-plugin</font>
+For minimum testing the only required module is the plugin Interface modules located in [betaas-activation-plugin](\betaas-plugins\betaas-adaptation-plugin)
+
+
 
 ### BETaaS components used
 
@@ -17,7 +19,7 @@ For minimum testing the only required module is the plugin Interface modules loc
 
 ## BETaaS How to produce a custom TA adaptor plugin
 
-Producing a specific plugin for the TA module is essentially the implementation of two (2) major interfaces residing at the betaas-adaptation-plugin module:
+Producing a specific plugin for the TA module is essentially the implementation of two major interfaces residing at the betaas-adaptation-plugin module:
 
 1.	IAdaptorPlugin
 2.	IAdaptorListener
@@ -32,11 +34,11 @@ The method imposes the implementing class as the listener for registering and un
 
 	Vector<HashMap<String, String>> discover().
     
-This method instigates the connectivity with the devices of the underlying cloud of Things and should implement the particular protocols discovery mechanisms. After that call is completed the system shall at least have gathered the IDs of the devices (Thing IDs) that are essential to the further functioning of BETaaS. This method should be run on a regular basis depending on the needs of the developer if for example new devices are to be connected with the system after it’s startup.
+This method instigates the connectivity with the devices of the underlying cloud of Things and should implement the particular protocols discovery mechanisms. After that call is completed the system shall at least have gathered the IDs of the devices (Thing IDs) that are essential to the further functioning of BETaaS. This method should be run on a regular basis depending on the needs of the developer if for example new devices are to be connected with the system after itâ€™s startup.
 
 	boolean register(String sensorID)
     
-This method is used to register a specific device using its ID as described by the device protocol or developer’s needs. Once the Thing is registered there will be notifications published on behalf of it by the plugin (see method notify of IAdaptorListener)
+This method is used to register a specific device using its ID as described by the device protocol or developerâ€™s needs. Once the Thing is registered there will be notifications published on behalf of it by the plugin (see method notify of IAdaptorListener)
 
 	boolean unregister(String sensorID)
     
