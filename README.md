@@ -58,6 +58,7 @@ The following examples are provided:
 
 * [How to build a things adapter for BETaaS](/betaas-docs/github/how_to_write_TA_Plugin.md)
 * [Step by Step BETaaS application How To](/betaas-docs/github/how-to-AndroidApp.md)
+* [How to build a Data Task](/betaas-docs/github/betaas-service-datatask.md)
 
 ### BETaaS Demo Applications:
 
