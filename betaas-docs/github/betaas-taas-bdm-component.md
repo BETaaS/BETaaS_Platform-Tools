@@ -2,7 +2,7 @@
 ===================
 
 
-BETaaS Big Data Manager at TaaS layer, manages the collection, storage and maintenance of data for the BETaaS TaaS components. Moreover, it is also responsible for defining the storage configuration so that data is available for components that need to access it. The TaaS BD allows other TaaS components to access data by retrieving connections from its internal database connection pool or by defining an interface that maps an underlying table. In this way is avoided the proliferation of different database system and data management is centralized by only one component reducing the management efforts. The BD at TaaS level offers also a set of functionalities to process Things’s data and sent it to the Service level BD component. In this way each TaaS BD inside a BETaaS instance, contribute to the service layer BD component data by providing its relevant information collected.
+BETaaS Big Data Manager at TaaS layer, manages the collection, storage and maintenance of data for the BETaaS TaaS components. Moreover, it is also responsible for defining the storage configuration so that data is available for components that need to access it. The TaaS BD allows other TaaS components to access data by retrieving connections from its internal database connection pool or by defining an interface that maps an underlying table. In this way is avoided the proliferation of different database system and data management is centralized by only one component reducing the management efforts. The BD at TaaS level offers also a set of functionalities to process Thingsâ€™s data and sent it to the Service level BD component. In this way each TaaS BD inside a BETaaS instance, contribute to the service layer BD component data by providing its relevant information collected.
 
 
 ## BETaaS Component Info
@@ -18,15 +18,17 @@ It is based on the following Apache Maven projects:
 
 #### BETaaS services used
 
-The BETaaS TaaS BDM does use the TaaS BETaaS database service, available under {LINK TO BetaaS TaaS database} to store thing information and data.
+The BETaaS TaaS BDM does use the TaaS BETaaS database service, available [here](/betaas-taas/betaas-taas-bigdatamanager/betaas-taas-bigdatamanager-core) to store thing information and data.
 
 #### BETaaS Services provided
 
 The BETaaS TaaS BDM provides service to BETaaS Service BDM, to retrieve and get data to be stored in Service SQL databases. It also provides service to BETaaS TaaS Context Manager to store thing data when is available.
 
+[here](/betaas-service/betaas-service-bigdatamanager/betaas-service-bigdatamanager-service/betaas-service-bigdatamanager-service-core)
+
 ### TaaS Big Data Manager Software Components
 
-The BETaaS TaaS Big Data Manager is configured by the following properties inside the file *betaas.gateway.cfg* :
+The BETaaS TaaS Big Data Manager is configured by the following properties inside the file *betaas.gateway.cfg* [here](/betaas-configuration/configuration/betaas.gateway.cfg):
   
 	taasdb_jdbc = jdbc:h2:file:*PATH* taasbdmdb;DB_CLOSE_DELAY=-1
 	taasdb_user = sa
@@ -38,13 +40,13 @@ These properties allows to specify the location where the database file created 
 
 The project betaas-taas-bigdatamanager-database provides the generic API to access BETaaS database in order to create tables and manipulate data. It is used by other TaaS components to store their data in per components table.
 
-{ADD LINK}
+[here](/betaas-taas/betaas-taas-bigdatamanager/betaas-taas-bigdatamanager-database)
 
 #### BETaaS Maven Project betaas-taas-bigdatamanager-core
 
 The project betaas-taas-bigdatamanager-database provides a service that allows to store and retrieve things information and data.
 
-{ADD LINK}
+[here](/betaas-taas/betaas-taas-bigdatamanager/betaas-taas-bigdatamanager-core)
 
 ###** About BETaaS Project**
 
