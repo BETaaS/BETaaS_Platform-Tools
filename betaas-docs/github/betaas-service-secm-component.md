@@ -18,7 +18,7 @@ The BETaaS Service Security Manager requires a BETaaS Apps Store certificate in 
 	certificatePath = {PATH}/betaas/data/securityConfig/certificate/
 	conditionPath = {PATH}/betaas/data/securityConfig/condition/
 	
-Then, the following files that can be found in the *betaas/betaas-configuration/configuration*, should be placed to the respective above mentioned directories:
+Then, the following files that can be found [here](/betaas-configuration/configuration) in the *betaas/betaas-configuration/configuration*, should be placed to the respective above mentioned directories:
     AppStoreCertInter.p12 
     condition1.xml
 	
