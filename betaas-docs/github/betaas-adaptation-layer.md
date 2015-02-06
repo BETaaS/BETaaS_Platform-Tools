@@ -29,7 +29,7 @@ Currently, there are plug-ins for interacting with ETSI platforms, with the CONV
 
 The Context Manager belonging to the Adaptation Layer is in charge of semantic things annotations. It uses the ontologies network designed in BETaaS in order to understand the purpose and characteristics of the things connected to the instance.
 
-[More details about Things Adaptor](/betaas-docs/github/betaas-adaptation-cm-component.md)
+[More details about Context Manager](/betaas-docs/github/betaas-adaptation-cm-component.md)
 
 ### Things Simulator
 
