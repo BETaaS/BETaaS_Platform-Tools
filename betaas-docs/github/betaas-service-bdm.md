@@ -29,6 +29,8 @@ The BETaaS Service BDM provides service to store data from TaaS layer and  a ser
 
 ### Service Big Data Manager Database Structure
 
+#### SDatabase Structure
+
 The structure of the database is the following:
 
 	TABLE `t_thing_data` (
@@ -52,7 +54,7 @@ The structure of the database is the following:
 		PRIMARY KEY (`gatewayID`, `thingID`, `timestamp`)
 	)
 
-### Service Big Data Manager Software Components
+### Service Big Data Manager Software Configuration
 
 The BETaaS Service Big Data Manager is configured by the following properties inside the file *betaas.gateway.cfg* :
   
@@ -75,6 +77,14 @@ It is possible to change the default H2 storage, to a MariaDB database instance.
 	bdm_db_DBSetup = keep
     
 Change localhost, username and passoword accordingly with your maria DB intallation. Also the parameter bdm_db_DBSetup, can be set as: delete, to deleate database each time the gateway starts or keep to mantain data even when the gatewat is restarted.
+
+## Service Big Data Manager Analytic Platform
+
+The BETaaS Big Data Manager provides the possibility of loading and querying big data. For this purpose it provides integration with an anlytic platform. All details are provided [here](/betaas-docs/github/betaas-service-hadoop.md) 
+
+## Service Big Data Application Data Task
+
+The BETaaS Big Data Manager provides a component called Application Data Task which provides application an access to the data platform in order to process information. All details are provided [here](/betaas-docs/github/betaas-service-ads.md) 
 
 #### BETaaS Maven Project betaas-service-bigdatamanager-service-core
 
