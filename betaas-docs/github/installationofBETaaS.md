@@ -28,7 +28,7 @@ Just replace the file
 
 *{KARAF_HOME}/etc/org.ops4j.pax.logging.cfg* 
 
-with the one provided in the gitHub repository at <font style='color:red'>(LINK goes here).</font>
+with the one provided in the gitHub repository [here](/betaas-configuration/configuration/org.ops4j.pax.logging.cfg)
 
 Moreover, Maven should be set to use the BETaaS third-party Repository, in order to enable this repository in you local maven installation, add in the following file:
 
@@ -42,7 +42,7 @@ The following repo:
       <password>pass-TOBEPROVIDED</password>
     </server>
 
-Once this settings has been applied, the BETaaS Code can be built locally running, from the gitHub root folder <font style='color:red'>(LINK goes here).</font>:
+Once this settings has been applied, the BETaaS Code can be built locally running, from the gitHub root folder.
 
 	mvn clean install
     
@@ -52,8 +52,8 @@ Once the build is terminated, BETaaS is deployable in your current environment.
 
 Before installing a BETaaS gateways, it is mandatory to copy the following configuration settings files:
 
-*betaas.gateway.cfg* 
-*betaas.endpoints.cfg* 
+*betaas.gateway.cfg* [here](/betaas-configuration/configuration/betaas.gateway.cfg)
+*betaas.endpoints.cfg* [here](/betaas-configuration/configuration/betaas.endpoints.cfg)
 
 inside the Karaf folder:
 
