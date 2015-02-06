@@ -31,33 +31,33 @@ The Adaptation Layer aims at providing a common interface to the TaaS layer rega
 The Adaptation Layer relies on a set of basic functionalities which are assumed to be provided by the Physical Layer.
 For each IoT/M2M system which is integrated in BETaaS, a specific implementation of the Adaptation Layer has to be provided through a plugin. Nevertheless, the Adaptation Layer exposes a uniform set of functionalities to the TaaS layer. A BETaaS gateway can run different instances of the Adaptation Layers concurrently to interconnect to different local IoT/M2M systems. 
 
-[More details about Adaptation Layer Here!](/betaas-docs/github/betaas-adaptation-layer.md)
+[More details about Adaptation Layer](/betaas-docs/github/betaas-adaptation-layer.md)
 
 #### BETaaS TaaS Layer
 
 TaaS enables the service layer to access things as a service.
 TaaS is implemented in a distributed manner: each gateway implements a TaaS local component which connects to the others to provide access to the things transparently regardless of their location in the network. A service requiring access to one thing, interacts with its TaaS local component, the unique interface towards the things. The local component is then responsible for accessing the thing through its own Adaptation Layer, if the thing is connected to the local network, or for requesting the service to the TaaS local component of the gateway where the thing is connected. The interconnection of all the TaaS local components forms an overlay which allows services to access the things regardless of their physical location through its local component which is a single point of access 
 
-[More details about TaaS Layer Here!](/betaas-docs/github/betaas-taas-layer.md)
+[More details about TaaS Layer](/betaas-docs/github/betaas-taas-layer.md)
 
 #### BETaaS Service Layer
 
 The Service Layer is built on top of TaaS: it provides services to applications leveraging on the things accessed through the TaaS. The Service layer implements the basic and extended capabilities of the BETaaS platform. The abstraction provided by TaaS allows services to access the things as they were connected the local gateway without have knowledge of their physical location. 
 
-[More details about Service Layer Here!](/betaas-docs/github/betaas-service-layer.md)
+[More details about Service Layer](/betaas-docs/github/betaas-service-layer.md)
 
 ## Getting Started with BETaaS:
 
 In order to star using BETaaS, first you will need to setup the environment:
 
-* [Setup and deployment of BETaaS!](/betaas-docs/github/installationofBETaaS.md)
+* [Setup and deployment of BETaaS](/betaas-docs/github/installationofBETaaS.md)
 
 ### BETaaS Examples:
 
 The following examples are provided:
 
-* [How to build a things adapter for BETaaS!](/betaas-docs/github/how_to_write_TA_Plugin.md)
-* [How to build a BETaaS application!](/betaas-docs/github/how-to-AndroidApp.md)
+* [How to build a things adapter for BETaaS](/betaas-docs/github/how_to_write_TA_Plugin.md)
+* [How to build a BETaaS application](/betaas-docs/github/how-to-AndroidApp.md)
 
 ## About BETaaS Project
 
