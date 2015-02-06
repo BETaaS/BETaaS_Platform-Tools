@@ -9,7 +9,7 @@ BETaaS Instances are organized with an especial gateways architecture: a central
 There are some operations, which require the intervention of a central component which will orchestrate certain interactions and decision making processes (what we call the star component). This is the case of some QoS management operations, when negotiating QoS conditions. It is also the case of the instances management process, in which we prefer to have only one access point which will avoid new gateways to request joining an instance by contacting several gateways at the same time (creating race conditions an
 d potential inconsistencies related to the decision of accepting or rejecting the new gateway). Not performing some operations in a centralized way may increase the risk of certain attacks to the platform or just keep the instance in an inconsistent status.
 
-![Architecture of BETaaS](/betaas-docs/github/images)
+![Architecture of BETaaS](/betaas-docs/github/images/blayers.JPG)
 
 On the other hand, there are other operations which do not require a concrete component to orchestrate any process, since they may be performed through direct interactions. Facilitating a distributed execution of these operations is good for the instance, since we may gain in efficiency, avoid bottlenecks, store the instance status in a distributed manner and avoid inconsistencies because of components keeping a different point of view about the instance. This is the case, for example, of the resources synchronization and registration in an instance, which is performed in a distributed way, being the corresponding component responsible of broadcasting any change in the list of known resources, so all the gateways will be aware of the new situation.
 
