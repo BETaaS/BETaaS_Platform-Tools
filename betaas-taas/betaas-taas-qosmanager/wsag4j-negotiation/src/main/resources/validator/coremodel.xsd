@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:coremodel="http://www.slaatsoi.org/coremodel" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.slaatsoi.org/coremodel">
+
+  
+  <!--					 -->
+  <!--   Core Types      -->
+  <!-- 					 -->  
+   <!--	Abstract entity of the model -->
+  <xsd:complexType abstract="true" name="PropertyType"/>
+  
+  <!-- The QualitativeType factorizes common nominal attributes. -->
+  <xsd:complexType name="QualitativeType">
+    <xsd:complexContent>
+    <xsd:extension base="coremodel:PropertyType">
+      <xsd:attribute name="uniqueID" type="xsd:string"/>
+      <xsd:attribute name="timestamp" type="xsd:long"/>
+	  <xsd:attribute name="value" type="xsd:string"/>
+    </xsd:extension>
+    </xsd:complexContent>  
+  </xsd:complexType>   
+  
+  <!-- The QuantitativeType factorizes common numeric attributes. -->
+  <xsd:complexType name="QuantitativeType">
+    <xsd:complexContent>
+    <xsd:extension base="coremodel:PropertyType">
+      <xsd:attribute name="source" type="coremodel:SourceKind"/>
+      <xsd:attribute name="dir" type="coremodel:DirectionKind"/>
+	  <xsd:attribute name="uniqueID" type="xsd:string"/>
+      <xsd:attribute name="timestamp" type="xsd:long"/>
+    </xsd:extension>
+    </xsd:complexContent>        
+  </xsd:complexType>
+  
+  <!-- SourceKind, DirectionKind and StatisticalQualifierKind are qualifier attributes 
+  	   required to precisely specifiy and qualify NFP values. -->
+  <!-- Sources of values can be estimated, calculated, required or measured -->
+  <xsd:simpleType name="SourceKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="est"/>
+      <xsd:enumeration value="meas"/>
+      <xsd:enumeration value="calc"/>
+      <xsd:enumeration value="req"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- A DirectionKind can be either increasing or decreasing. This allows the comparison of NFP values -->
+  <xsd:simpleType name="DirectionKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="incr"/>
+      <xsd:enumeration value="decr"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- The StatisticalQualifierKind defines types of statistical functions -->
+  <xsd:simpleType name="StatisticalQualifierKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="max"/>
+      <xsd:enumeration value="min"/>
+      <xsd:enumeration value="mean"/>
+	  <xsd:enumeration value="std"/> 
+	  <xsd:enumeration value="median"/>
+      <xsd:enumeration value="percentile"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- 				                  -->
+  <!--Metric and Parameter Definition -->
+  <!--				                  -->
+  
+   <!--	Abstract entity of the model -->
+  <xsd:complexType abstract="true" name="Property">
+  	<xsd:attribute name="description" type="coremodel:PropertyDescriptionType"/>
+  </xsd:complexType>
+  
+   <!-- Predefined description values -->
+   <xsd:simpleType name="PropertyDescriptionType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Functional"/>
+      <xsd:enumeration value="Non-Functional"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+   <!--	Three main concrete entities -->
+  <xsd:element name="Metric" type="coremodel:Metric"/>
+  <xsd:element name="Parameter" type="coremodel:Parameter"/>  
+  <xsd:element name="Constant" type="coremodel:Constant"/>
+ 
+  
+  <xsd:complexType abstract="true" name="Metric">
+    <xsd:complexContent>
+    <xsd:extension base="coremodel:Property">
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="0" name="samplingRate" type="coremodel:Frequency"/>
+		<xsd:element maxOccurs="1" minOccurs="0" name="measureInterval" type="coremodel:Duration"/>
+	    <xsd:element maxOccurs="1" minOccurs="0" name="start" type="xsd:dateTime"/>
+	    <xsd:element maxOccurs="1" minOccurs="0" name="end" type="xsd:dateTime"/>
+		<xsd:element maxOccurs="1" minOccurs="0" name="statQ" type="coremodel:StatisticalQualifierKind"/>
+	    <xsd:element maxOccurs="1" minOccurs="0" name="statQValue" type="xsd:double"/>
+		<xsd:element maxOccurs="1" minOccurs="0" name="confidenceLevel" type="xsd:double"/>
+      </xsd:sequence>
+      <xsd:attribute name="context" type="xsd:string"/>
+      <xsd:attribute name="qualifier" type="xsd:string"/>
+	</xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType abstract="true" name="Parameter">
+    <xsd:complexContent>
+    <xsd:extension base="coremodel:Property">  
+      <xsd:attribute name="context" type="xsd:string"/>
+	  <xsd:attribute name="qualifier" type="xsd:string"/>	
+	</xsd:extension>
+    </xsd:complexContent>	
+  </xsd:complexType>
+
+  <xsd:complexType name="Constant">
+    <xsd:complexContent>
+    <xsd:extension base="coremodel:Property">    
+      <xsd:sequence>
+	    <xsd:element maxOccurs="1" minOccurs="1" name="type" type="coremodel:PropertyType"/>
+      </xsd:sequence>
+	</xsd:extension>
+    </xsd:complexContent>	  
+  </xsd:complexType>
+  
+  <!--					 -->
+  <!--   Data Types      -->
+  <!-- 					 -->  
+  
+  <xsd:complexType name="Frequency">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>	  
+        <xsd:attribute name="unit" type="coremodel:FrequencyUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DataRate">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:DataRateUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- This is defined for the throughput measure.-->
+  <!-- Tx can represent transaction, job, item, etc.-->  
+  <xsd:complexType name="TxRate">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:TxRateUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Power">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>	  
+        <xsd:attribute name="unit" type="coremodel:PowerUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DataSize">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:DataSizeUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Energy">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:EnergyUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Length">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>	  
+        <xsd:attribute name="unit" type="coremodel:LengthUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Area">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>	  
+        <xsd:attribute name="unit" type="coremodel:AreaUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Percentage">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute default="%" name="unit" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Price">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute default="EUR" name="unit" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Weight">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:WeightUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Duration">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+        <xsd:attribute name="value" type="xsd:double"/>		  
+        <xsd:attribute name="unit" type="coremodel:TimeUnitKind"/>
+        <xsd:attribute name="precision" type="xsd:double"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Number">
+    <xsd:complexContent>
+      <xsd:extension base="coremodel:QuantitativeType">
+      	<xsd:choice>
+        	<xsd:element name="realValue" type="xsd:double"/>
+        	<xsd:element name="integerValue" type="xsd:integer"/>
+        	<xsd:element name="long" type="xsd:long"/>
+        </xsd:choice>		  
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!--					 -->
+  <!-- Measurement Units -->
+  <!-- 					 -->
+  
+  <!-- A set of measurement units which can be assigned to quantitative types.-->
+   <xsd:simpleType name="TimeUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="s"/>
+      <xsd:enumeration value="tick"/>
+      <xsd:enumeration value="ms"/>
+      <xsd:enumeration value="us"/>
+      <xsd:enumeration value="min"/>
+      <xsd:enumeration value="hrs"/>
+      <xsd:enumeration value="day"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="PowerUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="W"/>
+      <xsd:enumeration value="mW"/>
+      <xsd:enumeration value="KW"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="FrequencyUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Hz"/>
+      <xsd:enumeration value="KHz"/>
+      <xsd:enumeration value="MHz"/>
+      <xsd:enumeration value="GHz"/>
+      <xsd:enumeration value="rpm"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="DataSizeUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="bit"/>
+      <xsd:enumeration value="Byte"/>
+      <xsd:enumeration value="KB"/>
+      <xsd:enumeration value="MB"/>
+      <xsd:enumeration value="GB"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="DataRateUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="b_per_s"/>
+      <xsd:enumeration value="Kb_per_s"/>
+      <xsd:enumeration value="Mb_per_s"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- This is defined for the throughput measure.-->
+  <!-- Tx can represent transaction, job, item, etc.-->
+  <xsd:simpleType name="TxRateUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="tx_per_s"/>
+      <xsd:enumeration value="tx_per_m"/>
+      <xsd:enumeration value="tx_per_h"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="EnergyUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="J"/>
+      <xsd:enumeration value="KJ"/>
+      <xsd:enumeration value="Wh"/>
+      <xsd:enumeration value="KWh"/>
+      <xsd:enumeration value="mWh"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="LengthUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="m"/>
+      <xsd:enumeration value="cm"/>
+      <xsd:enumeration value="mm"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AreaUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="mm2"/>
+      <xsd:enumeration value="um2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="WeightUnitKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="g"/>
+      <xsd:enumeration value="mg"/>
+      <xsd:enumeration value="Kg"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  
+	<!--					             -->
+	<!-- Logic Operations/Expression     -->
+	<!--					             -->
+  	
+  	<xsd:element name="Expression" type="coremodel:Expression"/>
+  	
+  	<!-- An expression element can contain multiple logic expressions. -->
+	<xsd:complexType name="Expression">
+	   <xsd:sequence>
+	      <xsd:element maxOccurs="unbounded" minOccurs="0" name="Expression" type="coremodel:LogicExpressionType"/>
+	    </xsd:sequence>
+	</xsd:complexType>
+
+	
+	<!-- A logic expression defines a condition and follows first order logic, 
+		 including predicates and logic operators such as AND and NOT. -->
+		 <!-- 
+		 The simplest form a logic expression is a plain Predicate of type PredicateType.
+		 The conjunction AND and the disjunction OR connect two logic expressions.
+		 The unary NOT negates an expression. The implication IMPLIES is equivalent to the 
+		 logic subjunction (A IMPLIES B is the same as NOT A OR B).
+		 -->
+	<xsd:complexType name="LogicExpressionType">
+	  <xsd:sequence>
+	    <xsd:choice>
+	      <xsd:element name="Predicate" type="coremodel:PredicateType"/> 
+	      <xsd:element name="And" type="coremodel:BinaryLogicOperatorType"/> 
+	      <xsd:element name="Or" type="coremodel:BinaryLogicOperatorType"/> 
+	      <xsd:element name="Not" type="coremodel:UnaryLogicOperatorType"/> 
+	      <xsd:element name="Implies" type="coremodel:BinaryLogicOperatorType"/> 
+	    </xsd:choice>
+	  </xsd:sequence>
+	</xsd:complexType>	
+	
+	<!-- Operator Types -->
+	<!-- A binary logic operator connects two expressions. Each Expression of the 
+	     binary operator is again of type LogicExpressionType. There are exactly two expressions. -->
+	<xsd:complexType name="BinaryLogicOperatorType">
+	  <xsd:sequence>
+	      <xsd:element maxOccurs="2" minOccurs="2" name="Expression" type="coremodel:LogicExpressionType"/> 
+	  </xsd:sequence>
+	</xsd:complexType>
+	
+	<!-- A unary logic operator relates to one logic expression. The Expression of the unary operator
+	 	 is again of type LogicExpressionType. There is exactly one expression. -->
+	<xsd:complexType name="UnaryLogicOperatorType">
+	  <xsd:sequence>
+	      <xsd:element name="Expression" type="coremodel:LogicExpressionType"/> 
+	  </xsd:sequence>
+	</xsd:complexType>
+	  
+	<!-- Standard Predicate Types -->
+	<!-- A predicate is a function that returns true or false. It captures the assertions with respect to an
+		 Parameter that is given in a Guarantee. This abstract type contains no elements or attributes. 
+		 It is a common umbrella for all specific predicate types. A set of common predicates such as Less, Greater,
+		 Equal, etc. are defined below. -->
+	<xsd:complexType abstract="true" name="PredicateType"/>
+	
+	<xsd:complexType name="Greater">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Less">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Equal">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NotEqual">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="GreaterEqual">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	
+	<xsd:complexType name="LessEqual">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence>
+	        <xsd:element name="OperandA" type="coremodel:Property"/>
+	        <xsd:element name="OperandB" type="coremodel:Property"/>
+	      </xsd:sequence>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="True">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence/>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="False">
+	  <xsd:complexContent>
+	    <xsd:extension base="coremodel:PredicateType">
+	      <xsd:sequence/>
+	    </xsd:extension>
+	  </xsd:complexContent>
+	</xsd:complexType>
+  
+  </xsd:schema>

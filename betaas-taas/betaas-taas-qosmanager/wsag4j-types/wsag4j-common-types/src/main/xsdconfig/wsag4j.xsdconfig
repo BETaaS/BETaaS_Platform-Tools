@@ -1,0 +1,15 @@
+<xb:config xmlns:xb="http://www.bea.com/2002/09/xbean/config">
+
+    <xb:namespace uri="http://schemas.scai.fraunhofer.de/config/wsag4j">
+        <xb:package>org.ogf.graap.wsag4j.types.configuration</xb:package>
+    </xb:namespace>
+
+    <xb:namespace uri="http://schemas.scai.fraunhofer.de/2008/11/wsag4j/engine">
+        <xb:package>org.ogf.graap.wsag4j.types.engine</xb:package>
+    </xb:namespace>
+
+    <xb:namespace uri="http://schemas.wsag4j.org/2009/07/wsag4j-scheduling-extensions">
+        <xb:package>org.ogf.graap.wsag4j.types.scheduling</xb:package>
+    </xb:namespace>
+    
+</xb:config>

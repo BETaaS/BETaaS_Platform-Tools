@@ -1,0 +1,10 @@
+WS-Agreement Negotiation XML Types
+
+  Java types are generated from XML schema. They provide a Java-to-XML binding 
+  in order to access XML documents and data types of the WS-Agreement Negotiation   
+  language from Java. The bindings are generated using XMLBeans. Have a look at 
+  {{{http://xmlbeans.apache.org/documentation/tutorial_getstarted.html}Apache´s XMLBeans}}
+  for a quick start.
+  
+  Have a look at the {{{http://forge.gridforum.org/sf/docman/do/listDocuments/projects.graap-wg/docman.root.current_drafts.ws_agreement_negotiation_specifi} WS-Agreement Negotiation}}
+  folder of the OGF GRAAP WG for the current specification draft of WS-Agreement Negotiation.

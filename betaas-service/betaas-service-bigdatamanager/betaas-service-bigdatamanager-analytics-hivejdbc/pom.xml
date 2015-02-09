@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-service-bigdatamanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-service-bigdatamanager-analytics-hivejdbc</artifactId>
+  <version>2.1-release</version>
+  <name>BETaaS Service Big Data Manager Hive Jdbc manager</name>
+ <packaging>bundle</packaging>
+ <repositories>
+	 <repository>
+       <!-- Cloudera Repository -->
+       <id>cloudera</id>
+       <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+       <releases>
+           <enabled>true</enabled>
+       </releases>
+       <snapshots>
+           <enabled>true</enabled>
+      </snapshots>
+   </repository>
+  </repositories>
+  <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <dependencies>
+
+<!-- <dependency> -->
+<!-- <groupId>org.slf4j</groupId> -->
+<!-- <artifactId>slf4j-log4j12</artifactId> -->
+<!-- <version>1.6.2</version> -->
+<!-- </dependency> -->
+	<dependency>
+		<groupId>org.apache.hive</groupId>
+		<artifactId>hive-jdbc</artifactId>
+		<version>0.10.0-cdh4.5.0</version>
+	</dependency>
+<!-- 	<dependency> -->
+<!-- 	<groupId>org.ops4j.pax.logging</groupId> -->
+<!-- 	<artifactId>pax-logging-api</artifactId> -->
+<!-- 	<version>1.5.3</version>  -->
+<!-- </dependency> -->
+	
+<!-- 	<dependency> -->
+<!-- 		<groupId>org.apache.hadoop</groupId> -->
+<!-- 		<artifactId>hadoop-core</artifactId> -->
+<!-- 		<version>2.0.0-mr1-cdh4.5.0</version> -->
+<!-- 	</dependency> -->
+	
+<!-- 	<dependency> -->
+<!-- 		<groupId>org.apache.hadoop</groupId> -->
+<!-- 		<artifactId>hadoop-client</artifactId> -->
+<!-- 		<version>2.0.0-cdh4.7.0</version> -->
+<!-- 	</dependency> -->
+	
+	<dependency>
+		<groupId>org.apache.thrift</groupId>
+		<artifactId>libthrift</artifactId>
+		<version>0.9.1</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.thrift</groupId>
+		<artifactId>libfb303</artifactId>
+		<version>0.9.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.hive</groupId>
+		<artifactId>hive-service</artifactId>
+		<version>0.10.0-cdh4.5.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.hive</groupId>
+		<artifactId>hive-exec</artifactId>
+		<version>0.10.0-cdh4.5.0</version>
+	</dependency>	
+	
+	<dependency>
+		<groupId>org.apache.hive</groupId>
+		<artifactId>hive-metastore</artifactId>
+		<version>0.10.0-cdh4.5.0</version>
+	</dependency>
+	
+<!-- 	<dependency> -->
+<!-- 		<groupId>org.apache.hadoop</groupId> -->
+<!-- 		<artifactId>hadoop-core</artifactId> -->
+<!-- 		<version>0.20.2</version> -->
+<!-- 	</dependency> -->
+	
+<!-- 	<dependency> -->
+<!-- 	<groupId>org.apache.hadoop</groupId> -->
+<!-- 	<artifactId>hadoop-common</artifactId> -->
+<!-- 	<version>2.2.0</version> -->
+<!-- </dependency> -->
+<dependency>
+	<groupId>org.apache.servicemix.bundles</groupId>
+	<artifactId>org.apache.servicemix.bundles.hadoop-core</artifactId>
+	<version>1.2.1_1</version>
+</dependency>
+	
+
+  </dependencies> 
+   <build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+            	     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                     <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                     <Import-Package>*;resolution:=optional</Import-Package>
+                     <Export-Package>eu.betaas.service.bigdatamanager.dataservice.bdendpoint.services.*,eu.betaas.service.bigdatamanager.analyticservice.component.*</Export-Package>
+                     <Embed-Transitive>false</Embed-Transitive>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>  
+  
+</project>

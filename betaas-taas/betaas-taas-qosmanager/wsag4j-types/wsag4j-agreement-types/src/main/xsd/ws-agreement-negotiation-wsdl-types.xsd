@@ -1,0 +1,121 @@
+<xs:schema
+    targetNamespace="http://schemas.ogf.org/graap/2009/11/ws-agreement-negotiation"
+    xmlns:wsag-neg="http://schemas.ogf.org/graap/2009/11/ws-agreement-negotiation"
+    xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement"
+    xmlns:wsa="http://www.w3.org/2005/08/addressing"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    elementFormDefault="qualified" 
+    attributeFormDefault="qualified">
+
+    <xs:include schemaLocation="ws-agreement-negotiation-types.xsd" />
+
+    <xs:import namespace="http://www.w3.org/2005/08/addressing"
+        schemaLocation="http://www.w3.org/2006/03/addressing/ws-addr.xsd"/>
+        
+    <xs:import namespace="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+        schemaLocation="ws-agreement-xsd-types.xsd" />
+
+
+<!-- ***************************************************************** -->
+<!-- *************** Negotiation Factory WSDL XML Types ************** -->
+<!-- ***************************************************************** -->
+
+    <xs:element name="InitiateNegotiationInput" 
+        type="wsag-neg:InitiateNegotiationInputType"/>
+    <xs:complexType name="InitiateNegotiationInputType">
+        <xs:sequence>
+            <xs:element ref="wsag-neg:NegotiationContext" />
+            <xs:element name="InitiatorNegotiationEPR" 
+                type="wsa:EndpointReferenceType" minOccurs="0" />
+            <xs:element name="NoncriticalExtension" 
+                type="wsag:NoncriticalExtensionType" 
+                minOccurs="0" maxOccurs="unbounded" />
+            <xs:any namespace="##other" processContents="lax" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="InitiateNegotiationOutput" 
+        type="wsag-neg:InitiateNegotiationOutputType"/>
+    <xs:complexType name="InitiateNegotiationOutputType">
+        <xs:sequence>
+            <xs:element name="CreatedNegotiationEPR" 
+                type="wsa:EndpointReferenceType" 
+                minOccurs="1" maxOccurs="1" />
+            <xs:any namespace="##other" processContents="lax" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+<!-- ***************************************************************** -->
+<!-- *************** Negotiation WSDL XML Types ********************** -->
+<!-- ***************************************************************** -->
+
+    <xs:element name="NegotiationProperties" 
+        type="wsag-neg:NegotiationPropertiesType" />
+    <xs:complexType name="NegotiationPropertiesType">
+        <xs:sequence>
+            <xs:element ref="wsag-neg:NegotiationContext" />
+            <xs:element ref="wsag-neg:NegotiableTemplate" 
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="wsag-neg:NegotiationOffer" 
+                minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="NegotiateInput" 
+        type="wsag-neg:NegotiateInputType"/>
+    <xs:complexType name="NegotiateInputType">
+        <xs:sequence>
+            <xs:element ref="wsag-neg:NegotiationOffer" 
+                minOccurs="1" maxOccurs="unbounded" />
+            <xs:any namespace="##other" processContents="lax" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="NegotiateOutput" 
+        type="wsag-neg:NegotiateOutputType"/>
+    <xs:complexType name="NegotiateOutputType">
+        <xs:sequence>
+            <xs:element ref="wsag-neg:NegotiationCounterOffer" 
+                minOccurs="0" maxOccurs="unbounded" />
+            <xs:any namespace="##other" processContents="lax" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="TerminateInput" 
+        type="wsag-neg:TerminateInputType" />
+    <xs:complexType name="TerminateInputType">
+        <xs:sequence>
+            <xs:any processContents="lax" namespace="##other" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="TerminateResponse" 
+        type="wsag-neg:TerminateOutputType" />
+    <xs:complexType name="TerminateOutputType" />
+
+
+<!-- ***************************************************************** -->
+<!-- *************** Advertisement WSDL XML Types ******************** -->
+<!-- ***************************************************************** -->
+
+    <xs:element name="AdvertiseInput" 
+        type="wsag-neg:AdvertiseInputType"/>
+    <xs:complexType name="AdvertiseInputType">
+        <xs:sequence>
+            <xs:element ref="wsag-neg:NegotiationOffer" 
+                minOccurs="1" maxOccurs="unbounded" />
+            <xs:any namespace="##other" processContents="lax" 
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="AdvertiseOutput" 
+        type="wsag-neg:AdvertiseOutputType"/>
+    <xs:complexType name="AdvertiseOutputType" />
+
+</xs:schema>

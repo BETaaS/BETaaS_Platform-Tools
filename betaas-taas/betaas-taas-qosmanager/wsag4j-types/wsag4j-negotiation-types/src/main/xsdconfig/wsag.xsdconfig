@@ -1,0 +1,7 @@
+<xb:config xmlns:xb="http://www.bea.com/2002/09/xbean/config">
+
+    <xb:namespace uri="http://schemas.ogf.org/graap/2009/11/ws-agreement-negotiation">
+        <xb:package>org.ogf.schemas.graap.wsAgreement.negotiation</xb:package>
+    </xb:namespace>
+
+</xb:config>

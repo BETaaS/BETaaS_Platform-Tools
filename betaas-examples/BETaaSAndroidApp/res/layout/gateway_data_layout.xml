@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Copyright 2014 ATOS SPAIN S.A.
+
+Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Authors :
+Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
+@email sergio.garciavillalonga@atos.net
+
+ -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gatewayParentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5pt" >
+    
+    <LinearLayout
+        android:id="@+id/appIdPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:text="@string/app_id" />
+
+        <TextView
+            android:id="@+id/appIdValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/serviceIdPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:orientation="vertical" >
+    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingRight="5dp"
+	            android:text="@string/service_id" />
+	
+	        <TextView
+	            android:id="@+id/serviceIdValue"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingRight="5dp"
+	            android:text="@string/last_update" />
+	
+	        <TextView
+	            android:id="@+id/lastUpdateValue"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	    </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/connectingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/connectingTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registering_app"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        
+        <TextView
+            android:id="@+id/connectingToGatewayName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/errorPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_error_red_48dp" />
+
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/measurementsPanel"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="invisible" >
+
+        <TextView
+            android:id="@+id/measurementValue1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#00FF00"
+            android:textSize="40sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+   <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-service-bigdatamanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-service-bigdatamanager-sqoop</artifactId>
+  <version>2.1-release</version>
+  <name>BETaaS Sqoop Connector</name>
+   <packaging>bundle</packaging>
+  <repositories>
+	 <repository>
+       <!-- Cloudera Repository -->
+       <id>cloudera</id>
+       <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+       <releases>
+           <enabled>true</enabled>
+       </releases>
+       <snapshots>
+           <enabled>false</enabled>
+      </snapshots>
+   </repository>
+   
+  </repositories>
+    <dependencies>
+<dependency>
+	<groupId>com.sun.jersey</groupId>
+	<artifactId>jersey-core</artifactId>
+	<version>1.11</version>
+</dependency>
+<dependency>
+	<groupId>com.sun.jersey</groupId>
+	<artifactId>jersey-client</artifactId>
+	<version>1.11</version>
+</dependency>
+ 
+  	<dependency>
+	  <groupId>org.apache.sqoop</groupId>
+	    <artifactId>sqoop-client</artifactId>
+	    <version>1.99.2-cdh4.7.0</version>
+	</dependency>  
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-api</artifactId>
+		<version>2.0</version>
+	</dependency>
+       <dependency>
+           <groupId>javax.ws.rs</groupId>
+           <artifactId>jsr311-api</artifactId>
+           <version>1.1.1</version>
+       </dependency>	
+  </dependencies>
+ <build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+                     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                     <Import-Package>!com.ibm.uvm.tools,!javax.mail,!javax.jms,!javax.mail.internet,!javax.mail.util,!javax.jmdns,!com.sun.jdmk.comm,*</Import-Package>
+                     <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> 
+                     <Embed-Transitive>true</Embed-Transitive>
+                     <Export-Package>
+                     	eu.betaas.service.bigdatamanager.sqoop
+                     </Export-Package>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>    
+  
+  
+  
+  
+  
+</project>

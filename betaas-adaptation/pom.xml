@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-superpom</artifactId>
+    <version>2.1-release</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-adaptation</artifactId>
+  <version>2.1-release</version>
+  <packaging>pom</packaging>
+  <name>BETaaS Adaptation</name>
+  <description>BETaaS  Adaptation</description>
+
+  <modules>
+  	<module>betaas-adaptation-thingsadaptor</module>
+  	<module>betaas-adaptation-contextmanager</module>
+  	<module>betaas-adaptation-securitymanager</module>
+  </modules>
+</project>

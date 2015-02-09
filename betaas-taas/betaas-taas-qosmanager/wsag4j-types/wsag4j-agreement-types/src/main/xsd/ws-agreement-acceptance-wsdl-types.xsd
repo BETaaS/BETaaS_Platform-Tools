@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    targetNamespace="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+	elementFormDefault="qualified" attributeFormDefault="qualified"
+    xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+	xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ 
+	<xs:import namespace="http://www.w3.org/2005/08/addressing"
+		schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd" />
+
+	<xs:include schemaLocation="ws-agreement-xsd-types.xsd" />
+
+    <!--Resource property element declarations-->
+    <!--global elements are defined in the included schema-->
+    <!--No Resource property document declaration-->
+    <!-- Operational input/output type declarations -->
+    <xs:element name="AcceptAgreementInput" type="wsag:AgreementAcceptanceInputType" />
+    <xs:element name="AcceptAgreementResponse" type="wsag:AgreementAcceptanceOutputType" />
+    <xs:element name="RejectAgreementInput" type="wsag:AgreementAcceptanceInputType" />
+    <xs:element name="RejectAgreementResponse" type="wsag:AgreementAcceptanceOutputType" />
+    <xs:complexType name="AgreementAcceptanceInputType">
+      <xs:sequence>
+        <xs:element name="NoncriticalExtension" type="wsag:NoncriticalExtensionType"
+          minOccurs="0" maxOccurs="unbounded" />
+        <xs:any namespace="##other" processContents="lax"
+          minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AgreementAcceptanceOutputType">
+      <xs:sequence>
+        <xs:any namespace="##other" processContents="lax"
+          minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+</xs:schema>

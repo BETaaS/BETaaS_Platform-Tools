@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+  targetNamespace="http://www.ogf.org/graap/AR/2009/04/"
+  xmlns:arp="http://www.ogf.org/graap/AR/2009/04/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" 
+  attributeFormDefault="qualified">
+  
+  <xs:complexType name="AllocationTimeConstraintType">
+    <xs:sequence>
+      <xs:element name="StartTime" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
+      <xs:element name="EndTime" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Duration" type="xs:int" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  
+
+  <xs:element name="AllocationTimeConstraint" type="arp:AllocationTimeConstraintType"/>
+  
+</xs:schema>

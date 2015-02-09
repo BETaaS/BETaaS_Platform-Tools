@@ -1,0 +1,22 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+         id="optimis-schemas">
+
+    <system systemId="file:XMLSchema.dtd"
+            uri="./schema/XMLSchema.dtd"/>
+
+    <system systemId="file:datatypes.dtd"
+            uri="./schema/datatypes.dtd"/>
+
+    <system systemId="http://www.w3.org/2001/XMLSchema.dtd"
+            uri="./schema/XMLSchema.dtd"/>
+
+    <system systemId="http://www.w3.org/2001/xml.xsd"
+            uri="./schema/xml.xsd"/>
+
+    <system systemId="http://www.w3.org/2005/08/addressing/ws-addr.xsd"
+            uri="./schema/ws-addr.xsd"/>
+            
+    <system systemId="http://docs.oasis-open.org/wsrf/bf-2.xsd"
+            uri="./schema/bf-2.xsd"/>
+
+</catalog>

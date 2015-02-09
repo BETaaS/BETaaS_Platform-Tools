@@ -1,0 +1,359 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://api.instancemanager.service.betaas.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="InstanceManagerExternalIF" targetNamespace="http://api.instancemanager.service.betaas.eu/">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://api.instancemanager.service.betaas.eu/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://api.instancemanager.service.betaas.eu/">
+  <xsd:complexType name="ArrayOfString">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="string" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getGWStarID" type="tns:getGWStarID"/>
+  <xsd:complexType name="getGWStarID">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="getGWStarIDResponse" type="tns:getGWStarIDResponse"/>
+  <xsd:complexType name="getGWStarIDResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="requestJoin" type="tns:requestJoin"/>
+  <xsd:complexType name="requestJoin">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="requestJoinResponse" type="tns:requestJoinResponse"/>
+  <xsd:complexType name="requestJoinResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="isGWStar" type="tns:isGWStar"/>
+  <xsd:complexType name="isGWStar">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="isGWStarResponse" type="tns:isGWStarResponse"/>
+  <xsd:complexType name="isGWStarResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getGWID" type="tns:getGWID"/>
+  <xsd:complexType name="getGWID">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="getGWIDResponse" type="tns:getGWIDResponse"/>
+  <xsd:complexType name="getGWIDResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="requestDisjoin" type="tns:requestDisjoin"/>
+  <xsd:complexType name="requestDisjoin">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="requestDisjoinResponse" type="tns:requestDisjoinResponse"/>
+  <xsd:complexType name="requestDisjoinResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getInstanceInfo" type="tns:getInstanceInfo"/>
+  <xsd:complexType name="getInstanceInfo">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="getInstanceInfoResponse" type="tns:getInstanceInfoResponse"/>
+  <xsd:complexType name="getInstanceInfoResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="joinInstance" type="tns:joinInstance"/>
+  <xsd:complexType name="joinInstance">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="joinInstanceResponse" type="tns:joinInstanceResponse"/>
+  <xsd:complexType name="joinInstanceResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getJoinedGWs" type="tns:getJoinedGWs"/>
+  <xsd:complexType name="getJoinedGWs">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:element name="getJoinedGWsResponse" type="tns:getJoinedGWsResponse"/>
+  <xsd:complexType name="getJoinedGWsResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="setGWStar" type="tns:setGWStar"/>
+  <xsd:complexType name="setGWStar">
+    <xsd:sequence>
+      <xsd:element name="arg0" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="setGWStarResponse" type="tns:setGWStarResponse"/>
+  <xsd:complexType name="setGWStarResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="disjoinInstance" type="tns:disjoinInstance"/>
+  <xsd:complexType name="disjoinInstance">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="disjoinInstanceResponse" type="tns:disjoinInstanceResponse"/>
+  <xsd:complexType name="disjoinInstanceResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getInstanceInfo">
+    <wsdl:part element="tns:getInstanceInfo" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setGWStar">
+    <wsdl:part element="tns:setGWStar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setGWStarResponse">
+    <wsdl:part element="tns:setGWStarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getJoinedGWsResponse">
+    <wsdl:part element="tns:getJoinedGWsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isGWStar">
+    <wsdl:part element="tns:isGWStar" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="disjoinInstance">
+    <wsdl:part element="tns:disjoinInstance" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getJoinedGWs">
+    <wsdl:part element="tns:getJoinedGWs" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGWIDResponse">
+    <wsdl:part element="tns:getGWIDResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGWStarIDResponse">
+    <wsdl:part element="tns:getGWStarIDResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGWStarID">
+    <wsdl:part element="tns:getGWStarID" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getInstanceInfoResponse">
+    <wsdl:part element="tns:getInstanceInfoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGWID">
+    <wsdl:part element="tns:getGWID" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="disjoinInstanceResponse">
+    <wsdl:part element="tns:disjoinInstanceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="joinInstanceResponse">
+    <wsdl:part element="tns:joinInstanceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="requestJoin">
+    <wsdl:part element="tns:requestJoin" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isGWStarResponse">
+    <wsdl:part element="tns:isGWStarResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="requestJoinResponse">
+    <wsdl:part element="tns:requestJoinResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="joinInstance">
+    <wsdl:part element="tns:joinInstance" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="requestDisjoin">
+    <wsdl:part element="tns:requestDisjoin" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="requestDisjoinResponse">
+    <wsdl:part element="tns:requestDisjoinResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="InstanceManagerExternalIFPortType">
+    <wsdl:operation name="getGWStarID">
+      <wsdl:input message="tns:getGWStarID" name="getGWStarID">
+    </wsdl:input>
+      <wsdl:output message="tns:getGWStarIDResponse" name="getGWStarIDResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="requestJoin">
+      <wsdl:input message="tns:requestJoin" name="requestJoin">
+    </wsdl:input>
+      <wsdl:output message="tns:requestJoinResponse" name="requestJoinResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isGWStar">
+      <wsdl:input message="tns:isGWStar" name="isGWStar">
+    </wsdl:input>
+      <wsdl:output message="tns:isGWStarResponse" name="isGWStarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGWID">
+      <wsdl:input message="tns:getGWID" name="getGWID">
+    </wsdl:input>
+      <wsdl:output message="tns:getGWIDResponse" name="getGWIDResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="requestDisjoin">
+      <wsdl:input message="tns:requestDisjoin" name="requestDisjoin">
+    </wsdl:input>
+      <wsdl:output message="tns:requestDisjoinResponse" name="requestDisjoinResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInstanceInfo">
+      <wsdl:input message="tns:getInstanceInfo" name="getInstanceInfo">
+    </wsdl:input>
+      <wsdl:output message="tns:getInstanceInfoResponse" name="getInstanceInfoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="joinInstance">
+      <wsdl:input message="tns:joinInstance" name="joinInstance">
+    </wsdl:input>
+      <wsdl:output message="tns:joinInstanceResponse" name="joinInstanceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getJoinedGWs">
+      <wsdl:input message="tns:getJoinedGWs" name="getJoinedGWs">
+    </wsdl:input>
+      <wsdl:output message="tns:getJoinedGWsResponse" name="getJoinedGWsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setGWStar">
+      <wsdl:input message="tns:setGWStar" name="setGWStar">
+    </wsdl:input>
+      <wsdl:output message="tns:setGWStarResponse" name="setGWStarResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="disjoinInstance">
+      <wsdl:input message="tns:disjoinInstance" name="disjoinInstance">
+    </wsdl:input>
+      <wsdl:output message="tns:disjoinInstanceResponse" name="disjoinInstanceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="InstanceManagerExternalIFSoapBinding" type="tns:InstanceManagerExternalIFPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getGWStarID">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getGWStarID">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getGWStarIDResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="requestJoin">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="requestJoin">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="requestJoinResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isGWStar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="isGWStar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="isGWStarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGWID">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getGWID">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getGWIDResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="requestDisjoin">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="requestDisjoin">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="requestDisjoinResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInstanceInfo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getInstanceInfo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getInstanceInfoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getJoinedGWs">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getJoinedGWs">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getJoinedGWsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="joinInstance">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="joinInstance">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="joinInstanceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setGWStar">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="setGWStar">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="setGWStarResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="disjoinInstance">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="disjoinInstance">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="disjoinInstanceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="InstanceManagerExternalIF">
+    <wsdl:port binding="tns:InstanceManagerExternalIFSoapBinding" name="InstanceManagerExternalIFPort">
+      <soap:address location="http://192.168.24.143:9702/im-service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

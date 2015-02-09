@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    targetNamespace="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+	elementFormDefault="qualified" attributeFormDefault="qualified"
+    xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+	xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://www.w3.org/2001/XMLSchema"
+		schemaLocation="http://www.w3.org/2001/XMLSchema.xsd" />
+	<xs:import namespace="http://www.w3.org/2005/08/addressing"
+		schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd" />
+	<xs:import namespace="http://docs.oasis-open.org/wsrf/bf-2"
+		schemaLocation="http://docs.oasis-open.org/wsrf/bf-2.xsd" />
+
+    <xs:import 
+        namespace="http://www.w3.org/2005/08/addressing"/>
+        
+    <xs:include schemaLocation="ws-agreement-xsd-types.xsd"/>
+
+    <!--Resource property element declarations-->
+    <!--global elements are defined in the included schema-->
+    <!--Resource property document declaration-->
+    <xs:element name="AgreementFactoryProperties"
+    	type="wsag:AgreementFactoryPropertiesType" />
+    <xs:complexType name="AgreementFactoryPropertiesType">
+    	<xs:sequence>
+    		<xs:element ref="wsag:Template" minOccurs="0" maxOccurs="unbounded" />
+    	</xs:sequence>
+    </xs:complexType>
+
+    <!-- Operational input/output type declarations -->
+    <xs:element name="CreateAgreementInput"
+    	type="wsag:CreateAgreementInputType" />
+    <xs:element name="CreateAgreementResponse"
+    	type="wsag:CreateAgreementOutputType" />
+    <xs:complexType name="CreateAgreementInputType">
+    	<xs:sequence>
+    		<xs:element name="InitiatorAgreementEPR"
+    			type="wsa:EndpointReferenceType" minOccurs="0" />
+    		<xs:element ref="wsag:AgreementOffer" />
+    		<xs:element name="NoncriticalExtension"
+    			type="wsag:NoncriticalExtensionType" minOccurs="0"
+    			maxOccurs="unbounded" />
+    		<xs:any namespace="##other" processContents="lax"
+    			minOccurs="0" maxOccurs="unbounded" />
+    	</xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CreateAgreementOutputType">
+    	<xs:sequence>
+    		<xs:element name="CreatedAgreementEPR"
+    			type="wsa:EndpointReferenceType" />
+    		<xs:any namespace="##other" processContents="lax"
+    			minOccurs="0" maxOccurs="unbounded" />
+    	</xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

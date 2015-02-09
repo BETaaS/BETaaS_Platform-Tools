@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:val="http://schemas.wsag4j.org/validation" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.wsag4j.org/validation">
+
+  <xsd:simpleType name="SimpleList">
+    <xsd:list itemType="xsd:string"/>
+  </xsd:simpleType>
+
+</xsd:schema>

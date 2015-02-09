@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsag:Template wsag:TemplateId="1" xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement">
+  <wsag:Name>SAMPLE-TEMPLATE</wsag:Name>
+  <wsag:Context>
+    <wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
+    <wsag:TemplateId>1</wsag:TemplateId>
+    <wsag:TemplateName>SAMPLE-TEMPLATE</wsag:TemplateName>
+  </wsag:Context>
+  <wsag:Terms>
+    <wsag:All>
+      <wsag:ServiceDescriptionTerm wsag:Name="RESOURCE_SDT" wsag:ServiceName="SAMPLE-SERVICE">
+        <jsdl:JobDefinition xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl">
+          <jsdl:JobDescription>
+            <jsdl:Resources>
+              <jsdl:CandidateHosts>
+                <jsdl:HostName>some_host</jsdl:HostName>
+              </jsdl:CandidateHosts>
+              <jsdl:TotalResourceCount>
+                <jsdl:Exact>$TOTALRESOURCES</jsdl:Exact>
+              </jsdl:TotalResourceCount>
+            </jsdl:Resources>
+          </jsdl:JobDescription>
+        </jsdl:JobDefinition>
+      </wsag:ServiceDescriptionTerm>
+      <wsag:ServiceDescriptionTerm wsag:Name="TIME_CONSTRAINT_SDT" wsag:ServiceName="SAMPLE-SERVICE">
+           <wsag4jt:TimeConstraint xmlns:wsag4jt="http://schemas.wsag4j.org/2009/07/wsag4j-scheduling-extensions">
+             <wsag4jt:StartTime>$STARTTIME</wsag4jt:StartTime>
+             <wsag4jt:EndTime>$ENDTIME</wsag4jt:EndTime>
+             <wsag4jt:Duration>$DURATION</wsag4jt:Duration>
+           </wsag4jt:TimeConstraint>
+      </wsag:ServiceDescriptionTerm>
+    </wsag:All>
+  </wsag:Terms>
+  <wsag:CreationConstraints>
+  <!-- Resources_SDT -->
+    <wsag:Item wsag:Name="ResourcesSDT_JobDefinition">
+      <wsag:Location>declare namespace jsdl='http://schemas.ggf.org/jsdl/2005/11/jsdl';declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All/wsag:ServiceDescriptionTerm[@wsag:Name='RESOURCE_SDT']/jsdl:JobDefinition</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="JobDescription" minOccurs="1" maxOccurs="1" type="jsdl:JobDescription_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="ResourcesSDT_JobDefinition_JobDescription">
+      <wsag:Location>declare namespace jsdl='http://schemas.ggf.org/jsdl/2005/11/jsdl';declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All/wsag:ServiceDescriptionTerm[@wsag:Name='RESOURCE_SDT']/jsdl:JobDefinition/jsdl:JobDescription</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="JobIdentification" minOccurs="0" maxOccurs="1" type="jsdl:JobIdentification_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="Application" minOccurs="0" maxOccurs="0" type="jsdl:Application_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="Resources" minOccurs="1" maxOccurs="1" type="jsdl:Resources_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="DataStaging" minOccurs="0" maxOccurs="0" type="jsdl:DataStaging_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="ResourcesSDT_JobDefinition_JobDescription_Resources">
+      <wsag:Location>declare namespace jsdl='http://schemas.ggf.org/jsdl/2005/11/jsdl';declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All/wsag:ServiceDescriptionTerm[@wsag:Name='RESOURCE_SDT']/jsdl:JobDefinition/jsdl:JobDescription/jsdl:Resources</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="CandidateHosts" minOccurs="1" maxOccurs="1" type="jsdl:CandidateHosts_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="TotalResourceCount" minOccurs="1" maxOccurs="1" type="jsdl:RangeValue_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="ResourcesSDT_JobDefinition_JobDescription_Resources_TotalResourceCount">
+      <wsag:Location>declare namespace jsdl='http://schemas.ggf.org/jsdl/2005/11/jsdl';declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All/wsag:ServiceDescriptionTerm[@wsag:Name='RESOURCE_SDT']/jsdl:JobDefinition/jsdl:JobDescription/jsdl:Resources/jsdl:TotalResourceCount</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="UpperBoundedRange" minOccurs="0" maxOccurs="0" type="jsdl:Boundary_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="LowerBoundedRange" minOccurs="0" maxOccurs="0" type="jsdl:Boundary_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="Exact" minOccurs="1" maxOccurs="1" type="jsdl:Exact_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+          <xs:element name="Range" minOccurs="0" maxOccurs="0" type="jsdl:Range_Type" xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"/>
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="ResourcesSDT_JobDefinition_JobDescription_Resources_TotalResourceCount_Exact">
+      <wsag:Location>declare namespace jsdl='http://schemas.ggf.org/jsdl/2005/11/jsdl';declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All/wsag:ServiceDescriptionTerm[@wsag:Name='RESOURCE_SDT']/jsdl:JobDefinition/jsdl:JobDescription/jsdl:Resources/jsdl:TotalResourceCount/jsdl:Exact</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:minInclusive value="1" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <xs:maxInclusive value="$TOTALRESOURCES" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="AgreementOffer">
+      <wsag:Location>declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element ref="wsag:Name" minOccurs="0" maxOccurs="1" />
+          <xs:element ref="wsag:Context" minOccurs="1" maxOccurs="1" />
+          <xs:element ref="wsag:Terms" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="AgreementOffer_Context">
+      <wsag:Location>declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Context</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="AgreementInitiator" type="xs:anyType" minOccurs="0" maxOccurs="0" />
+			<xs:element name="AgreementResponder" type="xs:anyType" minOccurs="0" maxOccurs="0" />
+			<xs:element name="ServiceProvider" type="wsag:AgreementRoleType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="ExpirationTime" type="xs:dateTime" minOccurs="0" maxOccurs="0" />
+			<xs:element name="TemplateId" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="TemplateName" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:any maxOccurs="0" minOccurs="0" namespace="\#\#other" processContents="lax" />
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="AgreementOffer_Context_ServiceProvider">
+      <wsag:Location>declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Context/wsag:ServiceProvider</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:simpleType xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:restriction base="wsag:AgreementRoleType">
+            <xs:enumeration value="AgreementResponder" />
+          </xs:restriction>
+        </xs:simpleType>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="AgreementOffer_Terms">
+      <wsag:Location>declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="All" minOccurs="1" maxOccurs="1" type="wsag:TermCompositorType" />
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item>
+    <wsag:Item wsag:Name="AgreementOffer_Terms_All">
+      <wsag:Location>declare namespace wsag='http://schemas.ggf.org/graap/2007/03/ws-agreement';$this/wsag:AgreementOffer/wsag:Terms/wsag:All</wsag:Location>
+      <wsag:ItemConstraint>
+        <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:choice maxOccurs="2">
+            <xs:element name="ExactlyOne" minOccurs="0" maxOccurs="0" type="wsag:TermCompositorType" />
+            <xs:element name="OneOrMore" minOccurs="0" maxOccurs="0" type="wsag:TermCompositorType" />
+            <xs:element ref="wsag:All" minOccurs="0" maxOccurs="0" />
+            <xs:element name="ServiceDescriptionTerm" minOccurs="1" maxOccurs="1" type="wsag:ServiceDescriptionTermType" />
+            <xs:element name="ServiceReference" minOccurs="0" maxOccurs="0" type="wsag:ServiceReferenceType" />
+            <xs:element name="ServiceProperties" minOccurs="0" maxOccurs="0" type="wsag:ServicePropertiesType" />
+            <xs:element name="GuaranteeTerm" minOccurs="0" maxOccurs="0" type="wsag:GuaranteeTermType" />
+          </xs:choice>
+        </xs:sequence>
+      </wsag:ItemConstraint>
+    </wsag:Item> 
+  </wsag:CreationConstraints> 
+</wsag:Template> 

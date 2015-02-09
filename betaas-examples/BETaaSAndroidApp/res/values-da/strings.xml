@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Copyright 2014 ATOS SPAIN S.A.
+
+Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Authors :
+Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
+@email sergio.garciavillalonga@atos.net
+
+ -->
+
+<resources>
+    <string name="app_name">BETaaS</string>
+    <string name="title_section1">Afsnit 1</string>
+    <string name="title_section2">Afsnit 2</string>
+    <string name="title_section3">Afsnit 3</string>
+    <string name="navigation_drawer_open">Åbne skuffen navigation</string>
+    <string name="navigation_drawer_close">Luk skuffen navigation</string>
+    <string name="action_example">Eksempel handling</string>
+    <string name="action_settings">Indstillinger</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="add_gateway">Tilføj ny gateway</string>
+    <string name="add">Tilføj til</string>
+    <string name="name">Navn</string>
+    <string name="update">Opdatering</string>
+    <string name="delete_gateway">Fjern gateway</string>
+    <string name="edit_gateway">Edit gateway</string>
+    <string name="no_internet">Der er en sammenhæng problem. Tjek om du er tilsluttet et netværk, og genstarte programmet.</string>
+    <string name="ok">Accepter</string>
+    <string name="registering_app">Registrering af ansøgning</string>
+    <string name="app_id">Identifikation af app:</string>
+    <string name="service_id">Identifikation service:</string>
+	<string name="relax">Slap af, ingen er hjemme</string>
+    <string name="caution">Forsigtig! Der er nogen hjemme</string>
+    <string name="subscribing_service">Tilmelding til service i %1$s</string>
+	<string name="last_update">Seneste opdatering:</string>
+</resources>

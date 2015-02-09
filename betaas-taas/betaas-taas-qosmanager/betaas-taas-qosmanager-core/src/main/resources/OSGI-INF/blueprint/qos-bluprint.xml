@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint default-activation="eager" 
+            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+	
+     <cm:property-placeholder persistent-id="betaas.endpoints"  placeholder-prefix="$(" placeholder-suffix=")">
+            <cm:default-properties>
+                  <cm:property name="qosManagerTaaSAddress" value="http://localhost:16001/qosmanagertaas"/>
+                  <cm:property name="qosManagerTaaSInternalAddress" value="http://localhost:16002/qosmanagertaasInternal"/>
+            </cm:default-properties>
+      </cm:property-placeholder>
+    
+    <cm:property-placeholder persistent-id="betaas.gateway">
+	 <cm:default-properties>
+	  <cm:property name="gwId" value="-1"/>
+	  </cm:default-properties>
+    </cm:property-placeholder>
+      
+    <bean id="qosmanagerLoggerBean" class="eu.betaas.taas.qosmanager.core.QoSManagerActivator" init-method="start" destroy-method="stop" >
+    	<property name="context" ref="blueprintBundleContext"/>
+    	<property name="negotiator" ref="negotiatorService"/>
+    	<property name="taasrm" ref="taasrmService"/>
+    	<property name="servicerm" ref="servicermService"/>
+    	<property name="WSAddress" value="$(qosManagerTaaSAddress)"></property>
+    	<property name="WSAddressInternal" value="$(qosManagerTaaSInternalAddress)"></property>
+    	<property name="gwId" value="${gwId}"></property>
+    	<property name="service" ref="databaseService"/>
+    	<property name="qosMonitoring" ref="qosMonitoringService"/>
+    	<property name="cmservice" ref="taasContextManager" />
+    </bean>
+    
+	<reference id="negotiatorService" availability="mandatory" activation="eager" interface="eu.betaas.taas.qosmanager.negotiation.NegotiationInterface">
+	</reference>
+	
+	<reference id="qosMonitoringService" availability="mandatory" activation="eager" interface="eu.betaas.taas.qosmanager.monitoring.api.QoSManagerMonitoring">
+	</reference>
+	
+	<reference id="taasrmService" availability="mandatory" activation="eager" interface="eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager">
+	</reference>
+
+	<reference id="servicermService" availability="optional" activation="eager" interface="eu.betaas.service.servicemanager.api.ServiceManagerInternalIF">
+	</reference>
+	
+	<reference id="databaseService" availability="mandatory" activation="eager" interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService">
+	</reference>
+	
+	<reference id="taasContextManager" availability="mandatory" activation="eager" interface="eu.betaas.taas.contextmanager.api.ThingsServiceManager">
+  	</reference>
+
+</blueprint>

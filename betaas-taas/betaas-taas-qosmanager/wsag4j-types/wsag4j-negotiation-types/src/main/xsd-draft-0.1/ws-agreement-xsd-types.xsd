@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	targetNamespace="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	elementFormDefault="qualified" attributeFormDefault="qualified"
+	xmlns:wsag="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://www.w3.org/2001/XMLSchema"
+		schemaLocation="http://www.w3.org/2001/XMLSchema.xsd" />
+	<xs:import namespace="http://www.w3.org/2005/08/addressing"
+		schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd" />
+	<xs:import namespace="http://docs.oasis-open.org/wsrf/bf-2"
+		schemaLocation="http://docs.oasis-open.org/wsrf/bf-2.xsd" />
+
+	<xs:element name="Template" type="wsag:AgreementTemplateType" />
+	<xs:element name="AgreementOffer" type="wsag:AgreementType" />
+	<xs:element name="Name" type="xs:NCName" />
+	<xs:element name="AgreementId" type="xs:string" />
+	<xs:element name="Context" type="wsag:AgreementContextType" />
+	<xs:element name="Terms" type="wsag:TermTreeType" />
+	<xs:element name="NoncriticalExtensions"
+		type="wsag:NoncriticalExtensionType" />
+	<xs:element name="AgreementServiceReferenceList"
+				type="wsag:AgreementServiceReferenceListType"/>
+	<xs:complexType name="TermTreeType">
+		<xs:sequence>
+			<xs:element ref="wsag:All" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AgreementContextType">
+		<xs:sequence>
+			<xs:element name="AgreementInitiator" type="xs:anyType"
+				minOccurs="0" />
+			<xs:element name="AgreementResponder" type="xs:anyType"
+				minOccurs="0" />
+			<xs:element name="ServiceProvider"
+				type="wsag:AgreementRoleType" />
+			<xs:element name="ExpirationTime" type="xs:dateTime"
+				minOccurs="0" />
+			<xs:element name="TemplateId" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="TemplateName" type="xs:string"
+				minOccurs="0" />
+			<xs:any namespace="##other" processContents="lax"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:anyAttribute namespace="##other" />
+	</xs:complexType>
+	<xs:element name="All" type="wsag:TermCompositorType" />
+	<xs:complexType name="TermCompositorType">
+		<xs:sequence>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="ExactlyOne"
+					type="wsag:TermCompositorType" />
+				<xs:element name="OneOrMore"
+					type="wsag:TermCompositorType" />
+				<xs:element ref="wsag:All" />
+				<xs:element name="ServiceDescriptionTerm"
+					type="wsag:ServiceDescriptionTermType" />
+				<xs:element name="ServiceReference"
+					type="wsag:ServiceReferenceType" />
+				<xs:element name="ServiceProperties"
+					type="wsag:ServicePropertiesType" />
+				<xs:element name="GuaranteeTerm"
+					type="wsag:GuaranteeTermType" />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AgreementTemplateType">
+		<xs:complexContent>
+			<xs:extension base="wsag:AgreementType">
+				<xs:sequence>
+					<xs:element name="CreationConstraints"
+						type="wsag:ConstraintSectionType" />
+				</xs:sequence>
+				<xs:attribute name="TemplateId" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgreementType">
+		<xs:sequence>
+			<xs:element ref="wsag:Name" minOccurs="0" />
+			<xs:element ref="wsag:Context" />
+			<xs:element ref="wsag:Terms" />
+		</xs:sequence>
+		<xs:attribute name="AgreementId" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="AgreementInitiatorIdentifierType">
+		<xs:sequence>
+			<xs:element name="Reference" type="xs:anyType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AgreementResponderIdentifierType">
+		<xs:sequence>
+			<xs:element name="Reference" type="xs:anyType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TermType" abstract="true">
+		<xs:attribute name="Name" type="xs:NCName" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="GuaranteeTermType">
+		<xs:complexContent>
+			<xs:extension base="wsag:TermType">
+				<xs:sequence>
+					<xs:element name="ServiceScope"
+						type="wsag:ServiceSelectorType" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xs:element ref="wsag:QualifyingCondition"
+						minOccurs="0" />
+					<xs:element ref="wsag:ServiceLevelObjective" />
+					<xs:element name="BusinessValueList"
+						type="wsag:BusinessValueListType" />
+				</xs:sequence>
+				<xs:attribute name="Obligated"
+					type="wsag:ServiceRoleType" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ServiceSelectorType">
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="lax"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="ServiceName" type="xs:NCName" />
+	</xs:complexType>
+	<xs:element name="QualifyingCondition" type="xs:anyType" />
+	<xs:element name="ServiceLevelObjective" type="xs:anyType" />
+	<xs:complexType name="BusinessValueListType">
+		<xs:sequence>
+			<xs:element name="Importance" type="xs:integer"
+				minOccurs="0" />
+			<xs:element name="Penalty" type="wsag:CompensationType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Reward" type="wsag:CompensationType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Preference" type="wsag:PreferenceType"
+				minOccurs="0" />
+			<xs:element name="CustomBusinessValue" type="xs:anyType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompensationType">
+		<xs:sequence>
+			<xs:element name="AssessmentInterval">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="TimeInterval"
+								type="xs:duration" />
+							<xs:element name="Count"
+								type="xs:positiveInteger" />
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ValueUnit" type="xs:string" minOccurs="0" />
+			<xs:element name="ValueExpression" type="xs:anyType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PreferenceType">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="ServiceTermReference" type="xs:string">
+			</xs:element>
+			<xs:element name="Utility" type="xs:float"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ServiceTermType" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="wsag:TermType">
+				<xs:attribute name="ServiceName" type="xs:NCName" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ServiceReferenceType">
+		<xs:complexContent>
+			<xs:extension base="wsag:ServiceTermType">
+				<xs:sequence>
+					<xs:any namespace="##other"
+						processContents="strict" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ServiceDescriptionTermType">
+		<xs:complexContent>
+			<xs:extension base="wsag:ServiceTermType">
+				<xs:sequence>
+					<xs:any namespace="##other"
+						processContents="strict" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ServicePropertiesType">
+		<xs:complexContent>
+			<xs:extension base="wsag:ServiceTermType">
+				<xs:sequence>
+					<xs:element name="VariableSet"
+						type="wsag:VariableSetType" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ServiceNameSet">
+		<xs:sequence>
+			<xs:element name="ServiceName" type="xs:NCName"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Location" type="xs:string" />
+	<xs:complexType name="VariableType">
+		<xs:sequence>
+			<xs:element ref="wsag:Location" />
+		</xs:sequence>
+		<xs:attribute name="Name" type="xs:NCName" />
+		<xs:attribute name="Metric" type="xs:QName" />
+	</xs:complexType>
+	<xs:complexType name="VariableSetType">
+		<xs:sequence>
+			<xs:element name="Variable" type="wsag:VariableType"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ConstraintSectionType">
+		<xs:sequence>
+			<xs:element name="Item" type="wsag:OfferItemType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="wsag:Constraint" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OfferItemType">
+		<xs:sequence>
+			<xs:element ref="wsag:Location" />
+			<xs:element name="ItemConstraint">
+				<xs:complexType>
+					<xs:choice minOccurs="0">
+						<xs:group ref="xs:simpleRestrictionModel" />
+						<xs:group ref="xs:typeDefParticle" />
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:any processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Name" type="xs:string" />
+	</xs:complexType>
+	<xs:element name="Constraint" type="xs:anyType" />
+	<xs:simpleType name="AgreementRoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AgreementInitiator " />
+			<xs:enumeration value="AgreementResponder" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ServiceRoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ServiceConsumer " />
+			<xs:enumeration value="ServiceProvider" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="NoncriticalExtensionType">
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="lax" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AgreementServiceReferenceListType">
+		<xs:sequence>
+			<xs:element name="ServiceReference"
+				type="wsag:AgreementServiceReferenceType" />
+		</xs:sequence>
+		<xs:attribute name="ServiceName" type="xs:NCName" />
+	</xs:complexType>
+	<xs:complexType name="AgreementServiceReferenceType">
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="lax" />
+		</xs:sequence>
+		<xs:attribute name="ServiceName" type="xs:NCName" />
+	</xs:complexType>
+
+	<!-- ////// fault section -->
+	<xs:complexType name="ContinuingFaultType">
+		<xs:complexContent>
+			<xs:extension base="wsrf-bf:BaseFaultType" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ContinuingFault" type="wsag:ContinuingFaultType" />
+	
+	<xs:complexType name="CreateAgreementErrorCodes">
+		<xs:sequence>
+			<xs:element name="GeneralError" type="xs:int" fixed="0"/>	
+			<xs:element name="TemplateUnknownError" type="xs:int" fixed="1"/>	
+			<xs:element name="InvalidAgreementOfferError" type="xs:int" fixed="2"/>	
+			<xs:element name="CreationConstraintsViolationError" type="xs:int" fixed="3"/>	
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

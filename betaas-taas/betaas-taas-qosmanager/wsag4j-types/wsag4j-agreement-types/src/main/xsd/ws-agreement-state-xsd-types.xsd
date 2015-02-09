@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement" xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.ggf.org/graap/2007/03/ws-agreement">
+
+    <xs:simpleType name="AgreementStateDefinition">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Pending"/>
+            <xs:enumeration value="PendingAndTerminating"/>
+            <xs:enumeration value="Observed"/>
+            <xs:enumeration value="ObservedAndTerminating"/>
+            <xs:enumeration value="Rejected"/>
+            <xs:enumeration value="Complete"/>
+            <xs:enumeration value="Terminated"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="GuaranteeTermStateDefinition">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NotDetermined"/>
+            <xs:enumeration value="Fulfilled"/>
+            <xs:enumeration value="Violated"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ServiceTermStateDefinition">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NotReady"/>
+            <xs:enumeration value="Ready"/>
+            <xs:enumeration value="Completed"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="AgreementStateType">
+      <xs:complexContent>
+        <xs:extension base="wsag:InnerAgreementStateType">
+          <xs:sequence>
+            <xs:element name="State" type="wsag:AgreementStateDefinition"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="GuaranteeTermStateType">
+      <xs:complexContent>
+        <xs:extension base="wsag:TermStateType">
+          <xs:sequence>
+            <xs:element name="State" type="wsag:GuaranteeTermStateDefinition"/>
+            <xs:any namespace="##other" processContents="lax" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServiceTermStateType">
+      <xs:complexContent>
+        <xs:extension base="wsag:TermStateType">
+          <xs:sequence>
+            <xs:element name="State" type="wsag:ServiceTermStateDefinition"/>
+	        <xs:choice minOccurs="0">
+	            <xs:any namespace="##other" processContents="lax"/>
+	            <!--Processing and Idle only as substates of Ready-->
+	            <xs:element name="Processing" type="wsag:InnerTermStateType"/>
+	            <xs:element name="Idle" type="wsag:InnerTermStateType"/>
+	        </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>    
+
+    <xs:complexType name="InnerAgreementStateType">
+        <xs:sequence>
+            <xs:any minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TermStateType">
+      <xs:attribute name="termName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="InnerTermStateType">
+        <xs:sequence>
+            <xs:any namespace="##other" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--global elements are defined in the imported type library-->
+    <xs:element name="AgreementState" type="wsag:AgreementStateType"/>
+    <xs:element name="GuaranteeTermState" type="wsag:GuaranteeTermStateType"/>
+    <xs:element name="ServiceTermState" type="wsag:ServiceTermStateType"/>
+
+</xs:schema>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cxf="http://cxf.apache.org/blueprint/core"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             ">
+ 
+ 	<cm:property-placeholder persistent-id="betaas.gateway" >
+	 <cm:default-properties>
+	  <cm:property name="gwId" value="-1"/>
+	 </cm:default-properties>
+	</cm:property-placeholder>
+	
+	<cm:property-placeholder persistent-id="betaas.endpoints"  placeholder-prefix="$(" placeholder-suffix=")">
+	   <cm:default-properties>
+	   <cm:property name="dependabilityManagerAddress" value="http://localhost:9521/dm-service"/>
+	   </cm:default-properties>
+	</cm:property-placeholder>
+
+    <bean id="serviceDMInternalBean" 
+          class="eu.betaas.service.dependabilitymanager.api.impl.InnerService" 
+          init-method="startService" destroy-method="closeService">
+<!--     	<property name="BDMService" ref="BDMServiceRef"/> -->
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
+
+    <bean id="serviceDMExternalBean" 
+          class="eu.betaas.service.dependabilitymanager.api.impl.ExternService" 
+          init-method="startService" destroy-method="closeService">
+<!--     	<property name="BDMService" ref="BDMServiceRef"/> -->
+    	<property name="context" ref="blueprintBundleContext"/>
+    	<property name="gwId" value="${gwId}"/>
+    </bean>  
+      
+    <service ref="serviceDMInternalBean" 
+             interface="eu.betaas.service.dependabilitymanager.api.IInner"/> 
+      
+    <service ref="serviceDMExternalBean" 
+             interface="eu.betaas.service.dependabilitymanager.api.IExtern">
+      <service-properties>
+	   	 <entry key="service.exported.interfaces" value="*" />
+	   	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
+	   	 <entry key="org.apache.cxf.ws.address" value="$(dependabilityManagerAddress)" />
+	  </service-properties>
+    </service> 
+     
+<!--     <reference id="BDMServiceRef"  -->
+<!--                availability="mandatory"  -->
+<!--                activation="eager"  -->
+<!--                interface="eu.betaas.bigdatamanager.dataservice.database.services.IDatabaseBDMService"> -->
+<!-- 	  </reference>  -->
+
+</blueprint>
+

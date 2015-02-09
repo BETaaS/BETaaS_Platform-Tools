@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.slaatsoi.org/BusinessSchema" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:coremodel="http://www.slaatsoi.org/coremodel" 
+		xmlns:BusinessSchema="http://www.slaatsoi.org/BusinessSchema" >
+        
+        
+    <xsd:import namespace="http://www.slaatsoi.org/coremodel" schemaLocation="coremodel.xsd"/>
+        
+	<!--Base type-->
+	<xsd:complexType abstract="true" name="BusinessParameter"/>
+    
+	<!--Service Description-->
+	<xsd:complexType name="ServiceDescription">
+		 <xsd:complexContent>
+                         <xsd:extension base="BusinessSchema:BusinessParameter">
+                                  <xsd:sequence>
+                                          <xsd:element name="ProductSpecification">
+                                          <xsd:complexType>															
+                                            <xsd:sequence>
+                                               <xsd:element name="ID" type="xsd:ID"/>
+                                               <xsd:element name="Name" type="xsd:string"/>
+                                               <xsd:element name="ServiceProvider" type="xsd:string"/>
+                                               <xsd:element name="Description" type="xsd:string"/>
+                                               <xsd:element name="Status" type="xsd:string"/>
+                                               <xsd:element name="RevisionID" type="xsd:string"/>
+                                               <xsd:element name="CustomerFacingServiceSpec">
+                                                   <xsd:complexType>															
+                                                        <xsd:sequence>
+                                                              <!-- Reference to the service Template-->
+                                                               <xsd:element name="ID" type="xsd:ID"/>
+                                                        </xsd:sequence>
+                                                   </xsd:complexType>
+                                                </xsd:element>
+                                            </xsd:sequence>
+                                          </xsd:complexType>
+                                          </xsd:element>                                          
+                                   </xsd:sequence>				   
+			      </xsd:extension>
+		</xsd:complexContent> 
+   </xsd:complexType >
+   <!--ProductOfferingPrices-->
+   <xsd:complexType name="ProductOfferingPrices">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="ProductOfferingPrice" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Name" type="xsd:string"/>
+											<xsd:element name="Description" type="xsd:string"/>
+											<xsd:element name="BillingFrecuency">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="Per request"/>
+														<xsd:enumeration value="Per day"/>
+														<xsd:enumeration value="Per month"/>
+														<xsd:enumeration value="Per year"/>
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="ValidFor" type="xsd:string"/>
+											<xsd:element name="ComponentProdOfferingPrices" maxOccurs="unbounded">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="PriceType">
+															<xsd:simpleType>
+																<xsd:restriction base="xsd:string">
+																	<xsd:enumeration value="One Time Charge"/>
+																	<xsd:enumeration value="Tariff usage"/>
+																	<xsd:enumeration value="Plain tariff"/>
+																	<xsd:enumeration value="Per month"/>
+																	<xsd:enumeration value="Per month"/>
+																</xsd:restriction>
+															</xsd:simpleType>
+														</xsd:element>
+														<xsd:element name="Price" type="coremodel:Price"/>
+														<xsd:element name="Quantity" type="xsd:int"/>
+														<xsd:element name="PriceModification">
+															<xsd:complexType>
+																<xsd:sequence>
+																	<xsd:element name="Type">
+																		<xsd:simpleType>
+																			<xsd:restriction base="xsd:string">
+																				<xsd:enumeration value="Discount"/>
+																				<xsd:enumeration value="Increment"/>
+																			</xsd:restriction>
+																		</xsd:simpleType>
+																	</xsd:element>
+																	<xsd:element name="Price">
+																		<xsd:complexType>
+																			<xsd:choice>
+																				<xsd:element name="Amount" type="coremodel:Price"/>
+																				<xsd:element name="Percentage" type="coremodel:Percentage"/>					
+																			</xsd:choice>
+																		</xsd:complexType>
+																	</xsd:element>
+																</xsd:sequence>
+															</xsd:complexType>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						    </xsd:extension>
+	                           	</xsd:complexContent> 
+					</xsd:complexType >
+			<!--ContactPoint-->
+                   <xsd:complexType name="ContactPoint">
+					<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="Name" type="xsd:string"/>
+								<xsd:element name="Email" type="xsd:string"/>
+								<xsd:element name="PhoneNumber" type="xsd:string"/>
+								<xsd:element name="Fax" type="xsd:string"/>
+								<xsd:element name="Address" type="xsd:string"/>
+							</xsd:sequence>
+		                       </xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+		     <!--Support-->
+            <xsd:complexType  name="Support">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="PhoneNumber" type="xsd:string"/>
+								<xsd:element name="AvailablePeriod" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="DayOfWeek">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="Monday"/>
+														<xsd:enumeration value="Tuesday"/>
+														<xsd:enumeration value="Wednesday"/>
+														<xsd:enumeration value="Thursday"/>
+														<xsd:enumeration value="Friday"/>
+														<xsd:enumeration value="Saturday"/>
+														<xsd:enumeration value="Sunday"/>
+														<xsd:enumeration value="AllWeekDays"/>
+														<xsd:enumeration value="AllOfficeDays"/>
+														<xsd:enumeration value="AllWeekendDays"/>
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="TimePeriod" minOccurs="0" maxOccurs="unbounded">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="InitTime"  type="BusinessSchema:Time"/>
+														<xsd:element name="FinishTime"  type="BusinessSchema:Time"/>
+														<!--Time Format: hh:mm -->
+													</xsd:sequence>
+												</xsd:complexType>
+												<!--reference to time hours of a day-->
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+					       </xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+			<!--time-->
+			<xsd:simpleType name="Time">
+				<xsd:restriction base="xsd:time">
+				       <xsd:minInclusive value="00:00:00"/>				    
+				      <xsd:pattern value="(([01][0-9])|(2[0-3]))(:[0-5][0-9]){2}(\.[0-9]+)?"/>				      								
+				</xsd:restriction>
+			</xsd:simpleType>
+		     <!--UpdateProcess-->
+                 <xsd:complexType name="UpdateProcess">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="Frecuency" type="coremodel:Duration"/>
+								<xsd:element name="DistributionMethod" type="xsd:string"/>
+								<xsd:element name="InstalationDescription" type="xsd:string"/>
+							</xsd:sequence>
+						</xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+           <!--SupportProcedures-->
+					<xsd:complexType  name="SupportProcedures">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="NotificationMedia" type="xsd:string"/>
+								<xsd:element name="SeverityLevels">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="SeverityLevel">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="severityLevelName" type="xsd:string"/>
+														<xsd:element name="severityLevelDescription" type="xsd:string"/>
+														<xsd:element name="ResponseTime" type="coremodel:Duration"/>
+														<xsd:element name="ResolutionTime" type="coremodel:Duration"/>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+  <!--BackupRecoveryMechanism-->
+ <xsd:complexType  name="BackupRecoveryMechanism">
+					<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="BackupMechanism" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Description" type="xsd:string"/>
+											<xsd:element name="MechanismType">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="full"/>
+														<xsd:enumeration value="incremental"/>
+														<xsd:enumeration value="differential"/>
+														<xsd:enumeration value="mirror"/>
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="Periodicity" type="coremodel:Duration"/>
+											<xsd:element name="EstimatedTime" type="coremodel:Duration"/>
+											<!--Express the type of backup mechanism-->
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="RecoveryMechanism" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Description" type="xsd:string"/>
+											<xsd:element name="MechanismType">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="full"/>
+														<xsd:enumeration value="incremental"/>
+														<xsd:enumeration value="differential"/>
+														<xsd:enumeration value="mirror"/>
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="EstimatedTime" type="coremodel:Duration"/>
+											<!--Express the type of recovery mechanism-->
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>					
+						<!--Insure service continuity during and following the occurrence of a disaster-->
+						<!--For example, a personal service that allows a customer to store information in a database 
+						can have backup and recovery mechanism for this customer data (like a guarantee)-->
+					</xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+  <!--Monitoring-->
+  <xsd:complexType  name="Monitoring">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="Parameter">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="ParameterName" type="xsd:string"/>
+											<xsd:element name="ParameterUnit" type="xsd:string"/>
+											<xsd:element name="DataCollectionInterval" type="coremodel:Duration"/>
+											<xsd:element name="AggregationInterval" type="coremodel:Duration" minOccurs="0"/>
+										</xsd:sequence>
+									</xsd:complexType>
+									<!--average-throughput, peak throughput, measurement -->
+									<!--Maybe this parameter should be not use at this phase-->
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:extension>
+	                      </xsd:complexContent> 
+		    </xsd:complexType >
+   <!--Reporting--> 
+  <xsd:complexType name="Reporting">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="ReportDescription" type="xsd:string"/>
+								<xsd:element name="ReportFormat" type="xsd:string"/>
+								<xsd:element name="ReportType">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:enumeration value="Penalties"/>
+											<xsd:enumeration value="All activity"/>
+											<xsd:enumeration value="aggregates activity"/>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="ReportMethod">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:enumeration value="Email"/>
+											<xsd:enumeration value="Post mail"/>
+											<xsd:enumeration value="Sms"/>
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="ReportFrecuency" type="coremodel:Duration"/>
+								<xsd:element name="DeliveryFrecuency" type="coremodel:Duration"/>
+								<xsd:element name="DeliveryMechanism" type="xsd:string"/>
+								<xsd:element name="ReportContents">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Content" minOccurs="0" maxOccurs="unbounded">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="ContentName" type="xsd:string"/>
+														<xsd:element name="ContentDescription" type="xsd:string"/>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:extension>
+	                      </xsd:complexContent>
+	 </xsd:complexType >
+    <!--Reporting--> 
+  <xsd:complexType  name="TerminationClauses">
+						<xsd:complexContent>
+                                           <xsd:extension base="BusinessSchema:BusinessParameter">
+							<xsd:sequence>
+								<xsd:element name="TerminationClause" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="TerminationInitiator">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="Service Provider"/>
+														<xsd:enumeration value="Customer"/>
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="TerminationClauseType" type="xsd:string"/>
+											<xsd:element name="TerminationClauseDescription" type="xsd:string"/>
+											<xsd:element name="NotificationPeriod" type="xsd:string"/>
+											<xsd:element name="NotificationMethod" type="xsd:string"/>
+											<xsd:element name="Fees" minOccurs="0">
+												<xsd:complexType>
+													<xsd:choice>
+														<xsd:element name="Money" type="coremodel:Price" minOccurs="0"/>
+														<!--not used this fror this year-->
+														<!--<xsd:element name="Percentage" type="coremodel:Percentage" minOccurs="0"/>-->
+													</xsd:choice>
+												</xsd:complexType>
+											</xsd:element>
+											<!--coremodel:Duration-->
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						<!--Payment,disclaimer,Process for unilateral termination-->
+                               </xsd:extension>
+	                 </xsd:complexContent>
+	 </xsd:complexType >
+     
+    <xsd:element name="BusinessDeveloper" type="xsd:string"/>
+     
+	<xsd:complexType name="BusinessTermType">
+		<xsd:sequence>
+			<xsd:choice>
+				<xsd:element name="ServiceDescription" type="BusinessSchema:ServiceDescription"/>	
+				<xsd:element name="ProductOfferingPrices" type="BusinessSchema:ProductOfferingPrices" maxOccurs="unbounded"/>				
+				<xsd:element name="ContactPoint" type="BusinessSchema:ContactPoint" minOccurs="1" maxOccurs="unbounded"/>
+				<xsd:element name="Support" type="BusinessSchema:Support"/>
+				<xsd:element name="UpdateProcess" type="BusinessSchema:UpdateProcess"/>
+				<xsd:element name="SupportProcedures" type="BusinessSchema:SupportProcedures"/>
+				<xsd:element name="BackupRecoveryMechanism" type="BusinessSchema:BackupRecoveryMechanism"/>
+				<xsd:element name="Monitoring" type="BusinessSchema:Monitoring"/>
+			    <xsd:element name="Reporting" type="BusinessSchema:Reporting"/>
+				<xsd:element name="TerminationClauses" type="BusinessSchema:TerminationClauses"/>											
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+    <xsd:element name="BusinessTerm" type="BusinessSchema:BusinessTermType"/>
+    
+</xsd:schema>
+	    

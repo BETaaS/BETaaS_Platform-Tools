@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+	  <groupId>eu.betaas</groupId>
+	  <artifactId>betaas-taas-bigdatamanager</artifactId>
+	  <version>2.1-release</version>
+	</parent>
+	<groupId>eu.betaas</groupId>
+	<artifactId>betaas-taas-bigdatamanager-logger</artifactId>
+	<version>2.1-release</version>
+	<packaging>bundle</packaging>
+	<name>BETaaS Taas Big Data Manager Logger Service</name>
+	<description>Service that log data to a local database</description>
+    <properties>
+    	<exam.version>2.6.0</exam.version>
+  		<url.version>1.5.2</url.version>
+  	</properties>	  
+	<dependencies>
+	
+     	<dependency>
+	      <groupId>log4j</groupId>
+	      <artifactId>log4j</artifactId>
+	    </dependency>
+	    	
+	    <dependency>
+	      <groupId>org.apache.felix</groupId>
+		  <artifactId>org.osgi.core</artifactId>
+	    </dependency>
+    
+		<dependency>
+	      <groupId>org.osgi</groupId>
+	      <artifactId>org.osgi.compendium</artifactId>
+	      <version>4.0.1</version>
+	    </dependency>
+	    
+		<dependency>
+		  <groupId>junit</groupId>
+		  <artifactId>junit</artifactId>
+		</dependency>
+		
+		<dependency>
+	      <groupId>org.easymock</groupId>
+	      <artifactId>easymock</artifactId>
+	    </dependency>
+		
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0-m09</version>
+		</dependency>
+            
+        <dependency>
+		  <groupId>eu.betaas</groupId>
+		  <artifactId>betaas-taas-bigdatamanager-database</artifactId>
+		   <version>${project.version}</version>
+		</dependency>        
+		
+        <dependency>
+		  <groupId>eu.betaas</groupId>
+		  <artifactId>betaas-taas-bigdatamanager-core</artifactId>
+		   <version>${project.version}</version>
+		</dependency>  
+		
+		<dependency>
+	    	<groupId>com.google.code.gson</groupId>
+	    	<artifactId>gson</artifactId>
+	    	<version>2.2.4</version>
+		</dependency>
+		
+  	</dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Import-Package>
+                            org.h2,org.osgi.framework,org.osgi.util.tracker,
+                            org.apache.log4j,org.osgi.service.blueprint,eu.betaas.taas.bigdatamanager.database.hibernate.data,
+                            eu.betaas.taas.bigdatamanager.database.service,javax.persistence,eu.betaas.taas.bigdatamanager.core.services,
+                            eu.betaas.taas.bigdatamanager.core.services.impl,com.google.gson
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright 2014-2015 Tecnalia.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<blueprint default-activation="eager"
+  xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+
+  <!-- The properties file -->
+  <cm:property-placeholder persistent-id="betaas.endpoints">
+    <cm:default-properties>
+      <cm:property name="qosMonitoringTaaSAddress" value="http://localhost:17001/qosmonitoringtaas"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="QoSManagerMonitoringBean"
+    class="eu.betaas.taas.qosmanager.monitoring.api.impl.QoSManagerMonitoringImpl"
+    factory-method="getInstance" 
+    scope="singleton" 
+    init-method="startService" 
+    destroy-method="closeService">
+    <property name="cmservice" ref="taasContextManager" />
+  </bean>
+  
+        <!-- The services I use -->
+  <reference id="taasContextManager" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.contextmanager.api.ThingsServiceManager">
+  </reference>
+
+  <!-- My published services -->
+  <service ref="QoSManagerMonitoringBean"
+    interface="eu.betaas.taas.qosmanager.monitoring.api.QoSManagerMonitoring" />
+    
+    
+</blueprint>

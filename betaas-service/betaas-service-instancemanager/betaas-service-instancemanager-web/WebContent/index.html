@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="us">
+	<head>	
+		<meta charset="utf-8">	
+		<title>BETaaS Gateway Administration
+		</title>	
+		<link href="css/site-theme/jquery-ui-1.10.3.custom.css" rel="stylesheet">	
+		<link href="css/gateway-admin.css" rel="stylesheet">	
+<script src="js/jquery-1.9.1.js"></script>	
+<script src="js/jquery-ui-1.10.3.custom.js"></script>	
+<script type="text/javascript" src="js/instanceManager.js"></script>	
+<script>
+	$(function() {
+		
+		$( "#accordion" ).accordion({ active: 1 });
+		
+		$( "#disjoindialog" ).dialog({
+			autoOpen: false,
+			width: 400,
+			buttons: [
+				{
+					text: "Ok",
+					click: function() {
+						$( this ).dialog( "close" );
+						disjoin();
+					}
+				},
+				{
+					text: "Cancel",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+		
+		// Button to open the dialog
+		$( "#disjoinbutton" ).click(function( event ) {
+			$( "#disjoindialog" ).dialog( "open" );
+			event.preventDefault();
+		});
+	
+		// Hover states on the static widgets
+		$( "#disjoinbutton, #icons li" ).hover(
+			function() {
+				$( this ).addClass( "ui-state-hover" );
+			},
+			function() {
+				$( this ).removeClass( "ui-state-hover" );
+			}
+		);
+	});
+	</script>
+	</head>
+	<body onload="requestInstanceInfo();">     
+		<div class="body-wrap">    
+			<table class="body-header">	
+				<tr>	  
+				  <td>
+					 <h1>Gateway Administration</h1>
+					 <h2>GW ID: <span style="color: rgb(241,145,75)" id="subtitle">N/A</span></h2>
+					</td>	  
+					<td id="header-logo">            
+						<p>
+							<img src="img/betaas_logo.png"/>
+						</p>	  </td>	
+				</tr>    
+			</table>    
+			<div id="accordion">	<h3>How-to</h3>        
+				<div>          
+					<p>	    This is the administration page of the BETaaS gateway. 	  
+					</p>          
+					<p class="inline">	     
+						<span class="inline">In case the gateway joined an instance, the 
+						gateways of the instance are shown and a link is available to access their administration
+						pages. In that case it is also possible to disjoin from the instance.
+						</span>	     
+					</p>          
+					<p class="inline">	     
+						<span class="inline">In the Visible Instances section all the visible instances&nbsp;</span>	     
+						<span class="inline"> are shown and it is possible to request to join to their GW</span>
+						<span style="background-image: url(css/ui-icons-orange.png)" class="inline ui-icon ui-icon-star"></span> 	  
+					</p>	
+				</div>    <h3>Administer the GW</h3>    
+				<div>		 		
+					<p style="text-align: center">		  
+						<img src="img/gw.png" width=50px/>		
+					</p>	  
+					<table class="gw-props">	    
+						<tr>	      
+							<td class="gw-props-attr">Gateway Identifier:</td>	      
+							<td id="adminGWID">-</td>	    
+						</tr>	    
+						<tr>	      
+							<td class="gw-props-attr">Gateway Type:</td>	      
+							<td id="adminGWType">-</td>	    
+						</tr>	    
+						<tr>	      
+							<td class="gw-props-attr">Gateway Description:</td>	      
+							<td id="adminGWDescr">-</td>	    
+						</tr>	    
+						</tr>	  
+					</table>	
+				</div>	<h3>Instance</h3>        
+				<div>	  
+					<p id="instanceheading" style="text-align: center">This GW belongs to the instance: 
+						<span style="color: #f1cc4b; font-weight: bold">-</span>	  
+					</p>	  
+					<p style="text-align: center">	   
+						<button id="disjoinbutton" class="button-disjoin ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Disjoin
+						</button>	  
+					</p>	  
+					</table>	  
+					<table id="gwlist" width="100%" style="padding: 50px 25px 20px 25px; border-spacing: 25px">	  
+					  <tr style="height:250px; background-color: red"></tr>
+					</table>	  
+				</div>	<h3>Visible Instances</h3>        
+				<div>	  
+					<p id="visibleinstancesheading"></p>	    
+					<table id="gwstartable">	     
+					</table>	   
+					<p id="visibleinstancesfooter" style="text-align: center; font-weight: bold"></p>	
+				</div>    
+			</div>  
+		</div>  
+		<!-- ui-dialog -->  
+		<div id="disjoindialog" title="Disjoin from BETaaS instance">   
+			<p>
+				<span class="ui-icon ui-icon-alert">
+				</span>
+			</p>   
+			<p>
+				<span class="inline">Are you sure to disjoin from the BETaaS Instance?
+				</span>
+			</p>  
+		</div>
+		
+	</body>
+	
+</html>

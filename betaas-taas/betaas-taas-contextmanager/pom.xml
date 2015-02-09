@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>2.1-release</version>
+  </parent>
+
+  <artifactId>betaas-taas-contextmanager</artifactId>
+  <packaging>bundle</packaging>
+
+  <name>BETaaS TaaS Context Manager</name>
+  <description>betaas-taas-contextmanager OSGi blueprint bundle project.</description>
+
+  <properties>
+    <!-- <ver.maven.bundle.plugin>2.3.7</ver.maven.bundle.plugin> -->
+    <ver.maven.bundle.plugin>2.4.0</ver.maven.bundle.plugin>
+    <ver.project.build.sourceEncoding>UTF-8</ver.project.build.sourceEncoding>
+    <!-- OJO, Jenkins: 1.7 -->
+    <ver.maven.compiler.source>1.7</ver.maven.compiler.source>
+    <ver.maven.compiler.target>1.7</ver.maven.compiler.target>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>edu.mit</groupId>
+      <artifactId>jwi</artifactId>
+      <version>2.2.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.enterprise</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>1.1.1</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>xmlParserAPIs</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>junit</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-bigdatamanager-database</artifactId>
+<!--       <version>2.1-release</version> -->
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-itaasresourcesmanager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${ver.maven.compiler.source}</source>
+          <target>${ver.maven.compiler.target}</target>
+          <encoding>${ver.project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${ver.maven.bundle.plugin}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Import-Package>
+              org.osgi.framework,
+              org.apache.commons.io, 
+              org.osgi.util.tracker,
+              org.apache.log4j,
+              org.osgi.service.blueprint,
+              com.google.gson,
+              com.hp.hpl.jena.query,
+              com.hp.hpl.jena.rdf.model,
+              com.hp.hpl.jena.iri,com.hp.hpl.jena.iri.impl,
+              com.hp.hpl.jena.update.*,
+              com.hp.hpl.jena.tdb.*,
+              com.hp.hpl.jena.vocabulary.*,
+              edu.mit.jwi,
+              edu.mit.jwi.item,
+              org.apache.jena.riot,
+              eu.betaas.taas.bigdatamanager.database.service.*
+            </Import-Package>
+            <Export-Package>
+              eu.betaas.taas.contextmanager.api,
+              eu.betaas.taas.contextmanager.api.impl
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

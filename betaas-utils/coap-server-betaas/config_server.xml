@@ -1,0 +1,52 @@
+<Resources>
+	<PIRResource deviceID="pir1" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence1" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="kitchen" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir2" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence2" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="bedroom" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir3" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence3" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="livingroom" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir4" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence4" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="diningroom" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir5" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence5" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="bathroom" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir6" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence6" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="garage" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir7" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence7" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="garden" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir8" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence8" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="pool" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir9" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence9" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="office" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+	<PIRResource deviceID="pir10" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence10" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="boilerroom" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
+</Resources>

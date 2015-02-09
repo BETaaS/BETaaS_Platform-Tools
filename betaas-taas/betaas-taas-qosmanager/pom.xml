@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-qosmanager</artifactId>
+  <version>2.1-release</version>
+  <packaging>pom</packaging>
+  <name>BETaaS Quality of Service Manager</name>
+  <description>Bundle that manage QoS at TaaS level</description>
+  
+  <modules>
+      <module>wsag4j-negotiation</module>
+      <module>wsag4j-types</module> 
+      <module>betaas-taas-qosmanager-core</module> 
+      <module>betaas-taas-qosmanager-interface</module>
+      <module>betaas-taas-qosmanager-monitoring</module>
+  </modules>
+  
+</project>

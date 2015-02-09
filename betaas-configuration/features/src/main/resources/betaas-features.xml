@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features>
+	<repository>mvn:org.apache.cxf.karaf/apache-cxf/2.7.7/xml/features</repository>
+	<feature name="betaas-baseline" version="2.1-release">
+	    <feature>karaf-framework</feature>	
+		<feature>http</feature>
+		<feature>cxf</feature>
+		<feature>jndi</feature>
+  		<bundle start-level='80'>mvn:com.google.code.gson/gson/2.2.4</bundle>
+        <bundle start-level="80">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+        <!--<bundle start-level="80">mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>-->
+        <bundle start-level='80'>mvn:commons-collections/commons-collections/3.2.1</bundle>
+		<bundle start-level='80'>mvn:commons-pool/commons-pool/1.5.4</bundle>
+		<bundle start-level='80'>mvn:commons-dbcp/commons-dbcp/1.4</bundle>
+		<bundle start-level='80'>mvn:commons-lang/commons-lang/2.6</bundle>
+		<bundle start-level='80'>wrap:mvn:net.sourceforge.serp/serp/1.13.1</bundle>
+		<bundle start-level='80'>mvn:com.h2database/h2/1.3.170</bundle>
+		<bundle start-level='80'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/2.7.7_5</bundle>
+		<bundle start-level='80'>mvn:org.jboss.javassist/com.springsource.javassist/3.15.0.GA</bundle>
+		<bundle start-level='80'>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr303-api-1.0.0/2.2.0</bundle>
+		<bundle start-level='80'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.8.2_2</bundle>
+		<bundle start-level='80'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.dom4j/1.6.1_5</bundle>
+        <bundle start-level='80'>wrap:mvn:org.hibernate.common/hibernate-commons-annotations/4.0.2.Final</bundle>
+        <bundle start-level='80'>wrap:mvn:org.jboss/jandex/1.1.0.Alpha1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.bsf/bsf-api/3.1</bundle>
+        <bundle start-level='80'>mvn:com.fasterxml/classmate/0.5.4</bundle>
+        <bundle start-level='80'>mvn:org.jboss.logging/jboss-logging/3.1.3.GA</bundle>
+        <bundle start-level='80'>mvn:org.hibernate/hibernate-core/4.2.5.Final</bundle>
+        <bundle start-level='80'>mvn:org.hibernate/hibernate-entitymanager/4.2.5.Final</bundle>
+        <bundle start-level='80'>mvn:org.hibernate/hibernate-osgi/4.2.5.Final</bundle>
+        <bundle start-level='80'>mvn:org.hibernate.javax.persistence/hibernate-jpa-2.1-api/1.0.0.Final</bundle>
+		<bundle start-level='80'>mvn:com.sun.jersey/jersey-client/1.17.1</bundle>
+		<bundle start-level='80'>mvn:com.sun.jersey/jersey-core/1.17.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.jena/jena-tdb/1.1.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.jena/jena-iri/1.1.1</bundle>
+		<bundle start-level='80'>wrap:mvn:com.hp.hpl.jena/iri/0.8</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.jena/jena-arq/2.12.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.jena/jena-core/2.12.1</bundle>
+    	<bundle start-level='80'>wrap:mvn:com.neuronrobotics/nrjavaserial/3.7.5.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.codehaus.jettison/jettison/1.3.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.jdom/jdom/1.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.commons/commons-math3/3.2</bundle>
+		<bundle start-level='80'>wrap:mvn:net.sourceforge.jFuzzyLogic/jFuzzyLogic/3.0</bundle>
+        <bundle start-level='80'>mvn:commons-collections/commons-collections/3.2.1</bundle>
+		<bundle start-level='80'>mvn:commons-discovery/commons-discovery/0.5</bundle>
+		<bundle start-level='80'>mvn:org.apache.commons/commons-jexl/2.0.1</bundle>
+		<bundle start-level='80'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.velocity/1.7_6</bundle>
+		<bundle start-level='80'>mvn:commons-lang/commons-lang/2.6</bundle>
+		<bundle start-level='80'>mvn:org.quartz-scheduler/quartz/2.2.0</bundle>
+		<bundle start-level='80'>wrap:mvn:c3p0/c3p0/0.9.1.2</bundle>
+		<bundle start-level='80'>wrap:mvn:xml-resolver/xml-resolver/1.2</bundle>
+		<bundle start-level='80'>wrap:mvn:commons-beanutils/commons-beanutils/1.8.3</bundle>
+		<bundle start-level='80'>mvn:com.fasterxml.jackson.core/jackson-core/2.3.2</bundle>
+		<bundle start-level='80'>mvn:com.fasterxml.jackson.core/jackson-databind/2.3.2</bundle>
+		<bundle start-level='80'>mvn:com.fasterxml.jackson.core/jackson-annotations/2.3.2</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlbeans/2.4.0_5</bundle>
+		<bundle start-level='80'>mvn:org.jumpmind.symmetric.jdbc/mariadb-java-client/1.1.1</bundle>
+		<bundle start-level='80'>wrap:mvn:mysql/mysql-connector-java/5.1.6</bundle>
+		<bundle start-level='80'>wrap:mvn:com.facebook.presto/presto-jdbc/0.60</bundle>
+		<bundle start-level='80'>wrap:mvn:org.geonames/geonames/1.0</bundle>
+		<bundle start-level='80'>wrap:mvn:org.geonames/geonames/1.1.12</bundle>
+		<bundle start-level='80'>wrap:mvn:org.pacesys/openstack4j/1.0.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.libvirt/libvirt/0.4.7</bundle>
+		<bundle start-level='80'>wrap:mvn:commons-io/commons-io/2.4</bundle>
+		<bundle start-level='80'>wrap:mvn:org.picketbox/picketbox-commons/1.0.0.final</bundle>
+		<bundle start-level='80'>wrap:mvn:org.jboss.security/jboss-xacml/2.0.9.Final</bundle>
+		<bundle start-level='80'>wrap:mvn:org.jboss.security/jboss-sunxacml/2.0.9.Final</bundle>
+		<bundle start-level='80'>wrap:mvn:commons-configuration/commons-configuration/1.10</bundle>
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/2.1-release</bundle>	
+		<bundle start-level='82'>wrap:mvn:edu.mit/jwi/2.2.3</bundle>	
+	</feature>
+	
+	<feature name="bdm-cloudera-library"  version="2.1-release">
+		<repository>https://repository.cloudera.com/artifactory/cloudera-repos</repository>
+		
+		<bundle start-level='80'>mvn:com.googlecode.json-simple/json-simple/1.1.1</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.sqoop/sqoop-client/1.99.2-cdh4.5.0</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.sqoop/sqoop-common/1.99.2-cdh4.5.0</bundle>
+		<bundle start-level='80'>mvn:com.google.guava/guava/15.0</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas/betaas-sqoopwrap-osgi/1.0.0</bundle>
+		
+		<bundle start-level='80'>wrap:mvn:com.facebook.presto/presto-jdbc/0.60</bundle>
+		<!--
+		<bundle start-level='80'>mvn:com.google.guava/guava/15.0</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.hadoop/hadoop-common/2.0.0-cdh4.5.0</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.hadoop/hadoop-client/2.0.0-cdh4.5.0</bundle>
+		<bundle start-level='80'>wrap:mvn:org.apache.hadoop/hadoop-hdfs/2.0.0-cdh4.5.0</bundle>
+		-->
+	</feature>
+
+
+
+	 <feature name="wsag4j-negotiation"  version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-common-types/2.1-release</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation-types/2.1-release</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-addressing-types/2.1-release</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-agreement-types/2.1-release</bundle>
+		<bundle start-level='82'>mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation/2.1-release</bundle>
+		
+    </feature>
+	
+	<feature name="adaptation-thingsadaptor" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/2.1-release</bundle>	
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/2.1-release</bundle>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/2.1-release</bundle>		
+	</feature>
+	
+	<feature name="adaptation-contextmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-contextmanager/2.1-release</bundle>	
+	</feature>
+
+	<feature name="adaptation-thingsadaptor-coap" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/2.1-release</bundle>	
+		<bundle start-level='82'>mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/2.1-release</bundle>			
+	</feature>
+	
+	<feature name="adaptation-thingsadaptor-sim" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/2.1-release</bundle>	
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/2.1-release</bundle>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/2.1-release</bundle>		
+	</feature>
+	
+	<feature name="adaptation-coap" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='82' >mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
+		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-coap/2.1-release</bundle>	
+	</feature>
+	
+	<!--TaaS layer features -->
+	<feature name="taas-contextmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+    	<bundle start-level='83'>mvn:eu.betaas/betaas-taas-contextmanager/2.1-release</bundle>	
+	</feature>	
+	
+	<feature name="taas-database" version="2.1-release">
+		<feature>betaas-baseline</feature>
+    	<bundle start-level='81'>mvn:eu.betaas/betaas-taas-bigdatamanager-database/2.1-release</bundle>		
+	</feature>	
+	
+	<feature name="taas-bdm" version="2.1-release">
+		<feature>betaas-baseline</feature>
+    	<bundle start-level='82'>mvn:eu.betaas/betaas-taas-bigdatamanager-core/2.1-release</bundle>	
+	</feature>
+	
+	<feature name="taas-vmmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-vmmanager/2.1-release</bundle>
+	</feature>
+	
+	<feature name="taas-itaasresourcesmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='81'>mvn:eu.betaas/betaas-taas-itaasresourcesmanager/2.1-release</bundle>	
+	</feature>
+	
+	<feature name="taas-taasresourcesmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='83' >mvn:eu.betaas/betaas-taas-taasresourcesmanager/2.1-release</bundle>	
+	</feature>
+	
+	<feature name="taas-taastrustmanager" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='85' >mvn:eu.betaas/betaas-taas-trustmanager/2.1-release</bundle>		
+	</feature>
+	
+    <feature name="taas-qosmanager-interface"  version="2.1-release">
+		<feature>betaas-baseline</feature>
+     	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-monitoring/2.1-release</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-interface/2.1-release</bundle>
+		
+    </feature>
+    
+    <feature name="taas-qosmanager-core"  version="2.1-release">
+		<feature>betaas-baseline</feature>
+    	<!-- This will install betaas taas qos manager core bundle -->
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-core/2.1-release</bundle>
+    </feature>
+
+    <feature name="service-servicemanager"  version="2.1-release">
+		<feature>betaas-baseline</feature>
+    	<!-- This will install betaas taas qos manager core bundle -->
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/2.1-release</bundle>
+    </feature>	
+
+	<feature name="taas-security-requirements" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<bundle start-level='80'>mvn:org.bouncycastle/bcprov-jdk15on/1.50</bundle>	
+		<bundle start-level='80'>mvn:org.bouncycastle/bcprov-ext-jdk15on/1.50</bundle>	
+		<bundle start-level='80'>mvn:org.bouncycastle/bcpkix-jdk15on/1.50</bundle>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-common/2.1-release</bundle>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-certificate/2.1-release</bundle>	
+		<!-- <bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-certificate-impl/2.1-release</bundle> -->
+		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-security-gwcomm-initiator/2.1-release</bundle>-->
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-authentication/2.1-release</bundle>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-core/2.1-release</bundle>
+		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-requirements/2.1-release</bundle>	-->
+	</feature>	
+	
+	<!--Service layer features -->
+	
+	<feature name="service-bdm" version="2.1-release">
+		<feature>taas-bdm</feature>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-interface/2.1-release</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask/2.1-release</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-application-data-service/2.1-release</bundle>
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-core/2.1-release</bundle>
+	</feature>
+			
+	<feature name="service-bdmsource-database" version="2.1-release">
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-database/2.1-release</bundle>
+	</feature>
+
+	<feature name="service-bdm-hadoop" version="2.1-release">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-sqoop/2.1-release</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-sqooploader/2.1-release</bundle>		
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-hivejdbc/2.1-release</bundle>
+		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-bigdatamanager-analytics-manager/2.1-release</bundle>
+	</feature>
+
+	<feature name="bigdataTask" version="2.1-release">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask-advanced/2.1-release</bundle>
+	</feature>
+	
+	<feature name="ServiceManager" version="2.1-release">
+		<feature>karaf-framework</feature>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/2.1-release</bundle>
+	</feature>	
+	
+	<feature name="ServiceManager-stop" version="2.1-release">
+		<feature>karaf-framework</feature>
+		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-servicemanager/2.1-release</bundle>
+	</feature>	
+	
+	<feature name="InstanceManager" version="2.1-release">
+		<feature>karaf-framework</feature>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-instancemanager-server/2.1-release</bundle>
+	</feature>
+	
+	<feature name="service-security" version="2.1-release">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-securitymanager/2.1-release</bundle>
+	</feature>
+	
+	<feature name="betaas-bus" version="2.1-release">
+		<bundle start-level='80'>mvn:com.rabbitmq/amqp-client/3.3.3</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/2.1-release</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-publisher/2.1-release</bundle>	
+		
+	</feature>
+		<feature name="betaas-subscriber" version="2.1-release">
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-subscriber/2.1-release</bundle>	
+	</feature>
+	
+	
+	<feature name="betaas-coap-adapter" version="2.1-release">
+		<bundle start-level='82'>mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/2.1-release</bundle>	
+	</feature>
+	
+	<feature name="betaas-demo-gateway" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<feature>taas-database</feature>
+		<feature>wsag4j-negotiation</feature>	
+		<feature>taas-bdm</feature>
+		<feature>taas-itaasresourcesmanager</feature>
+		<feature>taas-contextmanager</feature>
+		<feature>taas-taastrustmanager</feature>
+		<feature>taas-taasresourcesmanager</feature>
+		<feature>taas-vmmanager</feature>
+		<feature>adaptation-contextmanager</feature>
+		<feature>adaptation-thingsadaptor</feature>
+		<feature>taas-qosmanager-interface</feature>
+		<feature>taas-qosmanager-core</feature>
+		<feature>taas-security-requirements</feature>
+		<feature>service-bdm</feature>
+		<feature>service-bdmsource-database</feature>
+		<feature>service-security</feature>
+		<feature>ServiceManager</feature>
+		<feature>InstanceManager</feature>
+	</feature>
+	
+	<feature name="betaas-demo-second-gateway" version="2.1-release">
+		<feature>betaas-baseline</feature>
+		<feature>taas-database</feature>
+		<feature>wsag4j-negotiation</feature>	
+		<feature>taas-bdm</feature>
+		<feature>taas-itaasresourcesmanager</feature>
+		<feature>taas-contextmanager</feature>
+		<feature>taas-taastrustmanager</feature>
+		<feature>taas-taasresourcesmanager</feature>
+		<feature>taas-vmmanager</feature>
+		<feature>adaptation-contextmanager</feature>
+		<feature>adaptation-thingsadaptor</feature>
+		<feature>taas-qosmanager-interface</feature>
+		<feature>taas-qosmanager-core</feature>
+		<feature>taas-security-requirements</feature>
+		<feature>service-bdm</feature>
+		<feature>service-security</feature>
+		<feature>ServiceManager</feature>
+		<feature>InstanceManager</feature>
+	</feature>
+</features>

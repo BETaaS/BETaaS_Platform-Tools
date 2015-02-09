@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Copyright 2014-2015 Center for TeleInFrastruktur (CTIF), Aalborg University
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ -->
+<blueprint default-activation="eager"
+						xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+            
+	<cm:property-placeholder persistent-id="betaas.gateway" >
+		<cm:default-properties>
+	  	<cm:property name="gwId" value="-1"/>
+	  </cm:default-properties>
+	</cm:property-placeholder>
+	
+	<cm:property-placeholder persistent-id="betaas.endpoints" placeholder-prefix="$(" placeholder-suffix=")">
+		<cm:default-properties>
+			<cm:property name="authManagerTaasAddress" value="http://localhost:18900/authtaas"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+  
+  
+	<!-- Need to pass the BundleActivator class to the registered bundle -->
+	<bean id="serviceEcmqvExtBean" class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvExtService">
+		<property name="gwCertificateService" ref="certificateService"/>
+	</bean>
+	
+	<service ref="serviceEcmqvExtBean" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService">
+		<service-properties>
+			<entry key="service.exported.interfaces" value="*" />
+	    <entry key="service.exported.configs" value="org.apache.cxf.ws" />
+	    <entry key="org.apache.cxf.ws.address" value="$(authManagerTaasAddress)" />
+	    <entry key="gwId" value="${gwId}" />
+		</service-properties>
+	</service>
+	
+  <bean id="serviceEcmqvIntBean" class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvIntService">
+  	<property name="gwCertificateService" ref="certificateService"/>
+  </bean>
+  
+  <service ref="serviceEcmqvIntBean" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService"/>
+	
+	<reference id="certificateService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService" />
+	
+</blueprint>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <bean id="serviceTaasLoggerBean" class="eu.betaas.taas.qosmanager.negotiation.NegotiationActivator" init-method="start" destroy-method="stop" >
+    	<property name="service" ref="databaseService"/>
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
+
+    <!-- <service ref="serviceTaasLoggerBean" interface="eu.betaas.taas.bigdatamanager.logger.service.IBigDataLoggerService"/> -->
+
+	<reference id="databaseService" availability="mandatory" activation="eager" interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService">
+	</reference>
+
+</blueprint>

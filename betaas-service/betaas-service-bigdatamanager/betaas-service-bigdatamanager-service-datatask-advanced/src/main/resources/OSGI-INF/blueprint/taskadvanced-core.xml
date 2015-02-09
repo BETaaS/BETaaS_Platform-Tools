@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Copyright 2014-2015 Hewlett-Packard Development Company, L.P.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cxf="http://cxf.apache.org/blueprint/core"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             ">
+ 
+  	<cm:property-placeholder persistent-id="betaas.gateway"  >
+		<cm:default-properties>
+			<cm:property name="prestoJdbc" value="jdbc:hive2://betaashadoop:10000/default"/>
+			<cm:property name="prestoUser" value="test"/>
+			<cm:property name="prestoPwd" value=""/>
+		</cm:default-properties>
+	</cm:property-placeholder>
+	
+	 <cm:property-placeholder persistent-id="betaas.endpoints"  placeholder-prefix="$(" placeholder-suffix=")">
+		<cm:default-properties>
+			<cm:property name="analyticTaskAddress" value="http://localhost:19050/analyticTask"/>
+		</cm:default-properties>
+	</cm:property-placeholder>
+
+    <bean id="serviceTaskBean" class="eu.betaas.service.bigdatamanager.service.datatask.analytic.PrestoQueryTask" init-method="setupTask" destroy-method="removeTask">
+		<property name="prestoJdbc" value="${prestoJdbc}"/>
+		<property name="user" value="${prestoUser}"></property>
+		<property name="pwd" value="${prestoPwd}"></property>   
+    </bean>
+
+    <service ref="serviceTaskBean" interface="eu.betaas.service.bigdatamanager.service.datatask.AnalyticTask">
+    	 <service-properties>
+	    	 <entry key="service.exported.interfaces" value="*" />
+	    	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
+	    	 <entry key="org.apache.cxf.ws.address" value="$(analyticTaskAddress)" />
+	    </service-properties>    
+    </service> 
+      
+
+</blueprint>
+
