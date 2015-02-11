@@ -74,33 +74,31 @@ export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 
 ### Download Software
 ```sh
-svn co http://www.betaas.eu:8081/svn/BETaaS
+git clone https://github.com/BETaaS/BETaaS_Platform-Tools.git
 ```
 
 ### Configure Security Certificate
 ```sh
 mkdir /opt/apache-karaf-2.3.8/securityConfig
-cp BETaaS/trunk/betaas/betaas-configuration/configuration/AppStoreCertInter.p12 <YOUR_PATH>/betaas/data/securityConfig/certificate/
+mkdir -p BETaaS_Platform-Tools/data/securityConfig/certificate/
+cp BETaaS_Platform-Tools/betaas-configuration/configuration/AppStoreCertInter.p12 BETaaS_Platform-Tools/data/securityConfig/certificate/
 
-cp BETaaS/trunk/betaas/betaas-configuration/configuration/condition1.xml <YOUR_PATH>/betaas/data/securityConfig/condition/
+mkdir -p BETaaS_Platform-Tools/data/securityConfig/condition/
+cp BETaaS_Platform-Tools/betaas-configuration/configuration/condition1.xml BETaaS_Platform-Tools/data/securityConfig/condition/
 ```
 
 ### Configure BETaaS
 ##### Update the endpoint config file:
 ```sh
-cp BETaaS/trunk/betaas/betaas-configuration/configuration/betaas.* /opt/apache-karaf-2.3.8/etc/
+cp BETaaS_Platform-Tools/betaas-configuration/configuration/betaas.* /opt/apache-karaf-2.3.8/etc/
 
 cp /opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg /opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg.bck
-```
-Then update the config file with `YOUR_IP`:
-```sh
-sed s/131.114.58.121/<YOUR_IP>/ </opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg.bck >/opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg
 ```
 ##### Update the gateway config file:
 ```sh
 vim /opt/apache-karaf-2.3.8/etc/betaas.gateway.cfg
 ```
-Then update the config file with `YOUR_PATH` and the unique `GATEWAY_ID`:
+Then update the config file with `YOUR_PATH` as the absolute path of your BETaaS installation and the unique `GATEWAY_ID`:
 ```
 # Gatewaay configuration
 gwId=<GATEWAY_ID>
@@ -162,6 +160,10 @@ state=Nordjylland
 location=Aalborg
 orgName=BETaaS
 
+# Info for Security Manager
+certificatePath = <YOUR_PATH>/data/securityConfig/certificate/
+conditionPath = <YOUR_PATH>/data/securityConfig/condition/
+
 # CoAP settings
 
 serversConfig = <YOUR_PATH>/betaas/server.xml
@@ -169,10 +171,10 @@ serversConfig = <YOUR_PATH>/betaas/server.xml
 Then create the needed folders:
 
 ```sh
-mkdir <YOUT_PATH>/betaas
-mkdir <YOUT_PATH>/betaas/data
-mkdir <YOUT_PATH>/betaas/sensors
-mkdir <YOUT_PATH>/betaas/context
+mkdir BETaaS_Platform-Tools/betaas
+mkdir BETaaS_Platform-Tools/betaas/data
+mkdir BETaaS_Platform-Tools/betaas/sensors
+mkdir BETaaS_Platform-Tools/betaas/context
 ```
 
 ##### Update the logging config file:
@@ -234,7 +236,7 @@ log4j.appender.betaastafilelog.maxBackupIndex=10
 
 ### Compile BETaaS
 ```sh
-cd BETaaS/trunk/betaas
+cd BETaaS_Platform-Tools
 mvn clean install
 ```
 
@@ -242,7 +244,7 @@ mvn clean install
 
 Run Apache Karaf by issue `karaf`, then inside the Karaf Console issue the following command where `<IP_ADDRESS_ZOOKEEPER_SERVER>` is the ip adress of the host where you will run the Zookeeper server:
 ```sh
-features:addurl mvn:eu.betaas/betaas-features/0.0.1-SNAPSHOT/xml
+features:addurl mvn:eu.betaas/betaas-features/2.1-release/xml
 features:install betaas-demo-gateway
 features:chooseurl cxf-dosgi 1.5.0
 config:propset -p org.apache.cxf.dosgi.discovery.zookeeper.server clientPort 2181
@@ -256,7 +258,7 @@ Exit from Karaf by issue `Ctrl-D`
 
 Start the Zookeeper server on the first gateway:
 ```sh
-zkServer.sh start-foreground
+zkServer.sh start 
 ```
 
 Start Apache Karaf:
