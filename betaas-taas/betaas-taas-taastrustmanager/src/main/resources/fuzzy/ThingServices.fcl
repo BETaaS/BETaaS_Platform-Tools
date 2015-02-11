@@ -1,0 +1,88 @@
+
+FUNCTION_BLOCK utilityAspect	
+
+VAR_INPUT
+	security : REAL;
+	qos : REAL;
+	dependability : REAL;
+	scalability : REAL;
+	battery : REAL;
+	data : REAL;
+END_VAR
+
+VAR_OUTPUT
+	trust : REAL;
+END_VAR
+
+FUZZIFY qos			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+FUZZIFY security			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+FUZZIFY dependability			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+FUZZIFY scalability			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+FUZZIFY battery			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+FUZZIFY data			
+	TERM veryLow := gauss 0 1; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1; 
+END_FUZZIFY
+
+DEFUZZIFY trust
+	TERM veryLow := gauss 0 1.25; 
+	TERM low := gauss 1.25 1;
+	TERM medium := gauss 2.5 1;
+	TERM high := gauss 3.75 1;
+	TERM veryHigh := gauss 5 1.25;
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 2.5;		// Default value is 2.5 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or')
+	ACT : MIN;			// Use 'min' activation method
+	ACCU : MAX;			// Use 'max' accumulation method
+
+	RULE 1 : IF (data IS veryHigh AND battery IS veryHigh AND qos IS veryHigh AND dependability is veryHigh AND (security IS veryHigh OR security IS high)) THEN trust IS veryHigh;
+	RULE 2 : IF (data IS high AND battery IS high) AND (qos IS high AND dependability IS high) THEN trust IS high;
+	RULE 3 : IF ((data IS high AND battery IS medium) OR (data IS medium AND battery IS high)) AND ((qos IS high OR (qos IS medium AND (security IS high OR scalability IS veryHigh))) AND (dependability IS high OR dependability IS medium)) THEN trust IS medium;
+	RULE 4 : IF (data IS low OR battery IS low) AND ((qos IS medium OR (qos IS low AND (scalability IS medium OR scalability IS low))) AND (dependability IS low OR dependability IS medium)) THEN trust IS low;
+	RULE 5 : IF (data IS veryLow OR battery IS veryLow) AND (qos IS veryLow AND (dependability IS low AND security IS veryLow) AND scalability IS veryLow) THEN trust IS veryLow;		
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
+

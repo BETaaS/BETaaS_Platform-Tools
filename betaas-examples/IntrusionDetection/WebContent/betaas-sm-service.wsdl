@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://api.servicemanager.service.betaas.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ServiceManagerExternalIF" targetNamespace="http://api.servicemanager.service.betaas.eu/">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://api.servicemanager.service.betaas.eu/" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://api.servicemanager.service.betaas.eu/">
+  <xsd:element name="unregister" type="tns:unregister"/>
+  <xsd:complexType name="unregister">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="unregisterResponse" type="tns:unregisterResponse"/>
+  <xsd:complexType name="unregisterResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="uninstallApplication" type="tns:uninstallApplication"/>
+  <xsd:complexType name="uninstallApplication">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="uninstallApplicationResponse" type="tns:uninstallApplicationResponse"/>
+  <xsd:complexType name="uninstallApplicationResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="register" type="tns:register"/>
+  <xsd:complexType name="register">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="registerResponse" type="tns:registerResponse"/>
+  <xsd:complexType name="registerResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getTaskData" type="tns:getTaskData"/>
+  <xsd:complexType name="getTaskData">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getTaskDataResponse" type="tns:getTaskDataResponse"/>
+  <xsd:complexType name="getTaskDataResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="installApplication" type="tns:installApplication"/>
+  <xsd:complexType name="installApplication">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="installApplicationResponse" type="tns:installApplicationResponse"/>
+  <xsd:complexType name="installApplicationResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="test" type="tns:test"/>
+  <xsd:complexType name="test">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="testResponse" type="tns:testResponse"/>
+  <xsd:complexType name="testResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getThingServiceData" type="tns:getThingServiceData"/>
+  <xsd:complexType name="getThingServiceData">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="arg0" nillable="true" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="arg1" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getThingServiceDataResponse" type="tns:getThingServiceDataResponse"/>
+  <xsd:complexType name="getThingServiceDataResponse">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="return" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getTaskDataResponse">
+    <wsdl:part element="tns:getTaskDataResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unregisterResponse">
+    <wsdl:part element="tns:unregisterResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThingServiceData">
+    <wsdl:part element="tns:getThingServiceData" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="register">
+    <wsdl:part element="tns:register" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="registerResponse">
+    <wsdl:part element="tns:registerResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="uninstallApplicationResponse">
+    <wsdl:part element="tns:uninstallApplicationResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="installApplication">
+    <wsdl:part element="tns:installApplication" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unregister">
+    <wsdl:part element="tns:unregister" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="test">
+    <wsdl:part element="tns:test" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTaskData">
+    <wsdl:part element="tns:getTaskData" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="installApplicationResponse">
+    <wsdl:part element="tns:installApplicationResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="uninstallApplication">
+    <wsdl:part element="tns:uninstallApplication" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThingServiceDataResponse">
+    <wsdl:part element="tns:getThingServiceDataResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="testResponse">
+    <wsdl:part element="tns:testResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ServiceManagerExternalIFPortType">
+    <wsdl:operation name="unregister">
+      <wsdl:input message="tns:unregister" name="unregister">
+    </wsdl:input>
+      <wsdl:output message="tns:unregisterResponse" name="unregisterResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="uninstallApplication">
+      <wsdl:input message="tns:uninstallApplication" name="uninstallApplication">
+    </wsdl:input>
+      <wsdl:output message="tns:uninstallApplicationResponse" name="uninstallApplicationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="register">
+      <wsdl:input message="tns:register" name="register">
+    </wsdl:input>
+      <wsdl:output message="tns:registerResponse" name="registerResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTaskData">
+      <wsdl:input message="tns:getTaskData" name="getTaskData">
+    </wsdl:input>
+      <wsdl:output message="tns:getTaskDataResponse" name="getTaskDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="installApplication">
+      <wsdl:input message="tns:installApplication" name="installApplication">
+    </wsdl:input>
+      <wsdl:output message="tns:installApplicationResponse" name="installApplicationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="test">
+      <wsdl:input message="tns:test" name="test">
+    </wsdl:input>
+      <wsdl:output message="tns:testResponse" name="testResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getThingServiceData">
+      <wsdl:input message="tns:getThingServiceData" name="getThingServiceData">
+    </wsdl:input>
+      <wsdl:output message="tns:getThingServiceDataResponse" name="getThingServiceDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceManagerExternalIFSoapBinding" type="tns:ServiceManagerExternalIFPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="uninstallApplication">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="uninstallApplication">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="uninstallApplicationResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unregister">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="unregister">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="unregisterResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="register">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="register">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="registerResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTaskData">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getTaskData">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTaskDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="installApplication">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="installApplication">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="installApplicationResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getThingServiceData">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getThingServiceData">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getThingServiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="test">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="test">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="testResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceManagerExternalIF">
+    <wsdl:port binding="tns:ServiceManagerExternalIFSoapBinding" name="ServiceManagerExternalIFPort">
+      <soap:address location="http://localhost:18900/sm-service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

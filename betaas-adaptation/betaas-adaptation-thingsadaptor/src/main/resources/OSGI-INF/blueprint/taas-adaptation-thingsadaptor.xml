@@ -1,0 +1,51 @@
+<blueprint default-activation="eager"
+	xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+	xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+
+	<cm:property-placeholder persistent-id="betaas.gateway">
+		<cm:default-properties>
+			<cm:property name="sensorsContext" value="C:/data/context/" />
+		</cm:default-properties>
+	</cm:property-placeholder>
+
+
+
+	<bean id="adaptorListenerBean"
+		class="eu.betaas.adaptation.thingsadaptor.api.impl.AdaptatorListenerImpl"
+		factory-method="getInstance" scope="singleton" init-method="start"
+		destroy-method="stop">
+		<property name="context" ref="blueprintBundleContext" />
+		<property name="adaptationcm" ref="adaptationContextManager" />
+	</bean>
+
+	<service ref="adaptorListenerBean" interface="eu.betaas.adaptation.plugin.api.IAdaptorListener" />
+	
+	<bean id="taasAdaptationTABean"
+		class="eu.betaas.adaptation.thingsadaptor.api.impl.ThingsAdaptorImpl"
+		scope="singleton" init-method="startTAModule" destroy-method="stopTAModule">
+		<!-- <property name="service" ref="databaseService"/> -->
+		<property name="sensorsFolder" value="${sensorsContext}"></property>
+		<property name="adaptationcm" ref="adaptationContextManager" />
+		<property name="context" ref="blueprintBundleContext" />
+	</bean>
+
+	<service ref="taasAdaptationTABean"
+		interface="eu.betaas.adaptation.thingsadaptor.api.ThingsAdaptor" />
+
+
+	<!-- Services Used -->
+
+	<!-- <reference id="databaseService" availability="mandatory" activation="eager" 
+		interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService"> 
+		</reference> -->
+
+	<!-- End of Services Used -->
+
+
+	<reference id="adaptationContextManager" availability="mandatory"
+		activation="eager"
+		interface="eu.betaas.adaptation.contextmanager.api.SemanticParserAdaptator">
+	</reference>
+
+</blueprint>

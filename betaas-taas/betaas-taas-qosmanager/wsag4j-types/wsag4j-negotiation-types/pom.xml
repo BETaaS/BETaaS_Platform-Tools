@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.betaas.net.sf.wsag4j</groupId>
+		<artifactId>wsag4j-types</artifactId>
+		<version>2.1-release</version>
+	</parent>
+
+
+
+	<artifactId>wsag4j-negotiation-types</artifactId>
+
+	<name>WSAG4J: WS-Agreement Negotiation XML-Types</name>
+	<description>XMLBeans data types for the WS-Agreement Negotiation language.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.betaas.net.sf.wsag4j</groupId>
+			<artifactId>wsag4j-addressing-types</artifactId>
+			<version>2.1-release</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.betaas.net.sf.wsag4j</groupId>
+			<artifactId>wsag4j-agreement-types</artifactId>
+			<version>2.1-release</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xmlbeans</artifactId>
+			<version>2.4.0_5</version>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xmlbeans-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id />
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xmlbeans</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schemaDirectory>src/main/xsd</schemaDirectory>
+					<staleFile>${project.build.directory}/generated-sources/xmlbeans/.staleFlag</staleFile>
+					<!-- xmlbeans plugin only used to generate the classes not for compiling 
+						or jar generation. -->
+					<verbose>false</verbose>
+					<quiet>false</quiet>
+					<javaSource>1.5</javaSource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint  default-activation="eager" 
+            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"> 
+
+	<cm:property-placeholder persistent-id="betaas.gateway" >
+	 <cm:default-properties>
+	  <cm:property name="gwId" value="-1"/>
+	  <cm:property name="credentials" value="none"/>
+	  <cm:property name="instanceDescription" value="Generic Gateway"/>
+	  <cm:property name="adminAddress" value="http://localhost:8080/InstanceManager/"/>
+	  <cm:property name="automaticJoin" value="1"/>
+	  <cm:property name="countryCode" value="DK"/>
+	  <cm:property name="state" value="Nordjylland"/>
+	  <cm:property name="location" value="Aalborg"/>
+	  <cm:property name="orgName" value="BETaaS"/>
+	  <cm:property name="trackerWaitTime" value="5000"/>
+	 </cm:default-properties>
+	</cm:property-placeholder>
+	
+	<cm:property-placeholder persistent-id="betaas.endpoints"  placeholder-prefix="$(" placeholder-suffix=")">
+	   <cm:default-properties>
+	   <cm:property name="instanceManagerAddress" value="http://localhost:9302/im-service"/>
+	   </cm:default-properties>
+	</cm:property-placeholder>
+	
+    <bean id="serviceIMBean" 
+          class="eu.betaas.service.instancemanager.api.impl.IMAPIImpl"
+          scope="singleton" init-method="setup"  destroy-method="close">
+       <property name="gwId" value="${gwId}"></property>
+	   <property name="isStar" value="0"></property>
+	   <property name="isBackupStar" value="0"></property>
+	   <property name="credentials" value="${credentials}"></property>                 
+	   <property name="instanceDescription" value="${instanceDescription}"></property>
+	   <property name="adminAddress" value="${adminAddress}"></property>
+	   <property name="instanceId" value=""></property>
+	   <property name="context" ref="blueprintBundleContext"></property>
+	   <property name="automaticJoin" value="${automaticJoin}"></property>
+	   <property name="countryCode" value="${countryCode}"></property>
+	   <property name="state" value="${state}"></property>
+	   <property name="location" value="${location}"></property>
+	   <property name="orgName" value="${orgName}"></property>
+	   <property name="trackerWaitTime" value="${trackerWaitTime}"></property>
+    </bean>
+
+    
+    <service ref="serviceIMBean" id="imsr"
+             interface="eu.betaas.service.instancemanager.api.InstanceManagerExternalIF">
+      <service-properties>
+	   	 <entry key="service.exported.interfaces" value="*" />
+	   	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
+	   	 <entry key="org.apache.cxf.ws.address" value="$(instanceManagerAddress)" />
+         <entry key="isStar" value="0" />
+         <entry key="isBackupStar" value="0" />
+         <entry key="instanceDescription" value="${instanceDescription}" /> 
+         <entry key="adminAddress" value="${adminAddress}" />
+         <entry key="instanceId" value="" />
+	  </service-properties>
+    </service>
+    
+    
+    <bean id="propUpdater" class="eu.betaas.service.instancemanager.api.impl.ServicePropertiesHolder">
+      <property name="serviceRegistration" ref="imsr"/>
+    </bean>
+   
+
+     
+</blueprint>

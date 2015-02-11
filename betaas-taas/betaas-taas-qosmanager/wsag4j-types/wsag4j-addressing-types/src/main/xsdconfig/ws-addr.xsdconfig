@@ -1,0 +1,14 @@
+<xb:config xmlns:xb="http://www.bea.com/2002/09/xbean/config">
+
+<!-- For the moment we keep the generated package names -->
+<!-- We can assume that the WS-Addressing Specification -->
+<!-- is not subject to change in near future, if so we  -->
+<!-- need to adopt the complete hosting environment     -->
+
+
+<!--
+    <xb:namespace uri="http://www.w3.org/2005/08/addressing">
+        <xb:package>org.w3.schemas.addressing</xb:package>
+    </xb:namespace>
+-->
+</xb:config>

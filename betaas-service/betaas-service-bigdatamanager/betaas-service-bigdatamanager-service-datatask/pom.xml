@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-service-bigdatamanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-service-bigdatamanager-service-datatask</artifactId>
+  <version>2.1-release</version>
+  <name>BETaaS Data  Task Service</name>
+  <description>BETaaS Data  Task Service Interface and basic implementations</description>
+   <packaging>bundle</packaging>
+  <dependencies>
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	</dependency>
+	
+   	<dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    	
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+	  <artifactId>org.osgi.core</artifactId>
+    </dependency>
+   
+	<dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>4.0.1</version>
+    </dependency> 
+         
+	<dependency>
+	    <groupId>com.h2database</groupId>
+	    <artifactId>h2</artifactId>
+	</dependency> 
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+		<version>2.2.3</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jumpmind.symmetric.jdbc</groupId>
+		<artifactId>mariadb-java-client</artifactId>
+		<version>1.1.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.2.4</version>
+	</dependency>
+    <dependency>
+      	<groupId>eu.betaas</groupId>
+  		<artifactId>betaas-service-bigdatamanager-data-connector-interface</artifactId>
+  		<version>2.1-release</version>                
+	</dependency>
+  </dependencies> 
+   <build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+                     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                      <Import-Package> 
+                     	org.osgi.framework,org.osgi.util.tracker,
+                        eu.betaas.service.bigdatamanager.dataservice,
+                        org.mariadb.jdbc,
+                        org.h2,org.h2.jdbcx,
+                        *
+                     </Import-Package>
+                     <Export-Package>
+                         eu.betaas.service.bigdatamanager.service.datatask.data,eu.betaas.service.bigdatamanager.service.datatask,
+                     </Export-Package>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>  
+</project>

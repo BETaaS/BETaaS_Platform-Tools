@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="1.0">
+    <persistence-unit name="taas-jpa">
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.AgreementEprContainer</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.ApplicationRegistry</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.AppService</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.PersistentAgreementContainerDatabase</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.TrustManagerService</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingInformation</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingData</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.ExtServService</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.ExtServiceRegistry</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingStar</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceStar</class>
+	    <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMRequestStar</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMEquivalentThingServiceStar</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssignmentStar</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingInternal</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceInternal</class>
+	    <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMRequestInternal</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMEquivalentThingServiceInternal</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssignmentInternal</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMServiceRequestTS</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMServiceRequest</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssuredRequestInternal</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssuredRequestStar</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.DMNotifiedFailure</class>
+        
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.show_sql" value="true" />
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-superpom</artifactId>
+    <version>2.1-release</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas</artifactId>
+  <version>2.1-release</version>
+  <packaging>pom</packaging>
+  <name>BETaaS TaaS</name>
+  <description>BETaaS  TaaS</description>
+  
+  
+  
+  
+  <modules>
+  	<module>betaas-taas-qosmanager</module>
+  	<module>betaas-taas-contextmanager</module>
+  	<module>betaas-taas-itaasresourcesmanager</module>
+  	<module>betaas-taas-taasresourcesmanager</module>
+	<module>betaas-taas-bigdatamanager</module>
+	<module>betaas-taas-taastrustmanager</module>
+	<module>betaas-taas-taasvmmanager</module>
+	<module>betaas-taas-securitymanager</module>
+  </modules>
+</project>

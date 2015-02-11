@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+    elementFormDefault="qualified" attributeFormDefault="qualified"
+    targetNamespace="http://schemas.ogf.org/graap/2009/11/ws-agreement-negotiation" 
+    xmlns:wsag-neg="http://schemas.ogf.org/graap/2009/11/ws-agreement-negotiation" 
+    xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+    xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <xsd:import namespace="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+        schemaLocation="http://schemas.ggf.org/graap/2007/03/ws-agreement" />
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" 
+        schemaLocation="http://www.w3.org/2001/XMLSchema.xsd" />
+    <xsd:import namespace="http://www.w3.org/2005/08/addressing" 
+        schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd"/>
+
+    <xsd:element name="NegotiationContext" 
+         type="wsag-neg:NegotiationContextType" />
+    <xsd:element name="NegotiatiableTemplate" 
+         type="wsag:AgreementTemplateType" />
+    <xsd:element name="NegotiationOffer" 
+         type="wsag-neg:NegotiationOfferType" />
+    <xsd:element name="NegotiationCounterOffer" 
+         type="wsag-neg:NegotiationOfferType" />
+    <xsd:element name="NegotiationOfferContext" 
+         type="wsag-neg:NegotiationOfferContextType" />
+    <xsd:element name="NegotiationExtension" 
+         type="wsag-neg:NegotiationExtensionType" />
+    <xsd:element name="RenegotiationExtension" 
+         type="wsag-neg:RenegotiationExtensionType" />
+    
+    <xsd:complexType name="NegotiationContextType">
+      <xsd:sequence>
+        <xsd:element name="NegotiationType" 
+             type="wsag-neg:NegotiationType" />
+        <xsd:element name="ExpirationTime" 
+             type="xsd:dateTime" minOccurs="0" />
+        <xsd:element name="NegotiationInitiator" 
+             type="xsd:anyType" minOccurs="0" />
+        <xsd:element name="NegotiationResponder" 
+             type="xsd:anyType" minOccurs="0" />
+        <xsd:element name="AgreementResponder" 
+             type="wsag-neg:NegotiationRoleType"/>
+        <xsd:element name="AgreementFactoryEPR" 
+             type="wsa:EndpointReferenceType" minOccurs="0"/>
+        <xsd:any namespace="##other" processContents="lax" 
+             minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="NegotiationRoleType">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="NegotiationInitiator" />
+        <xsd:enumeration value="NegotiationResponder" />
+      </xsd:restriction>
+    </xsd:simpleType>    
+
+    <xsd:complexType name="NegotiationType">
+      <xsd:choice>
+        <xsd:element name="Negotiation">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:any namespace="##other" processContents="lax" 
+                   minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>                  
+        </xsd:element>
+        <xsd:element name="Renegotiation">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="ResponderAgreementEPR" 
+                   type="wsa:EndpointReferenceType" />
+              <xsd:element name="InitiatorAgreementEPR" 
+                   type="wsa:EndpointReferenceType" minOccurs="0" />
+              <xsd:any namespace="##other" processContents="lax" 
+                   minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>                  
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="NegotiationOfferType">
+        <xsd:complexContent>
+            <xsd:extension base="wsag:AgreementType">
+                <xsd:sequence>
+                  <xsd:element name="NegotiationOfferContext" 
+                       type="wsag-neg:NegotiationOfferContextType"/>
+                  <xsd:element name="NegotiationConstraints" 
+                       type="wsag-neg:NegotiationConstraintSectionType" />
+                </xsd:sequence>
+                <xsd:attribute name="OfferId" type="xsd:string" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="NegotiationConstraintSectionType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Item"
+                type="wsag-neg:NegotiationOfferItemType" />
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                ref="wsag:Constraint" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="NegotiationOfferItemType">
+        <xsd:complexContent>
+            <xsd:extension base="wsag:OfferItemType">
+                <xsd:attribute name="Type" type="wsag-neg:NegotiationConstraintType" use="required" />
+                <xsd:attribute name="Importance" type="xsd:integer" default="0" use="optional"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+          
+    <xsd:simpleType name="NegotiationConstraintType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Required" />
+            <xsd:enumeration value="Optional" />
+        </xsd:restriction>
+    </xsd:simpleType>
+     
+    <xsd:complexType name="NegotiationOfferContextType">
+      <xsd:sequence>
+        <xsd:element name="CounterOfferTo" 
+             type="xsd:string"/>
+        <xsd:element name="ExpirationTime" 
+             type="xsd:dateTime" minOccurs="0" />
+        <xsd:element name="Creator" 
+             type="wsag-neg:NegotiationRoleType"/>
+        <xsd:element name="State" 
+             type="wsag-neg:NegotiationOfferStateType" />
+        <xsd:any namespace="##other" processContents="lax" 
+             minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="NegotiationOfferStateType">
+      <xsd:choice>
+        <xsd:element name="Advisory" 
+             type="wsag-neg:InnerNegotiationStateType"/>
+        <xsd:element name="Solicited" 
+             type="wsag-neg:InnerNegotiationStateType"/>
+        <xsd:element name="Acceptable" 
+             type="wsag-neg:InnerNegotiationStateType"/>
+        <xsd:element name="Rejected" 
+             type="wsag-neg:InnerNegotiationStateType"/>
+      </xsd:choice>
+    </xsd:complexType>
+    
+    <xsd:complexType name="InnerNegotiationStateType">
+      <xsd:sequence>
+          <xsd:any namespace="##other" processContents="lax" 
+               minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="NegotiationExtensionType">
+      <xsd:sequence>
+          <xsd:element name="ResponderNegotiationEPR"
+               type="wsa:EndpointReferenceType" minOccurs="0" />
+          <xsd:element name="InitiatorNegotiationEPR" 
+               type="wsa:EndpointReferenceType" minOccurs="0" />
+          <xsd:element name="NegotiationOfferContext" 
+               type="wsag-neg:NegotiationOfferContextType" minOccurs="1" />
+          <xsd:any namespace="##other" minOccurs="0" 
+               processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="RenegotiationExtensionType">
+      <xsd:sequence>
+          <xsd:element name="ResponderNegotiationEPR"
+               type="wsa:EndpointReferenceType" minOccurs="1" />
+          <xsd:element name="InitiatorNegotiationEPR" 
+               type="wsa:EndpointReferenceType" minOccurs="0" />
+          <xsd:element name="ResponderAgreementEPR" 
+               type="wsa:EndpointReferenceType" minOccurs="1" />
+          <xsd:element name="NegotiationOfferContext" 
+               type="wsag-neg:NegotiationOfferContextType" minOccurs="1" />
+          <xsd:any namespace="##other" processContents="lax" 
+               minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

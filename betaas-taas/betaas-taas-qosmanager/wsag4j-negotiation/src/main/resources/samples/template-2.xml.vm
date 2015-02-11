@@ -1,0 +1,24 @@
+<ws:Template ws:TemplateId="2" xmlns:ws="http://schemas.ggf.org/graap/2007/03/ws-agreement">
+  <ws:Name>SAMPLE2</ws:Name>
+  <ws:Context>
+    <ws:ServiceProvider>AgreementResponder</ws:ServiceProvider>
+    <ws:TemplateId>2</ws:TemplateId>
+    <ws:TemplateName>SAMPLE2</ws:TemplateName>
+  </ws:Context>
+  <ws:Terms>
+    <ws:All>
+      <ws:ServiceDescriptionTerm ws:Name="SAMPLE2" ws:ServiceName="SAMPLE2_SERVICE">
+		<jsdl:JobDefinition xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl">
+			<jsdl:JobDescription>
+				<jsdl:Application>
+					<jsdl:ApplicationName>MY_APP</jsdl:ApplicationName>
+					<jsdl:ApplicationVersion>1.0</jsdl:ApplicationVersion>
+	                <jsdl:Description/>
+				</jsdl:Application>
+			</jsdl:JobDescription>
+		</jsdl:JobDefinition>
+      </ws:ServiceDescriptionTerm>
+    </ws:All>
+  </ws:Terms>
+  <ws:CreationConstraints/>
+</ws:Template>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	targetNamespace="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	elementFormDefault="qualified" attributeFormDefault="qualified"
+	xmlns:wsag="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:import namespace="http://www.w3.org/2001/XMLSchema"
+		schemaLocation="http://www.w3.org/2001/XMLSchema.xsd" />
+	<xs:import namespace="http://www.w3.org/2005/08/addressing"
+		schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd" />
+	<xs:import namespace="http://docs.oasis-open.org/wsrf/bf-2"
+		schemaLocation="http://docs.oasis-open.org/wsrf/bf-2.xsd" />
+
+	<xs:import namespace="http://www.w3.org/2005/08/addressing" />
+
+	<xs:include schemaLocation="ws-agreement-xsd-types.xsd" />
+
+	<xs:include schemaLocation="ws-agreement-state-xsd-types.xsd" />
+
+	<!--Resource property element declarations-->
+	<!--global elements are defined in the included schema-->
+	<!--Resource property document declaration-->
+	<xs:element name="agreementProperties"
+		type="wsag:AgreementPropertiesType" />
+	<xs:complexType name="AgreementPropertiesType">
+		<xs:sequence>
+			<xs:element ref="wsag:Name" minOccurs="0" />
+			<xs:element ref="wsag:AgreementId" />
+			<xs:element ref="wsag:Context" />
+			<xs:element ref="wsag:Terms" />
+			<xs:element ref="wsag:AgreementServiceReferenceList"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<!--======================-->
+	<!-- Operational input/output type declarations -->
+	<xs:element name="TerminateInput" type="wsag:TerminateInputType" />
+	<xs:element name="TerminateResponse" type="wsag:TerminateOutputType" />
+	<xs:complexType name="TerminateInputType">
+		<xs:sequence>
+			<xs:any processContents="lax" namespace="##any" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TerminateOutputType" />
+
+<!-- create commit agreement specification request type declaration -->
+	<xs:element name="CommitInput" type="wsag:CommitInputType" />
+	<xs:element name="CommitResponse" type="wsag:CommitOutputType" />
+	<xs:complexType name="CommitInputType">
+		<xs:sequence>
+			<xs:any processContents="lax" namespace="##any" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CommitOutputType" />
+	
+	<xs:element name="AbortCommitInput" type="wsag:AbortCommitInputType" />
+	<xs:element name="AbortCommitResponse" type="wsag:AbortCommitOutputType" />
+	<xs:complexType name="AbortCommitInputType">
+		<xs:sequence>
+			<xs:any processContents="lax" namespace="##any" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbortCommitOutputType" />
+<!-- end of create commit agreement specification request type declaration -->
+
+</xs:schema>

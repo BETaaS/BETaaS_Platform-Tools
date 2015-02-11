@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://schemas.scai.fraunhofer.de/2008/11/wsag4j/engine" 
+			xmlns:wsag4j-engine="http://schemas.scai.fraunhofer.de/2008/11/wsag4j/engine"
+            xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement" 
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified" 
+			attributeFormDefault="qualified">
+      
+
+  <xsd:import namespace="http://schemas.ggf.org/graap/2007/03/ws-agreement"
+              schemaLocation="http://schemas.ggf.org/graap/2007/03/ws-agreement-properties"/>      
+  
+  <!-- ****************************************************************************************** -->
+  <!-- *** This section contains type definitions related to the WSAG4J Agreement Persistence *** -->
+  <!-- ****************************************************************************************** -->
+      
+  <xsd:element name="PersistenceAgreementContext" type="wsag4j-engine:PersistenceAgreementContextType">
+    <xsd:annotation>
+        <xsd:documentation>Stores the persisted information of an agreement in WSAG4J.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:complexType name="PersistenceAgreementContextType">
+    <xsd:annotation>
+        <xsd:documentation>Data structure that is persisted for a WSAG4J agreement instance.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+        <xsd:element name="AgreementProperties" type="wsag:AgreementPropertiesType"/>
+        <xsd:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+	        <xsd:complexType>
+	            <xsd:sequence>
+	               <xsd:element name="Value" type="xsd:anyType"/>
+	            </xsd:sequence>
+	            <xsd:attribute name="Name" use="required" type="xsd:string"/>
+	        </xsd:complexType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>      
+      
+  <!-- **************************************************************************************** -->
+  <!-- *** This section contains type definitions related to generic framework capabilities *** -->
+  <!-- **************************************************************************************** -->
+      
+  <xsd:element name="WSAG4JSession" type="wsag4j-engine:WSAG4JSessionType">
+    <xsd:annotation>
+        <xsd:documentation>Document element for WSAG4J session management.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:complexType name="WSAG4JSessionType">
+    <xsd:annotation>
+        <xsd:documentation>Data structure for WSAG4J session management.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SessionID" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  
+  <xsd:element name="WSAG4JMetadata" type="wsag4j-engine:WSAG4JMetadataType">
+    <xsd:annotation>
+        <xsd:documentation>XML document that store WSAG port type information. Used in conjunction with MUSE2 service groups.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>  
+  <xsd:complexType name="WSAG4JMetadataType">
+    <xsd:annotation>
+        <xsd:documentation>XML data structure that store WSAG port type information. Used in conjunction with MUSE2 service groups.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="WSAG4JPortType" type="xsd:QName"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:element name="ServerIdentity" type="xsd:string">
+    <xsd:annotation>
+        <xsd:documentation>Stores the DN of a WSAG4J server. Used in MetaData section of an WS-Addressing EPR.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="SLAMonitoringNotificationEvent" type="wsag4j-engine:SLAMonitoringNotificationEventType"/>
+  <xsd:complexType name="SLAMonitoringNotificationEventType">
+    <xsd:sequence>
+        <xsd:element name="GuaranteeEvaluationResult" type="wsag4j-engine:GuaranteeEvaluationResultType" 
+                     minOccurs="1" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="agreementId" type="xsd:string" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="GuaranteeEvaluationResultType">
+    <xsd:sequence>
+        <xsd:element name="Name" type="xsd:string" />
+        <xsd:element name="Type" type="wsag4j-engine:SLOEvaluationResultType" />
+        <xsd:element name="Importance" type="xsd:int" />
+        <xsd:element name="Compensation" type="wsag4j-engine:CompensationType" minOccurs="0"/>
+        <xsd:element name="Details" type="wsag4j-engine:GuaranteeEvaluationDetailType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="SLOEvaluationResultType">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="SLO_FULFILLED" />
+        <xsd:enumeration value="SLO_VIOLATED" />
+        <xsd:enumeration value="SLO_NOT_DETERMINED" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="CompensationType">
+    <xsd:sequence>
+      <xsd:element name="Unit" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Value" type="xsd:decimal" />
+    </xsd:sequence>  
+  </xsd:complexType>
+
+  <xsd:complexType name="GuaranteeEvaluationDetailType">
+    <xsd:sequence>
+        <xsd:element name="Guarantee" type="wsag:GuaranteeTermType" />
+        <xsd:element name="GuaranteeState" type="wsag:GuaranteeTermStateType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <!-- ***************************************************************************************** -->
+  <!-- *** This section contains type definitions related to the template validation process *** -->
+  <!-- ***************************************************************************************** -->
+  
+  <xsd:element name="ConstraintAnnotation" type="wsag4j-engine:ConstraintAnnotationType">
+    <xsd:annotation>
+        <xsd:documentation>Extension document that can be used in agreement templates to define the expected cardinality of the result of an XPath query in the WSAG Item Constraints.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="ConstraintAnnotationType">
+    <xsd:annotation>
+        <xsd:documentation>Defines the data structure of an constraint annotation.</xsd:documentation>
+    </xsd:annotation>    
+    <xsd:sequence>
+         <xsd:element name="Multiplicity" type="wsag4j-engine:ItemCardinalityType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+      
+  <xsd:simpleType name="ItemCardinalityType">
+      <xsd:annotation>
+        <xsd:documentation>A list of cardinalities that can be used with a constraint annotation.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="0_TO_1"/>
+          <xsd:enumeration value="0_TO_N"/>
+          <xsd:enumeration value="1"/>
+          <xsd:enumeration value="1_TO_N"/>
+      </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

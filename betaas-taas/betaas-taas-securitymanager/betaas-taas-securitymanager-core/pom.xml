@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas-securitymanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <artifactId>betaas-taas-securitymanager-core</artifactId>
+  <name>BETaaS Taas Security Manager core bundle</name>
+  <description>TaaS security manager bundle core that provides interfaces to other managers in TaaS layer and security manager of different layers</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.felix</groupId>
+  		<artifactId>org.osgi.core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.osgi</groupId>
+  		<artifactId>org.osgi.compendium</artifactId>
+  		<version>4.0.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.betaas</groupId>
+  		<artifactId>
+  			betaas-taas-securitymanager-authentication
+  		</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.betaas</groupId>
+  		<artifactId>
+  			betaas-taas-securitymanager-certificate
+  		</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<!-- <dependency>
+  		<groupId>eu.betaas</groupId>
+  		<artifactId>
+  			betaas-service-instancemanager-server
+  		</artifactId>
+  		<version>${project.version}</version>
+  	</dependency> -->
+  </dependencies>
+  
+	<build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+                     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                     <!-- <Bundle-Activator> eu.betaas.taas.securitymanager.core.activator.SecMTaasCoreActivator</Bundle-Activator> -->
+                     <Import-Package>org.apache.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,eu.betaas.taas.securitymanager.common.*,eu.betaas.taas.securitymanager.authentication.service.*,eu.betaas.taas.securitymanager.certificate.service.*</Import-Package>
+                     <Export-Package>
+                         eu.betaas.taas.securitymanager.core.service;version=${project.version}
+                     </Export-Package>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>
+	<packaging>bundle</packaging>
+</project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	targetNamespace="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	elementFormDefault="qualified" attributeFormDefault="qualified"
+	xmlns:wsag="http://schemas.ggf.org/graap/2005/09/ws-agreement"
+	xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:include schemaLocation="ws-agreement-state-xsd-types.xsd" />
+
+	<!--Resource property element declarations-->
+	<!--global elements are defined in the included schema-->
+	<!--Resource property document declaration-->
+	<xs:element name="AgreementStateProperties"
+		type="wsag:AgreementStatePropertiesType" />
+	<xs:complexType name="AgreementStatePropertiesType">
+		<xs:sequence>
+			<xs:element ref="wsag:AgreementState" />
+			<xs:element ref="wsag:GuaranteeTermStateList" />
+			<xs:element ref="wsag:ServiceTermStateList" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+    elementFormDefault="qualified"
+    targetNamespace="http://schemas.ogf.org/jsdl/2010/06/activity-instance-description" version="1.0"
+    xmlns:aid="http://schemas.ogf.org/jsdl/2010/06/activity-instance-description"
+    xmlns:wsa="http://www.w3.org/2005/08/addressing"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            The OGF takes no position regarding the validity or scope of any
+            intellectual property or other rights that might be claimed to
+            pertain to the implementation or use of the technology described in
+            this document or the extent to which any license under such rights
+            might or might not be available; neither does it represent that it
+            has made any effort to identify any such rights. Copies of claims of
+            rights made available for publication and any assurances of licenses
+            to be made available, or the result of an attempt made to obtain a
+            general license or permission for the use of such proprietary rights
+            by implementers or users of this specification can be obtained from
+            the OGF Secretariat.
+            
+            The OGF invites any interested party to bring to its
+            attention any copyrights, patents or patent applications, or other
+            proprietary rights which may cover technology that may be required
+            to practice this recommendation. Please address the information to
+            the OGF Executive Director. 
+            
+            This document and the information contained herein is provided on an
+            "As Is" basis and the OGF disclaims all warranties, express or
+            implied, including but not limited to any warranty that the use of
+            the information herein will not infringe any rights or any implied
+            warranties of merchantability or fitness for a particular purpose. 
+            
+            Copyright (C) Open Grid Forum (2010). All Rights Reserved. 
+            
+            This document and translations of it may be copied and furnished to
+            others, and derivative works that comment on or otherwise explain it
+            or assist in its implementation may be prepared, copied, published
+            and distributed, in whole or in part, without restriction of any
+            kind, provided that the above copyright notice and this paragraph
+            are included on all such copies and derivative works. However, this
+            document itself may not be modified in any way, such as by removing
+            the copyright notice or references to the OGF or other
+            organizations, except as needed for the purpose of developing Grid
+            Recommendations in which case the procedures for copyrights defined
+            in the OGF Document process must be followed, or as required to
+            translate it into languages other than English.
+            
+            The limited permissions granted above are perpetual and will not be
+            revoked by the OGF or its successors or assignees.
+        </xsd:documentation>
+        <xsd:documentation xml:lang="en">
+            Abstract Activity Instance Description schema document according to the
+            Activity Instance Description Specification Version 1.0 (GFD.X)
+
+            Authors:
+            Alexander Papaspyrou, TU Dortmund University
+            Philipp Wieder, Service Computing Group, TU Dortmund University
+        </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:import
+        namespace="http://www.w3.org/2005/08/addressing"
+        schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd"/>    
+
+    <xsd:element abstract="true" name="State">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Stores a state model instance for the given activity state. In
+                its abstract form, the state model is arbitrary. This is an
+                abstract type and has to be substituted by an appropriate
+                definition (see also GFD.X, Sections 4.6 and 5.3).
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element abstract="true" name="Exception">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Stores an exception model instance for the given activity fault.
+                This is an abstract type and has to be substituted by a
+                appropriate definition (see also GFD.X, Sections 4.7 and 6.1).
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    
+    <xsd:complexType name="ActivityStatusType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Describes the status of the activity with respect to the
+                enclosing history record. The status of an activity comprises
+                its current state (defined by an appropriate state model) and,
+                if necessary, exception information. Every status record
+                for an activity MUST contain at least the current state; if an
+                exceptional condition occurs during the activity's lifetime, it
+                SHOULD be also recorded here. Note that the existence of an
+                exception entry is not necessarily coupled to a corresponding
+                exceptional state; a possible connection between these is left
+                to the implementor and SHOULD be described in the concrete state
+                model's documentation.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ref="aid:State">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Denotes details on the state of the activity instance
+                        with respect to the enclosing history record. See also
+                        abstract element State and GFD.108, Section 6.6.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element ref="aid:Exception" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Denotes the exception raised for the activity instance
+                        with respect to the enclosing record. See also
+                        abstract element Exception.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:element abstract="true" name="ActivityDefinition">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Defines the requirements of an activity, for example the
+                description template used to create the activity. The initial
+                definition (template) MAY change over time due to refinement of the
+                requirements as a result of scheduling, delegation, or
+                negotiation processes, etc. Therefore, this element MAY appear
+                in more than one ActivityHistoryEntry. This is an abstract type
+                and has to be substituted by an appropriate definition (see
+                GFD.X, Sections 4.8 and 5.1).
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    
+    <xsd:element abstract="true" name="ActivityDependency">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Describes links to associated activities within a dependency
+                structure (such as a workflow). This is an abstract type and has
+                to be substituted by an appropriate definition (see GFD.X,
+                Section 4.9).
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    
+    <xsd:element abstract="true" name="ResourceUsage">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Describes the resource consumption/usage of an activity, e.g.,
+                the number of CPUs used or maximum memory needed for some part
+                of the activity. This element may appear multiple times for an
+                activity, depending on the monitoring policies of the system
+                generating them; the system may choose to perform averaging over
+                the execution time, averaging over several periods that cover
+                the execution time, sampling of the system, etc. Concretizations
+                of this element SHOULD describe what time instant or time period
+                they apply to. Because several monitoring systems may be feeding
+                usage information into the activity instance document, the time
+                points/periods MAY be overlapping and MAY be non-contiguous.
+                Note that there is no requirement for the information in the
+                activity instance document to be either accurate or timely. This
+                is an abstract type and has to be substituted by an appropriate
+                definition (see GFD.X, sections 4.11 and 5.2).
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    
+    <xsd:simpleType name="ActivityHistoryEntryCategoryType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Describes the category of a historic entry for an activity. The
+                possible options are "initial", "intermediate", and "final". 
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="initial">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Denotes the initial history record for a given activity,
+                        which MUST be the first one created in the whole record.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="intermediate">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Denotes an intermediate history record for a given
+                        activity. Such entry MUST NOT be the first one
+                        created in the whole record.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="final">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Denotes the final history record for a given activity.
+                        Note that this does not imply that the activity on its
+                        whole may not be modified any more.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:complexType name="ActivityHistoryEntryType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Denotes an event in the history of an activity, containing its
+                properties at the time the event occurred. Every entry MUST
+                contain at least a timestamp (as attribute), the status of the
+                activity at this timestamp, and a WS-Adressing endpoint
+                reference to the managing service.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Provides an extension point for additional elements in
+                        the ActivityDocumentType. Implementations SHOULD ignore
+                        unsupported extensions.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:any>
+            <xsd:element name="Status" type="aid:ActivityStatusType">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores the status of the activity instance at the time
+                        described by the surrounding history entry. The status 
+                        of an activity comprises its current state 
+                        (defined by an appropriate state model) and, if necessary, 
+                        exception information. Every status record for an activity 
+                        MUST contain at least the current state; if an exceptional 
+                        condition occurs during the activity's lifetime, it SHOULD 
+                        be also recorded here. Note that the existence of an exception 
+                        entry is not necessarily coupled to a corresponding 
+                        exceptional state; a possible connection between these 
+                        is left to the implementor and SHOULD be described in the 
+                        concrete state model's documentation.See also
+                        ActivityStatusType and GFD.X, Section 4.5.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element ref="aid:ActivityDefinition" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores the definition of the activity with respect to
+                        the enclosing history record. See also
+                        ActivityDefinition and GFD.X, Section 4.8.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element ref="aid:ActivityDependency" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores the dependency definitions for the activity with
+                        respect to the enclosing history record. See also
+                        ActivityDependency and GFD.X, Section 4.9.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ManagerReference" type="wsa:EndpointReferenceType">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Keeps the endpoint reference of the activity's managing
+                        service at the time denoted by the enclosing record. The
+                        corresponding service SHOULD expose an interface for
+                        managing the activity's state, lifecycle, and execution. 
+                        See also GFD.X, Section 4.10.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element ref="aid:ResourceUsage" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores the resource usage for this activity with respect
+                        to the enclosing history record. See also ResourceUsage and 
+                        GFD.X, Section 4.11.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="timestamp" type="xsd:dateTime" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Keeps the timestamp at which this event has occurred in the
+                    activity's history. The entries in the whole activity
+                    history SHOULD be ordered ascending to their timestamp. 
+                    See GFD.X, Section 4.4.4,
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="category" type="aid:ActivityHistoryEntryCategoryType" use="optional">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Denotes the category of this history record. See
+                    ActivityHistoryEntryCategoryType and GFD.X, Section 4.4.4,
+                    for possible values.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:anyAttribute namespace="##other" processContents="lax"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ActivityHistoryType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Keeps track of the record of the activity's history. This record
+                MUST contain one initial record and, at most, one final record 
+                (see also ActivityHistoryEntryCategoryType). Note that, although a
+                final record MAY have been written already, the activity
+                document MAY still be modified.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="ActivityHistoryEntry" type="aid:ActivityHistoryEntryType" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores a single event in an activity's history. It denotes 
+                        an event in the history of an activity, containing its 
+                        properties at the time the event occurred. Every entry MUST 
+                        contain at least a timestamp (as attribute), the status of 
+                        the activity at this timestamp, and a WS-Addressing 
+                        [WSADDR] endpoint reference to the managing service. Once 
+                        an ActivityHistoryEntry is written, it MUST NOT be altered. 
+                        Additional information about the respective activity has to 
+                        be appended to the ActivityHistory by adding a new 
+                        ActivityHistoryEntry element. See also
+                        ActivityHistoryEntryType and GFD.X, section 4.4.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ActivityDocumentType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Contains an activity's meta-data and history and provides a root
+                element for every activity. While the meta-data part MAY carry
+                information about the activity's creator, purpose, and
+                references (i.e. to other activities), the history part SHOULD
+                describe the full lifecycle of the activity.
+            </xsd:documentation>
+        </xsd:annotation>      
+        <xsd:sequence>    
+            <xsd:element name="ActivityDescription" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Contains a natural-language description of the activity
+                        and offers means for storing additional information on
+                        the activity for displaying purposes (e.g. in a user
+                        interface). See also
+                        ActivityDescriptionType and GFD.X, Section 4.2.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ActivityHistory" type="aid:ActivityHistoryType">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Stores the history of an activity. See also
+                        ActivityHistoryType and GFD.X, Section 4.3.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Provides an extension point for additional root elements
+                        in the activity document. Implementations SHOULD ignore
+                        unsupported extensions.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:any>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    An identifier for the activity, which MUST be globally
+                    unique. It is RECOMMENDED to use Universally Unique
+                    Identifiers as described in RFC 4122, "A Universally Unique
+                    IDentifier (UUID) URN Namespace". See also GFD.X, 
+                    Section 4.1.4.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:anyAttribute namespace="##other" processContents="lax">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Provides an extension point for additional root attributes
+                    in the activity document. Implementations SHOULD ignore
+                    unsupported extensions.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:anyAttribute>
+    </xsd:complexType>
+    
+    <xsd:element name="ActivityDocument" type="aid:ActivityDocumentType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                The document root of a single activity instancewhich contains 
+                an activity's meta-data and history and provides the entry 
+                point for every activity. While the meta-data part MAY carry 
+                information about the activity's creator, purpose, and 
+                references (i.e. to other activities), the history part 
+                SHOULD describe the full lifecycle of the activity. See also
+                ActivityDocumentType and GFD.X, Section 4.1.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+</xsd:schema>

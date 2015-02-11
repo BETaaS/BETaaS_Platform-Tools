@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Condition xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os">
+	<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+  	<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+    	<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+      	<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time" MustBePresent="false"/>
+      </Apply>
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
+    </Apply>
+    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+    	<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+      	<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time" MustBePresent="false"/>
+      </Apply>
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+    </Apply>
+  </Apply>
+</Condition>

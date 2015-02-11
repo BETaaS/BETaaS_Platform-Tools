@@ -1,0 +1,81 @@
+body {
+    background: #000000 url(../img/bg-circle.png);
+    padding: 0;
+    margin: 0;
+    font: 62.5% "Trebuchet MS", sans-serif;
+}
+
+.body-wrap {
+    background: #000000;
+    width: 760px;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px auto 15px auto;
+}
+
+.body-header {
+    width: 760px;
+    margin: 0px auto 0px auto;
+    padding: 0px;
+}
+
+.body-header img {
+    margin: 0px;
+    height: 35px;
+}
+
+.body-header table {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.body-header #header-logo p {
+    text-align: right;
+}
+
+.inline {
+    position:relative;
+    float:left;;
+}
+
+.gw-props-attr {
+   font-size: 120%;
+   font-weight: bold;
+   text-align: right;
+   vertical-align: top;
+   padding-right: 15px;
+   padding-top: 5px;
+   width: 180px; 
+}
+
+.gw-props-footer td {
+    padding-top: 30px;
+    text-align:right;
+}
+
+.button-disjoin {
+        padding: .2em 12px .2em 12px;
+        text-decoration: none;
+        position: relative;
+        vertical-align: middle;
+        text-align: center;
+        cursor: pointer;
+}
+
+.ui-icon-orangeIcon
+{
+    background-image: url(img/ui-icons-orange.png);
+}
+
+.join-button
+{
+        padding: .2em 12px .2em 12px;
+        text-decoration: none;
+        position: relative;
+        vertical-align: middle;
+        text-align: center;
+        color: #1667b6;
+        background: #4e922e;
+        cursor: pointer;
+}

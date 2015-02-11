@@ -1,0 +1,18 @@
+<ws:Template ws:TemplateId="1" xmlns:ws="http://schemas.ggf.org/graap/2007/03/ws-agreement">
+  <ws:Name>SAMPLE5-PENDING-AGREEMENT-WITH-NOTIFICATION</ws:Name>
+  <ws:Context>
+    <ws:ServiceProvider>AgreementResponder</ws:ServiceProvider>
+    <ws:TemplateId>1</ws:TemplateId>
+    <ws:TemplateName>SAMPLE5-PENDING-AGREEMENT-WITH-NOTIFICATION</ws:TemplateName>
+  </ws:Context>
+  <ws:Terms>
+    <ws:All>
+      <ws:ServiceDescriptionTerm ws:Name="SAMPLE1_SDT" ws:ServiceName="SAMPLE1_SERVICE">
+        <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+            <wsa:Address>http://foo.org/bar</wsa:Address>
+        </wsa:EndpointReference>
+      </ws:ServiceDescriptionTerm>
+    </ws:All>
+  </ws:Terms>
+  <ws:CreationConstraints/>
+</ws:Template>

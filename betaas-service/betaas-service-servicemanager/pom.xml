@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-service</artifactId>
+		<version>2.1-release</version>
+	</parent>
+	<groupId>eu.betaas</groupId>
+	<artifactId>betaas-service-servicemanager</artifactId>
+	<version>2.1-release</version>
+	<packaging>bundle</packaging>
+	<name>BETaaS Service Manager</name>
+	<description>Service Manager at service layer</description>
+
+    <properties>
+       <cxf.version>2.7.7</cxf.version>
+       <log4j.version>1.2.13</log4j.version>
+    </properties>
+    
+	<dependencies>
+    
+          <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+	    <dependency>
+		  <groupId>eu.betaas</groupId>
+		  <artifactId>betaas-taas-bigdatamanager-database</artifactId>
+		  <version>2.1-release</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>eu.betaas</groupId>
+  		  <artifactId>betaas-service-bigdatamanager-service-application-data-service</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+		<dependency>
+		    <groupId>eu.betaas</groupId>
+		    <artifactId>betaas-taas-itaasresourcesmanager</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>eu.betaas</groupId>
+		    <artifactId>betaas-taas-qosmanager-interface</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>eu.betaas</groupId>
+		    <artifactId>betaas-service-securitymanager</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+    <dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.sun.jersey</groupId>
+		    <artifactId>jersey-client</artifactId>
+		    <version>1.17.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.2.4</version>
+		</dependency>
+		
+	
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Import-Package>
+						  org.osgi.framework.*, 
+						  org.osgi.util.tracker.*, 
+						  eu.betaas.taas.qosmanager.api, 
+						  eu.betaas.taas.taasresourcesmanager.api,
+						  eu.betaas.service.bigdatamanager.applicationdataservice,
+						  eu.betaas.taas.bigdatamanager.database.hibernate.data,
+						  eu.betaas.taas.bigdatamanager.database.service.impl,
+						  eu.betaas.service.securitymanager.service,
+						  eu.betaas.taas.bigdatamanager.database.service, 
+						  com.google.gson,
+						  javax.ws.rs.*,
+              org.apache.cxf.*,
+						  *
+						</Import-Package>
+						<Export-Package>
+						  eu.betaas.service.servicemanager.api,
+						  eu.betaas.service.servicemanager.extended.api
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

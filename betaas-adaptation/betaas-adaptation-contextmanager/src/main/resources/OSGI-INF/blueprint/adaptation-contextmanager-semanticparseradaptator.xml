@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2014-2015 Tecnalia.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<blueprint default-activation="eager"
+  xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+
+  <cm:property-placeholder persistent-id="betaas.gateway">
+    <cm:default-properties>
+      <cm:property name="gwId" value="-1"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="adaptationContextManagerBean"
+    class="eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGiImpl"
+    factory-method="getInstance" scope="singleton" 
+    init-method="readConfigFileOSGi"
+    destroy-method="closeConfigFileOSGi">
+    <property name="bdservice" ref="taasCoreService" />
+    <property name="rmservice" ref="resourcemanagerService" />
+<!--     <property name="dbservice" ref="databaseService" /> -->
+    <property name="cmservice" ref="taasContextManager" />
+    <property name="qosservice" ref="QosService" /> 
+    <property name="gwId" value="${gwId}"/>
+  </bean>
+
+  <!-- My published services -->
+  <service ref="adaptationContextManagerBean"
+    interface="eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGi" />
+
+  <!-- The services I use -->
+  <reference id="taasCoreService" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.bigdatamanager.core.services.ITaasBigDataManager">
+  </reference>
+
+  <!-- The services I use -->
+  <reference id="resourcemanagerService" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager">
+  </reference>
+  
+    <!-- The services I use -->
+  <reference id="QosService" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.qosmanager.api.QoSManagerInternalIF">
+  </reference>
+
+  <!-- The services I use -->
+<!--   <reference id="databaseService" availability="mandatory" -->
+<!--     activation="eager" -->
+<!--     interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService"> -->
+<!--   </reference> -->
+  
+      <!-- The services I use -->
+  <reference id="taasContextManager" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.contextmanager.api.ThingsServiceManager">
+  </reference>
+
+  <!-- My published services -->
+  <bean id="adaptationContextManagerBean1"
+    class="eu.betaas.adaptation.contextmanager.api.impl.SemanticParserAdaptatorImpl"
+    scope="singleton" />
+  <service ref="adaptationContextManagerBean1"
+    interface="eu.betaas.adaptation.contextmanager.api.SemanticParserAdaptator" />
+
+</blueprint>
+
+

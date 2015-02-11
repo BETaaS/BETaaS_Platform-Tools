@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://schemas.scai.fraunhofer.de/config/wsag4j" 
+			xmlns:wsag4j-conf="http://schemas.scai.fraunhofer.de/config/wsag4j" 
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified" 
+			attributeFormDefault="qualified">
+
+	<xsd:element name="Configuration" type="wsag4j-conf:ConfigurationType"/>
+		
+    <xsd:complexType name="WSRFClientConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="SecurityHandlerChain" type="wsag4j-conf:HandlerChainType" minOccurs="0" />
+        <xsd:any namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="WSRFEngineConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="GatewayAddress" type="xsd:string"/>
+        <xsd:element name="Keystore" type="wsag4j-conf:KeystoreConfigurationType"/>
+        <xsd:element name="Truststore" type="wsag4j-conf:TruststoreConfigurationType"/>
+        <xsd:element name="SecurityHandlerChain" type="wsag4j-conf:HandlerChainType" minOccurs="0" />
+        <xsd:element name="WSAG4JEngineInstances" type="wsag4j-conf:WSAG4JEngineInstanceListType" minOccurs="0"/>
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    	
+    <xsd:complexType name="KeystoreConfigurationType">
+      <xsd:sequence minOccurs="1">
+        <xsd:element name="KeystoreType" type="xsd:string" default="PKCS12"/>
+        <xsd:element name="KeystoreFile" type="xsd:string" minOccurs="1"/>
+        <xsd:element name="KeystorePassword" type="xsd:string" minOccurs="1"/>
+        <xsd:element name="Alias" type="xsd:string"/>
+        <xsd:element name="AliasPassword" type="xsd:string" minOccurs="1"/>
+        <xsd:any namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="TruststoreConfigurationType">
+      <xsd:sequence minOccurs="1">
+        <xsd:element name="TruststoreType" type="xsd:string" default="PKCS12"/>
+        <xsd:element name="TruststoreFile" type="xsd:string" minOccurs="1"/>
+        <xsd:element name="TruststorePassword" type="xsd:string" minOccurs="1"/>
+        <xsd:any namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="HandlerType">
+      <xsd:sequence>
+        <xsd:element name="HandlerName" type="xsd:string"/>
+        <xsd:element name="ImplementationClass" type="xsd:string"/>
+        <xsd:any namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="HandlerChainType">
+      <xsd:sequence>
+        <xsd:element name="Handler" type="wsag4j-conf:HandlerType" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:any namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:complexType name="ConfigurationType">
+		<xsd:sequence>
+			<xsd:choice>
+                <xsd:element name="WSRFEngineConfiguration" type="wsag4j-conf:WSRFEngineConfigurationType"/>
+                <xsd:element name="WSRFClientConfiguration" type="wsag4j-conf:WSRFClientConfigurationType"/>
+                <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+  
+    <xsd:complexType name="WSAG4JEngineInstanceListType">
+      <xsd:sequence>
+        <xsd:element name="WSAG4JEngine" type="wsag4j-conf:WSAG4JEngineInstanceType" minOccurs="1" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="WSAG4JEngineInstanceType">
+        <xsd:attribute name="EngineConfigurationFile" type="xsd:string" use="required" />
+    </xsd:complexType>
+	
+  <!-- wsag4j action configuration types -->
+
+    <xsd:complexType name="WSAG4JEngineConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="ResourceId"  type="xsd:string"  minOccurs="0" maxOccurs="1" />
+        <xsd:element name="Factory"  type="wsag4j-conf:FactoryConfigurationType"  minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Validator"  type="wsag4j-conf:ValidatorType"  minOccurs="0" maxOccurs="1" />
+        <xsd:element name="Action" type="wsag4j-conf:ActionType" minOccurs="1" maxOccurs="unbounded" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ValidatorType">
+      <xsd:sequence>
+        <xsd:element name="SchemaImports" type="wsag4j-conf:SchemaImportType" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="SchemaImportType">
+      <xsd:sequence>
+        <xsd:element name="SchemaFilename" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />        
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="FactoryConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="FactoryImplementation" type="wsag4j-conf:ImplementationConfigurationType" minOccurs="1" maxOccurs="1" />        
+        <xsd:element name="PersistenceImplementation" type="wsag4j-conf:ImplementationConfigurationType" minOccurs="1" maxOccurs="1" />        
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ImplementationConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="ImplementationClass" type="xsd:string" />
+        <xsd:any namespace="##any" processContents="lax"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ActionType">
+      <xsd:sequence>
+        <xsd:element name="CreateAgreementConfiguration" type="wsag4j-conf:ImplementationConfigurationType" />
+        <xsd:element name="GetTemplateConfiguration" type="wsag4j-conf:ImplementationConfigurationType" />
+        <xsd:element name="NegotiationConfiguration" type="wsag4j-conf:ImplementationConfigurationType" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="useSession" type="xsd:boolean" default="false" use="optional" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="FileTemplateConfigurationType">
+      <xsd:sequence>
+        <xsd:element name="Filename" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="WSAG4JEngineConfiguration" type="wsag4j-conf:WSAG4JEngineConfigurationType"/>
+    <xsd:element name="FileTemplateConfiguration" type="wsag4j-conf:FileTemplateConfigurationType"/>
+    <xsd:element name="ValidatorConfiguration" type="wsag4j-conf:ValidatorType"/>
+  
+</xsd:schema>

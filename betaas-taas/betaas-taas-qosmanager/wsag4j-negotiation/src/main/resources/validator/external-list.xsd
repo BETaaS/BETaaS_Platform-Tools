@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://schemas.scai.fraunhofer.de/2011/02/external-constraint"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:external="http://schemas.scai.fraunhofer.de/2011/02/external-constraint"
+            elementFormDefault="qualified" 
+            attributeFormDefault="qualified">
+      
+  <xsd:simpleType name="ExternalListType">
+	<xsd:list>
+	   <xsd:simpleType>
+		    <xsd:restriction base="xsd:string">
+		        <xsd:enumeration value="this"/>
+		        <xsd:enumeration value="is"/>
+		        <xsd:enumeration value="a"/>
+		        <xsd:enumeration value="simple"/>
+		        <xsd:enumeration value="test"/>
+		    </xsd:restriction>
+	   </xsd:simpleType>
+	</xsd:list>
+  </xsd:simpleType>
+  
+</xsd:schema>

@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas-securitymanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-securitymanager-certificate</artifactId>
+  <version>2.1-release</version>
+  <packaging>bundle</packaging>
+  <name>BETaaS Taas Security Manager certificate interface</name>
+  <description>BETaaS Taas Security Manager certificate interface to avoid circular dependencies</description>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.felix</groupId>
+  		<artifactId>org.osgi.core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.osgi</groupId>
+  		<artifactId>org.osgi.compendium</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.bouncycastle</groupId>
+  		<artifactId>bcprov-jdk15on</artifactId>
+  		<version>1.50</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.bouncycastle</groupId>
+  		<artifactId>bcprov-ext-jdk15on</artifactId>
+  		<version>1.50</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.bouncycastle</groupId>
+  		<artifactId>bcpkix-jdk15on</artifactId>
+  		<version>1.50</version>
+  	</dependency>
+  	<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+  	<dependency>
+			<groupId>eu.betaas</groupId>
+			<artifactId>betaas-taas-securitymanager-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+  </dependencies>
+  
+  <build>
+  	<plugins>
+    	<plugin>
+      	<groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+          	<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <!-- <Bundle-Activator>eu.betaas.taas.securitymanager.certificate.activator.ExtGWCertificateActivator</Bundle-Activator> -->
+            <Import-Package>
+            <!-- eu.betaas.service.instancemanager.api.* -->
+            eu.betaas.taas.securitymanager.common.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,org.apache.*
+            </Import-Package>
+            <Export-Package>
+            	eu.betaas.taas.securitymanager.certificate.service;version=${project.version}                         
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://schemas.scai.fraunhofer.de/2008/11/wsag4j/engine" 
+			xmlns:wsag4j-engine="http://schemas.scai.fraunhofer.de/2008/11/wsag4j/engine" 
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified" 
+			attributeFormDefault="qualified">
+      
+  <xsd:complexType name="WSAG4JSessionType">
+    <xsd:sequence>
+      <xsd:element name="SessionID" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:element name="WSAG4JSession" type="wsag4j-engine:WSAG4JSessionType" />
+
+</xsd:schema>

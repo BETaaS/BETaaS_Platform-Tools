@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-service-bigdatamanager</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-service-bigdatamanager-service-application-data-service</artifactId>
+  <version>2.1-release</version>
+  <packaging>bundle</packaging>
+  <name>Betaas Service ADS Bundle</name>
+  <description>BDM Application Data Service Bundle</description>
+	<dependencies>
+
+ 	<dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    	
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+	  <artifactId>org.osgi.core</artifactId>
+    </dependency>
+   
+	<dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>4.0.1</version>
+    </dependency> 
+         
+	<dependency>
+	    <groupId>com.h2database</groupId>
+	    <artifactId>h2</artifactId>
+	</dependency> 
+	
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.2.4</version>
+	</dependency>	
+
+
+	<dependency>
+      <groupId>eu.betaas</groupId>
+ 		  <artifactId>betaas-service-bigdatamanager-service-datatask</artifactId>
+      <version>${project.version}</version>
+    </dependency>	
+	</dependencies>
+   <build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+                     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                      <Import-Package> 
+                     	org.osgi.framework,org.osgi.util.tracker,
+                     	eu.betaas.service.bigdatamanager.service.datatask,*
+                     </Import-Package>
+                     <Export-Package>
+                     	eu.betaas.service.bigdatamanager.applicationdataservice,
+                     	eu.betaas.service.bigdatamanager.applicationdataservice.impl
+                     </Export-Package>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>  
+  
+  
+  
+</project>

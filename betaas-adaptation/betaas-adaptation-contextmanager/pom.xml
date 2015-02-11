@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <!-- Licensed to the Apache Software Foundation (ASF) under one or more 
+    contributor license agreements. See the NOTICE file distributed with this 
+    work for additional information regarding copyright ownership. The ASF licenses 
+    this file to You under the Apache License, Version 2.0 (the "License"); you 
+    may not use this file except in compliance with the License. You may obtain 
+    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+    required by applicable law or agreed to in writing, software distributed 
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+    the specific language governing permissions and limitations under the License. -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-adaptation</artifactId>
+    <version>2.1-release</version>
+  </parent>
+
+  <artifactId>betaas-adaptation-contextmanager</artifactId>
+  <packaging>bundle</packaging>
+
+  <name>BETaaS Adaptation Context Manager</name>
+  <description>betaas-adaptation-contextmanager OSGi blueprint bundle project.</description>
+
+  <repositories>
+    <repository>
+      <id>betaas-thirdparty</id>
+      <name>BETaaS Snapshot Repo</name>
+      <url>http://www.betaas.eu:8101/nexus/content/repositories/betaas-thirdparty</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-resources-plugin</artifactId>
+      <version>2.6</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>junit</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-bigdatamanager-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-itaasresourcesmanager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-contextmanager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-taas-qosmanager-interface</artifactId>
+      <version>${project.version}</version>
+    </dependency> 
+    <dependency>
+      <groupId>org.geonames</groupId>
+      <artifactId>geonames</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf</groupId>
+      <artifactId>apache-karaf</artifactId>
+      <version>2.3.3</version>
+      <type>zip</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Karaf Test Framework Version -->
+    <dependency>
+      <groupId>org.apache.karaf.tooling.exam</groupId>
+      <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
+      <version>2.3.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Pax Exam version you would like to use. At least 2.2.x is required. -->
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit4</artifactId>
+      <version>2.6.0</version>
+<!--       <scope>test</scope> -->
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Embed-Dependency>org.reflections</Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Export-Package>
+              eu.betaas.adaptation.contextmanager.api,
+              eu.betaas.adaptation.contextmanager.api.impl,
+            </Export-Package>
+            <Import-Package>
+              com.google.gson,
+              <!-- eu.betaas.taas.bigdatamanager.database.service, -->
+              eu.betaas.taas.taasresourcesmanager.api,
+              eu.betaas.taas.contextmanager.api,
+              eu.betaas.taas.contextmanager.api.impl,
+              eu.betaas.taas.bigdatamanager.core.services,
+              javax.activation, javax.xml.bind.annotation,
+              org.osgi.framework,
+              org.osgi.service.blueprint,
+              org.h2,
+              org.osgi.util.tracker,
+              org.geonames,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

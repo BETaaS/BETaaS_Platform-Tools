@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-taasresourcesmanager</artifactId>  
+  <packaging>bundle</packaging>
+  <name>BETaaS TaaS Resources Manager</name>
+  <description>BETaaS Resources Manager at TaaS layer</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    
+    <dependency>
+	    <groupId>org.apache.felix</groupId>
+	    <artifactId>org.osgi.compendium</artifactId>
+		<version>1.4.0</version>
+	</dependency>
+	
+	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.2.4</version>
+ 	</dependency>
+	 
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-itaasresourcesmanager</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+	
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-contextmanager</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+	
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-trustmanager</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+		
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-bigdatamanager-database</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+	<!--  -->
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-service-servicemanager</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-service-securitymanager</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-adaptation-thingsadaptor</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+	
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-qosmanager-interface</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+		
+	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-vmmanager</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+	
+	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>			
+	</dependency>
+	
+	<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>			
+	</dependency>
+  </dependencies>
+  
+  
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+     	    <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+	        <Bundle-Name>${project.name}</Bundle-Name>      
+          	<Import-Package>
+          		org.osgi.framework,
+          		org.osgi.util.tracker, 
+          		org.apache.log4j,
+                org.osgi.service.blueprint,
+                *;resolution:=optional
+             </Import-Package>
+            <Export-Package>
+            	eu.betaas.taas.taasresourcesmanager.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

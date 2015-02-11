@@ -1,0 +1,18 @@
+<blueprint default-activation="eager"
+	xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+	xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+
+    <cm:property-placeholder persistent-id="betaas.gateway">
+    	<cm:default-properties>
+			<cm:property name="sensors" value="C:/data/sensors/" />
+		</cm:default-properties>
+	</cm:property-placeholder>
+    
+    <bean id="adaptationPluginBean" class="eu.betaas.adaptation.simulator.api.impl.AdaptorPluginImpl" init-method="start">
+    		<property name="sensorsFolder" value="${sensors}"></property>
+    </bean>
+	
+    <service ref="adaptationPluginBean" interface="eu.betaas.adaptation.plugin.api.IAdaptorPlugin"/>
+
+</blueprint>

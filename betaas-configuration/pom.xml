@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-configuration</artifactId>
+  <version>2.1-release</version>
+  <packaging>pom</packaging>
+  <name>BETaaS Configuration POM</name>
+  <description>BETaaS Karaf Configuration POM</description>
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-superpom</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  
+  <modules>
+	<module>features</module>
+	<module>features-karaf-3</module>
+  </modules>
+   <repositories>
+	 <repository>
+       <!-- Cloudera Repository -->
+       <id>cloudera</id>
+       <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+       <releases>
+           <enabled>true</enabled>
+       </releases>
+       <snapshots>
+           <enabled>true</enabled>
+      </snapshots>
+   </repository>
+  </repositories>
+</project>

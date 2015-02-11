@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsag:Template wsag:TemplateId="1" xmlns:wsag="http://schemas.ggf.org/graap/2007/03/ws-agreement">
+  <wsag:Name>BETaaS-Template</wsag:Name>
+  <wsag:Context>
+    <wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
+    <wsag:TemplateId>1</wsag:TemplateId>
+    <wsag:TemplateName>BETaaS-Template</wsag:TemplateName>
+  </wsag:Context>
+  <wsag:Terms>
+    <wsag:All>
+	<wsag:ServiceDescriptionTerm wsag:Name="THING" wsag:ServiceName="THINGSERVICE">
+                <!--  <wsag4jt:TimeConstraint xmlns:wsag4jt="http://schemas.wsag4j.org/2009/07/wsag4j-scheduling-extensions">
+                </wsag4jt:TimeConstraint>-->
+        
+        <betaas:ThingService xmlns:betaas="http://betaas.eu/schemas/betaas">
+	      <betaas:Definition>
+		  <betaas:transactionID>$TRANSACTIONID</betaas:transactionID>
+	      </betaas:Definition>
+	      <betaas:QoS>
+			<betaas:MaxResponseTime>$MAXRESPONSETIME</betaas:MaxResponseTime>
+			<betaas:MinAvailability>$MINAVAILABILITY</betaas:MinAvailability>
+			<betaas:MaxInterRequestTime>$MAXINTERREQUESTTIME</betaas:MaxInterRequestTime>
+			<betaas:AverageRate>$AVERAGERATE</betaas:AverageRate>
+			<betaas:MaxBurstSize>$MAXBURSTSIZE</betaas:MaxBurstSize>
+	      </betaas:QoS>
+	    </betaas:ThingService>
+	</wsag:ServiceDescriptionTerm>
+    </wsag:All>
+  </wsag:Terms>
+  <wsag:CreationConstraints>
+  </wsag:CreationConstraints> 
+ </wsag:Template>
+

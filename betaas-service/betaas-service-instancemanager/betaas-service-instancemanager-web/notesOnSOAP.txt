@@ -1,0 +1,9 @@
+The generation of SOAP classes has been done with SoapUI:
+- create a project with the WSDL published by DOSGi
+- generate code -> Apache CXF
+- set the check boxes Client and Implementation
+
+- in the generated code change the reference to the WSDL from the local path to the path on Tomcat localhost (not necessary)
+- fix the errors by removing the parameter "features" from the method calls
+- remove the required = false in the @XmlElementRet
+- remove accented characters from comments (proprieta')

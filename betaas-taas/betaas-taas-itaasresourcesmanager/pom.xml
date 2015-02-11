@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>2.1-release</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-itaasresourcesmanager</artifactId>
+  <version>2.1-release</version>
+  <packaging>bundle</packaging>
+  <name>TaaS Resource Manager Interface</name>
+  <description>TaaS Resource Manager interface to avoid circular references</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    
+    <dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.2.4</version>
+ 	</dependency>
+ 	
+ 	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-bigdatamanager-database</artifactId>
+		<version>${project.version}</version>
+	</dependency> 
+ 	
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.1.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+          <Bundle-Version>${project.version}</Bundle-Version>
+          <instructions>
+            <Export-Package>eu.betaas.taas.taasresourcesmanager.api</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

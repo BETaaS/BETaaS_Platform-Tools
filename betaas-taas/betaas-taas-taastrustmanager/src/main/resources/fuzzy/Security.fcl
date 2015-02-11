@@ -1,0 +1,57 @@
+FUNCTION_BLOCK securityAspect	
+
+VAR_INPUT
+	algorithm : REAL;
+	key : REAL;
+	certificates : REAL;	
+END_VAR
+
+VAR_OUTPUT
+	trust : REAL;
+END_VAR
+
+FUZZIFY algorithm			
+	TERM no := gbell 0.5 2 1; 
+	TERM simple := gbell 0.5 2 2;
+	TERM good := gbell 0.5 2 3;
+	TERM best := gbell 0.5 2 4;
+END_FUZZIFY
+
+FUZZIFY key			
+	TERM no := gbell 0.5 2 1; 
+	TERM short := gbell 0.5 2 2;
+	TERM long := gbell 0.5 2 3;
+	TERM veryLong := gbell 0.5 2 4; 
+END_FUZZIFY
+
+FUZZIFY certificates			
+	TERM no := gbell 0.5 2 1; 
+	TERM unknownAuth := gbell 0.5 2 2;
+	TERM knownAuth := gbell 0.5 2 3;  
+END_FUZZIFY
+
+DEFUZZIFY trust
+	TERM veryLow := gauss 0.25 1.4; 
+	TERM low := gauss 1.70 0.6;
+	TERM medium := gauss 2.70 0.6;
+	TERM high := gauss 3.70 0.6;
+	TERM veryHigh := gauss 4.95 1.4;
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 2.5;		// Default value is 2.5 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or')
+	ACT : MIN;			// Use 'min' activation method
+	ACCU : MAX;			// Use 'max' accumulation method
+
+	RULE 1 : IF algorithm IS no AND key IS no AND (certificates IS no OR certificates IS unknownAuth) THEN trust IS veryLow;
+	RULE 2 : IF algorithm IS simple AND key IS short AND (certificates IS no OR certificates IS unknownAuth) THEN trust IS low;
+	RULE 3 : IF algorithm IS good AND key IS long AND certificates IS unknownAuth THEN trust IS medium;
+	RULE 4 : IF algorithm IS simple AND key IS veryLong AND (certificates IS unknownAuth OR certificates IS knownAuth) THEN trust IS medium;
+	RULE 5 : IF ((algorithm IS good AND key IS long) OR (algorithm IS best AND key IS short)) AND certificates IS knownAuth THEN trust IS high;
+	RULE 6 : IF ((algorithm IS best AND (key IS long OR key IS veryLong)) OR (algorithm IS good AND key IS veryLong)) AND certificates IS knownAuth THEN trust IS veryHigh;	
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
+

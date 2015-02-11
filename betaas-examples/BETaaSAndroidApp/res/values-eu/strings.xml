@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Copyright 2014 ATOS SPAIN S.A.
+
+Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Authors :
+Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
+@email sergio.garciavillalonga@atos.net
+
+ -->
+
+<resources>
+    <string name="app_name">BETaaS</string>
+    <string name="title_section1">Atala 1</string>
+    <string name="title_section2">Atala 2</string>
+    <string name="title_section3">Atala 3</string>
+    <string name="navigation_drawer_open">Ireki tiradera nabigazioa</string>
+    <string name="navigation_drawer_close">Itxi tiradera nabigazioa</string>
+    <string name="action_example">Ekintza Adibidea</string>
+    <string name="action_settings">Ezarpenak</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="add_gateway">Gehitu pasagunea berria</string>
+    <string name="add">Gehitu</string>
+    <string name="name">Izena</string>
+    <string name="update">Eguneratzeko</string>
+    <string name="delete_gateway">Kendu pasagunea</string>
+    <string name="edit_gateway">Editatu pasagunea</string>
+    <string name="no_internet">Konexio arazo bat dago. Egiaztatu sare batean konektatutako ari bazara eta aplikazioa berrabiarazi.</string>
+    <string name="ok">Onartu</string>
+    <string name="registering_app">Erregistratzen aplikazioa</string>
+    <string name="app_id">Aplikazioa identifikatzea:</string>
+    <string name="service_id">Aplikazioa identifikatzea:</string>
+	<string name="relax">Relax, inork ez etxean</string>
+    <string name="caution">Kontuz! Bada norbait etxean</string>
+    <string name="subscribing_service">To %1$s ere zerbitzua harpidedun</string>
+	<string name="last_update">Azken eguneratzea:</string>
+</resources>

@@ -1,0 +1,17 @@
+<servers>
+  <server>
+    <name>Unipi01</name>
+    <ip>127.0.0.1</ip>
+    <port>5683</port>
+  </server>
+  <!--  <server>
+    <name>Unipi02</name>
+    <ip>127.0.0.1</ip>
+    <port>5684</port>
+  </server>
+  <server>
+    <name>Unipi03</name>
+    <ip>127.0.0.1</ip>
+    <port>5685</port>
+  </server>-->
+</servers>
