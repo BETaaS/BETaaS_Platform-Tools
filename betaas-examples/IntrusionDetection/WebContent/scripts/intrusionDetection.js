@@ -4,11 +4,13 @@ function initPage() {
 }
 
 function getPresenceData() {
-	xmlhttpGet("http://localhost:8080/IntrusionDetection/rest/presence", manageAjaxRespPresence);
+	var getUrl = window.location;
+	xmlhttpGet(getUrl + "rest/presence", manageAjaxRespPresence);
 }
 
 function runTask() {
-	xmlhttpGet("http://localhost:8080/IntrusionDetection/rest/task", manageAjaxRespTask);
+	var getUrl = window.location;
+	xmlhttpGet(getUrl+"rest/task", manageAjaxRespTask);
 }
 
 function xmlhttpGet(strURL, manageFunc) {
