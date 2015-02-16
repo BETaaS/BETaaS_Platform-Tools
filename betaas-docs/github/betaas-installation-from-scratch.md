@@ -105,13 +105,13 @@ gwId=<GATEWAY_ID>
 
 # TaaS Database settings
 
-taasdb_jdbc = jdbc:h2:file:<YOUR_PATH>/betaas/data/taasbdmdb;DB_CLOSE_DELAY=-1
+taasdb_jdbc = jdbc:h2:file:<YOUR_PATH>/data/taasbdmdb;DB_CLOSE_DELAY=-1
 taasdb_user = sa
 taasdb_pwd = sa
 
 # Service SQL Database settings 
 bdm_jdbc_driver = org.h2.Driver
-bdm_url = jdbc:h2:file:<YOUR_PATH>/betaas/data/bdmdata/
+bdm_url = jdbc:h2:file:<YOUR_PATH>/data/bdmdata/
 bdm_db_name = servicedb
 bdm_db_user = sa
 bdm_db_pwd = sa
@@ -166,7 +166,7 @@ conditionPath = <YOUR_PATH>/data/securityConfig/condition/
 
 # CoAP settings
 
-serversConfig = <YOUR_PATH>/betaas/server.xml
+serversConfig = <YOUR_PATH>/data/coap_plugin/server.xml
 ```
 Then create the needed folders:
 
