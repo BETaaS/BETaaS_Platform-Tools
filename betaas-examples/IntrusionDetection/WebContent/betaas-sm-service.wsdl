@@ -260,7 +260,7 @@
   </wsdl:binding>
   <wsdl:service name="ServiceManagerExternalIF">
     <wsdl:port binding="tns:ServiceManagerExternalIFSoapBinding" name="ServiceManagerExternalIFPort">
-      <soap:address location="http://localhost:18900/sm-service"/>
+      <soap:address location="http://127.0.0.1:9304/sm-service"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

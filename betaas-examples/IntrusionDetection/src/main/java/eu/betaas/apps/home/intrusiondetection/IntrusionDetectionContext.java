@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
  */
 public class IntrusionDetectionContext implements ServletContextListener {
 
-	public final static String MANIFEST_FILE_NAME = "http://localhost:8080/IntrusionDetection/manifest.xml";
+	public final static String MANIFEST_FILE_NAME = "http://127.0.0.1:8080/IntrusionDetection/manifest.xml";
 
     public static final QName SERVICE_NAME = new QName("http://api.servicemanager.service.betaas.eu/", "ServiceManagerExternalIF");
 	
