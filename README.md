@@ -76,6 +76,13 @@ We do provide simulators for things. The following guides will help you to use t
 
 ## About BETaaS Project
 
+**Start building applications for the future**
+**BETaaS** can help you overcome the limitations of current M2M applications platforms.
+**BETaaS technology** provides a runtime platform that simplifies the deployment and execution of content-centric M2M applications, with an horizontal abstraction which relies on a local cloud of gateways, enabling the use of Things as a Service over heterogeneous things. 
+**BETaaS platform** provides a uniform interface and services to map content (information) with things (resources) in a context-aware fashion. With **BETaaS**, the deployment of services for the execution of applications will be dynamic and will take into account the computational resources of the low-end physical devices used.
+The platform also provides **BETaaS Things Simulator** to enable testing of simulated scenarios in conjunction with current deployed real scenarios.
+
+
 ### **About BETaaS Software License**
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
