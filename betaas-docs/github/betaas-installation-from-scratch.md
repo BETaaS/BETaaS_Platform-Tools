@@ -84,6 +84,14 @@ cp BETaaS_Platform-Tools/betaas-configuration/configuration/betaas.* /opt/apache
 ```
 ##### Update the gateway config file:
 ```sh
+vim /opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg
+```
+Then replace `localhost` with your ip. Inside vim you can issue:
+```sh
+:%s/localhost/{Your_IP}/g
+```
+Now, you have to update the second configuration file.
+```sh
 vim /opt/apache-karaf-2.3.8/etc/betaas.gateway.cfg
 ```
 Then update the config file with `{PATH}` as the absolute path of your BETaaS installation and the unique `{GATEWAY_ID}`:
