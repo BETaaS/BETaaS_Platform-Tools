@@ -66,6 +66,8 @@ public class InstallThread extends Thread {
 						"          <MaxInterRequestTimeSec>5</MaxInterRequestTimeSec>"+
 						"          <MaxResponseTimeSec>5</MaxResponseTimeSec>"+
 						"          <MinAvailability>2</MinAvailability>"+      
+						"          <MaxBurstSize>1</MaxBurstSize>"+ 
+						"          <AverageRate>1</AverageRate>"+ 
 						"        </QoS>"+
 						"        <credentials></credentials>"+
 						"      </ServiceDefinition>    "+
