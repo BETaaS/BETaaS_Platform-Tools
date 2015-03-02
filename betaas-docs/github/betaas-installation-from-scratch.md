@@ -159,6 +159,7 @@ serversConfig = {PATH}/BETaaS_Platform-Tools/data/coap_plugin/server.xml
 Then create the needed folders:
 
 ```sh
+mkdir BETaaS_Platform-Tools/data
 mkdir BETaaS_Platform-Tools/data/coap_plugin
 mkdir BETaaS_Platform-Tools/data/sensors
 mkdir BETaaS_Platform-Tools/data/context
