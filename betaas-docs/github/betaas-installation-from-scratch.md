@@ -19,13 +19,13 @@ mv /opt/zookeeper-3.4.6/conf/zoo_sample.cfg /opt/zookeeper-3.4.6/conf/zoo.cfg
 ```
 ### Apache Maven
 ```sh
-wget http://apache.fastbull.org/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
-tar zxvf apache-maven-3.2.3-bin.tar.gz
-sudo mv apache-maven-3.2.3 /opt
+wget http://mirror.nohup.it/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
+tar zxvf apache-maven-3.2.5-bin.tar.gz
+sudo mv apache-maven-3.2.5 /opt
 ```
 Edit Maven Config file:
 ```sh
-vim /opt/apache-maven-3.2.3/conf/settings.xml
+vim /opt/apache-maven-3.2.5/conf/settings.xml
 ```
 by adding this snippet code inside the `<servers>` tag:
 ```xml
@@ -77,41 +77,29 @@ export JAVA_HOME=/usr/lib/jvm/java-7-oracle
 git clone https://github.com/BETaaS/BETaaS_Platform-Tools.git
 ```
 
-### Configure Security Certificate
-```sh
-mkdir /opt/apache-karaf-2.3.8/securityConfig
-mkdir -p BETaaS_Platform-Tools/data/securityConfig/certificate/
-cp BETaaS_Platform-Tools/betaas-configuration/configuration/AppStoreCertInter.p12 BETaaS_Platform-Tools/data/securityConfig/certificate/
-
-mkdir -p BETaaS_Platform-Tools/data/securityConfig/condition/
-cp BETaaS_Platform-Tools/betaas-configuration/configuration/condition1.xml BETaaS_Platform-Tools/data/securityConfig/condition/
-```
-
 ### Configure BETaaS
 ##### Update the endpoint config file:
 ```sh
 cp BETaaS_Platform-Tools/betaas-configuration/configuration/betaas.* /opt/apache-karaf-2.3.8/etc/
-
-cp /opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg /opt/apache-karaf-2.3.8/etc/betaas.endpoints.cfg.bck
 ```
 ##### Update the gateway config file:
 ```sh
 vim /opt/apache-karaf-2.3.8/etc/betaas.gateway.cfg
 ```
-Then update the config file with `YOUR_PATH` as the absolute path of your BETaaS installation and the unique `GATEWAY_ID`:
+Then update the config file with `{PATH}` as the absolute path of your BETaaS installation and the unique `{GATEWAY_ID}`:
 ```
 # Gatewaay configuration
-gwId=<GATEWAY_ID>
+gwId={GATEWAY_ID}
 
 # TaaS Database settings
 
-taasdb_jdbc = jdbc:h2:file:<YOUR_PATH>/data/taasbdmdb;DB_CLOSE_DELAY=-1
+taasdb_jdbc = jdbc:h2:file:{PATH}/BETaaS_Platform-Tools/data/taasbdmdb;DB_CLOSE_DELAY=-1
 taasdb_user = sa
 taasdb_pwd = sa
 
 # Service SQL Database settings 
 bdm_jdbc_driver = org.h2.Driver
-bdm_url = jdbc:h2:file:<YOUR_PATH>/data/bdmdata/
+bdm_url = jdbc:h2:file:{PATH}/BETaaS_Platform-Tools/data/bdmdata/
 bdm_db_name = servicedb
 bdm_db_user = sa
 bdm_db_pwd = sa
@@ -133,16 +121,16 @@ prestoUser = test
 
 # Simulator settings
 
-sensors = <YOUR_PATH>/betaas/sensors/
+sensors = {PATH}/BETaaS_Platform-Tools/data/sensors/
 
 # Things Adaptor settings
 
-sensorsContext = <YOUR_PATH>/betaas/context/
+sensorsContext = {PATH}/BETaaS_Platform-Tools/data/context/
 
 # Instance Manager
 credentials=na
 instanceDescription=Low Emission Zone Gateway
-adminAddress=http://10.0.3.106:8080/InstanceManager/
+adminAddress=http://localhost:8080/InstanceManager/
 automaticJoin = 0       
 trackerWaitTime=30000
 
@@ -161,20 +149,27 @@ location=Aalborg
 orgName=BETaaS
 
 # Info for Security Manager
-certificatePath = <YOUR_PATH>/data/securityConfig/certificate/
-conditionPath = <YOUR_PATH>/data/securityConfig/condition/
+certificatePath = {PATH}/BETaaS_Platform-Tools/data/securityConfig/certificate/
+conditionPath = {PATH}/BETaaS_Platform-Tools/data/securityConfig/condition/
 
 # CoAP settings
 
-serversConfig = <YOUR_PATH>/data/coap_plugin/server.xml
+serversConfig = {PATH}/BETaaS_Platform-Tools/data/coap_plugin/server.xml
 ```
 Then create the needed folders:
 
 ```sh
-mkdir BETaaS_Platform-Tools/betaas
-mkdir BETaaS_Platform-Tools/betaas/data
-mkdir BETaaS_Platform-Tools/betaas/sensors
-mkdir BETaaS_Platform-Tools/betaas/context
+mkdir BETaaS_Platform-Tools/data/coap_plugin
+mkdir BETaaS_Platform-Tools/data/sensors
+mkdir BETaaS_Platform-Tools/data/context
+mkdir -p BETaaS_Platform-Tools/data/securityConfig/certificate/
+mkdir -p BETaaS_Platform-Tools/data/securityConfig/condition/
+```
+
+### Configure Security Certificate
+```sh
+cp BETaaS_Platform-Tools/betaas-configuration/configuration/AppStoreCertInter.p12 BETaaS_Platform-Tools/data/securityConfig/certificate/
+cp BETaaS_Platform-Tools/betaas-configuration/configuration/condition1.xml BETaaS_Platform-Tools/data/securityConfig/condition/
 ```
 
 ##### Update the logging config file:
