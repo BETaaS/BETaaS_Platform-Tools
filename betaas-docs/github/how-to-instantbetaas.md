@@ -4,7 +4,7 @@ Instant BETaaS is an ubuntu virtual machine with the BETaaS software pre-install
 
 #### Requirements
 - Oracle Virtual Box available from Oracle VM VirtualBox
-- BETaaS Virtual Box Image available from [Link 1] 
+- BETaaS Virtual Box Image available from [Link 1] or [Link 2] 
 - Recommended Configuration for Virtual Box (tested with below configuration for stable working)
    - 2 GB Memory
    - 20 GB HDD 
@@ -60,3 +60,4 @@ http://localhost:8080/IntrusionDetection/
 - The username/password of each linux container are ubuntu/ubuntu
 
 [Link 1]:https://drive.google.com/file/d/0B6ruPOwpLiDCR1VYQzgzdHVoVHM/view?usp=sharing
+[Link 2]:https://mega.co.nz/#!3MxiRJqI!3jmtuROGiRxrwcdocb5WmfWkYcgSMXYdXN1AAgyOA-w
