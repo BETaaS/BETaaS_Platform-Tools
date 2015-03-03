@@ -870,7 +870,11 @@ public class InternalAPIImpl implements QoSManagerInternalIF, Serializable{
 
 	public SLACalculation calculateSLA(
 			String selectedThingService) {
-		return qosMonitoring.calculateSLA(selectedThingService);
+		//return qosMonitoring.calculateSLA(selectedThingService);
+		SLACalculation resultSLA = new SLACalculation();
+	    resultSLA.setThingServiceId(selectedThingService);
+	    resultSLA.setQoSparamsFulfill(1);
+	    return resultSLA;
 	}
 	
 	public SLACalculation calculateSLAPush(String sThingServiceName, int isgTaaSRequestRate){
