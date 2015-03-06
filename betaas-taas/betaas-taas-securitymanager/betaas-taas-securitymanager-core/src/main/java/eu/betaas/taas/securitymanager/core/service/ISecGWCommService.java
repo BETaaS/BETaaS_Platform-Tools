@@ -35,4 +35,20 @@ public interface ISecGWCommService {
 	 * @throws Exception
 	 */
 	public boolean deriveSharedKeys(String gwDestId) throws Exception;
+	
+	/**
+	 * A method to encrypt the data to be sent to other GW
+	 * @param gwDestId: The ID of destination GW
+	 * @param data: data to be encrypted in String
+	 * @return: encrypted data in byte array
+	 */
+	public byte[] doEncryptData(String gwDestId, String data);
+	
+	/**
+	 * A method to decrypt the data received from other GW
+	 * @param gwOriId: The ID of GW that originates the message
+	 * @param encrypted: The received encrypted data
+	 * @return: the original data in String
+	 */
+	public String doDecryptData(String gwOriId, byte[] encrypted);
 }
