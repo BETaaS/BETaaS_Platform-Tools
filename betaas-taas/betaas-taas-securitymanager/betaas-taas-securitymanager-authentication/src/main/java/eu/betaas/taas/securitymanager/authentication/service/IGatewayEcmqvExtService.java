@@ -47,6 +47,6 @@ public interface IGatewayEcmqvExtService {
 	 * @param mac the calculated MAC 3
 	 * @return true if the calculated MAC 3 is valid, otherwise false
 	 */
-	public boolean lastEcmqv(byte[] mac);
+	public long lastEcmqv(byte[] mac, String remoteGwId);
 	
 }

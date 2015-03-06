@@ -34,6 +34,8 @@ import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 //import org.osgi.util.tracker.ServiceTracker;
 
+import eu.betaas.taas.securitymanager.authentication.catalog.ExpireKeyGwCatalog;
+import eu.betaas.taas.securitymanager.authentication.catalog.KeyGwCatalog;
 //import eu.betaas.taas.securitymanager.authentication.activator.ExtAuthenticationActivator;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService;
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
@@ -259,4 +261,24 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 		log.debug("Got GWCertificateService from blueprint...");
 	}
 
+	public long getExpireTime(String gwId) {
+		ExpireKeyGwCatalog expireCat = ExpireKeyGwCatalog.instance();
+		return expireCat.getExpireKeyGw(gwId);
+	}
+	
+	public void setKeyAndExpireTime(String gwId, long time) {
+		// put the k2 into the catalog
+		KeyGwCatalog keyCat = KeyGwCatalog.instance();
+		keyCat.addKeyGw(gwId, k2);
+		
+		// set the expire time
+		ExpireKeyGwCatalog expireCat = ExpireKeyGwCatalog.instance();
+		expireCat.addExpireKeyGw(gwId, time);
+	}
+
+	public byte[] getK2(String gwId) {
+		// TODO Auto-generated method stub
+		KeyGwCatalog keyCat = KeyGwCatalog.instance();
+		return keyCat.getKeyGw(gwId);
+	}
 }
