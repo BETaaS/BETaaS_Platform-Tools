@@ -38,7 +38,7 @@ The following repo:
 
     <server>
       <id>betaas-thirdparty</id>
-      <username>betaas-user-TOBEPROVIDED</username>
+      <username>betaas-user-external</username>
       <password>pass-TOBEPROVIDED</password>
     </server>
 
@@ -69,7 +69,7 @@ The file *betaas.endpoints.cfg* is only used when DOSGi is configured (see the n
 BETaaS gateways can be installed within the same machine, for testing purposes, or in a distributed environment. This affects how Zookeeper and DOSGi are configured. 
 The mechanism that BETaaS provides to install gateways, is by the mean of Karaf Features, in order to make available BETaaS features within Apache Karaf, run the following command inside the Karaf console:
 
-	features:addurl mvn:eu.betaas/betaas-features/0.0.1-SNAPSHOT/xml 
+	features:addurl mvn:eu.betaas/betaas-features/2.1-release/xml 
 
 
 ###### Installing a single BETaaS gateway
