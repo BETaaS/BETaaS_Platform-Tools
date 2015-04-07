@@ -26,6 +26,7 @@
   <cm:property-placeholder persistent-id="betaas.gateway">
     <cm:default-properties>
       <cm:property name="gwId" value="-1"/>
+      <cm:property name="busenabled" value="false"/>
     </cm:default-properties>
   </cm:property-placeholder>
   
@@ -51,6 +52,7 @@
         <property name="service" ref="databaseService"/>
         <property name="gwId" value="${gwId}"/>
         <property name="context" ref="blueprintBundleContext"/>
+        <property name="enabledbus" value="${busenabled}"></property> 
   </bean>
 
   <service ref="taasContextManagerBean"

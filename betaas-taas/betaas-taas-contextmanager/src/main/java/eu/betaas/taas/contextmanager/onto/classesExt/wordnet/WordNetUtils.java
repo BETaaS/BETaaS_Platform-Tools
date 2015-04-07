@@ -63,6 +63,7 @@ public class WordNetUtils
 
   // PRIVATE SECTION
 //  private ThingsServiceManager oThingsServiceManager = new ThingsServiceManager();
+  private static ThingsServiceManager oThingsServiceManager = null;
   
   private static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private static String WORDNET = "";
@@ -87,7 +88,7 @@ public class WordNetUtils
   private final static String HYPERNYM = "hypernym";
   private final static String HYPERHYPERNYM = "hyperhypernym";
 
-  ThingsServiceManager oThingsServiceManager = new ThingsServiceManagerImpl();
+//  ThingsServiceManager oThingsServiceManager = new ThingsServiceManagerImpl();
   
   public boolean init()
   {
@@ -95,7 +96,10 @@ public class WordNetUtils
     boolean bCorrect = true;
     try
     {
+      oThingsServiceManager = new ThingsServiceManagerImpl();
+      
       mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. This is a wrapper for the MIT WordNet inteface that simplifies basic operations such as retrieving synonyms for a word.");
+      
       oThingsServiceManager.sendData("Starting Wordnet... a wrapper for the MIT WordNet inteface that simplifies basic operations such as retrieving synonyms for a word.","info", "Wordnet");
       File fileDestiny = null;
       String pathWordnetFileName = null;
