@@ -20,6 +20,7 @@
 // Responsible: Tecnalia
 package eu.betaas.adaptation.contextmanager.api.impl;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 import eu.betaas.taas.bigdatamanager.core.services.ITaasBigDataManager;
 import eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGi;
 import eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGiImpl;
+import eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils.ReminderReachableRemove;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager;
 import eu.betaas.taas.qosmanager.api.QoSManagerInternalIF;
 
@@ -48,6 +50,7 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
   private TaaSResourceManager rmservice;
   static private ThingsServiceManager cmservice;
   static private QoSManagerInternalIF qosservice;
+  private ConfigBundleOSGi oConfigOSGi;
   private String sGwIdLocal;
   private static Logger mLogger = Logger.getLogger(ConfigBundleOSGiImpl.LOGGER_NAME);
 
@@ -63,7 +66,9 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
 //  String sNewThingServiceName = "";
   static String sQueryUpdate = "";
   static String sInstanceID = "";
-
+  
+  
+  
   private double lat;
   private double lng;
 
@@ -74,18 +79,28 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
   // {
   // }
 
-  public boolean publishThing_local(ArrayList<ThingsData> oThingsDataList,
+  public SemanticParserAdaptatorImpl(){
+    try
+    {
+      oConfigOSGi = ConfigBundleOSGiImpl.getInstance(); //OJO
+      cmservice = oConfigOSGi.getCmservice();
+    }
+    catch (SQLException e)
+    {
+      mLogger.error("Component CM perform operation CONSTRUCTOR. Exception: " + e.getMessage() + ".");
+    }
+  }
+  
+  public String publishThing_local(ArrayList<ThingsData> oThingsDataList,
       String sMode) throws Exception
   {
-
     boolean bResults = true;
     boolean bSubscribe = false;
+    JsonObject jResultType = null;
     String sNewThingServiceName = "";
-
-    ConfigBundleOSGi oConfigOSGi = ConfigBundleOSGiImpl.getInstance();
+    
     bdservice = oConfigOSGi.getBdservice();
     rmservice = oConfigOSGi.getRmservice();
-    cmservice = oConfigOSGi.getCmservice();
     qosservice = oConfigOSGi.getQosservice();
     sGwIdLocal = oConfigOSGi.getGwId();
 
@@ -190,11 +205,11 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
             bEnvironment, sLatitude, sLongitude, sAltitude, sFloor,
             sLocationKeyword, sLocationIdentifier);
         
-//        mLogger.info("Checking Thing Type families on the ontology for the type: "+ sTypeClass);
-//        JsonObject jResult = cmservice.checkThingType(sType, oThingsData.isOutput());
-//        
-//        mLogger.info("Checking Location families on the ontology for the locationKeyword: "+ sLocationKeyword);
-//        jResult = cmservice.checkThingLocation(sLocationKeyword);
+        mLogger.info("Checking Thing Type families on the ontology for the type: "+ sTypeClass);
+        jResultType = cmservice.checkThingType(sType, oThingsData.isOutput()); //TODO
+        
+        mLogger.info("Checking Location families on the ontology for the locationKeyword: "+ sLocationKeyword);
+        JsonObject jResultLocation = cmservice.checkThingLocation(sLocationKeyword); //TODO
 
         String sPrefixThingService;
         if (bOutput)
@@ -216,8 +231,7 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
         String sArea = "_" + sLocationIdentifier.toLowerCase()
             + sLocationKeyword.toLowerCase();
 
-        String sThingServiceName = sPrefixThingService + sLocationIdentifier
-            + sLocationKeyword + sTypeClass; // setMainKitchenPresence
+        String sThingServiceName = sPrefixThingService + sLocationIdentifier + sLocationKeyword + sTypeClass; // setMainKitchenPresence
         sNewThingServiceName = sThingServiceName + "_" + sDeviceID + "_" + sGwIdLocal;// setMainKitchenPresence_999_01
 
         if (sMode.equals(CHECK))
@@ -248,6 +262,8 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
               sPhysicalPlace = getPhysicalPlaceOnGeonames(lat, lng);
           }
 
+          cmservice.addResource(sTypeClass);
+          
           sQueryUpdate = ""
               + "PREFIX BETaaS: <http://www.betaas.eu/2013/betaasOnt#> "
               + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
@@ -277,13 +293,7 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
           }
           sQueryUpdate = sQueryUpdate + "BETaaS:observedBy BETaaS:"
               + sSensorInstance + ". "
-              + "BETaaS:"
-              + sSensorInstance
-              + " a <"
-              + PREFIX_BETAAS
-              + "#"
-              + sTypeClass
-              + "Sensor>; " // OJO
+              + "BETaaS:" + sSensorInstance + " a <" + PREFIX_BETAAS + "#" + sTypeClass + "Sensor>; " // OJO
               + "BETaaS:thingID '" + sThingID + "'; "
               + "BETaaS:maximum_response_time '" + sMaximumResponseTime + "'; "
               + "BETaaS:digital '" + bDigital + "'; " + "BETaaS:output '"
@@ -343,8 +353,8 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
               + " BETaaS:thingserviceID '" + sNewThingServiceName + "'. "
               + " }";
 
-          String sNameThread = "ontology update";
-          mLogger.debug("Component CM perform operation publishThing, starting "+sNameThread+" thread");
+//          String sNameThread = "ontology update";
+//          mLogger.debug("Component CM perform operation publishThing, starting "+sNameThread+" thread");
           cmservice.sparqlUpdate(sQueryUpdate);
 
           // Check for null values
@@ -402,7 +412,6 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
             mLogger
                 .error("Component CM perform operation publishThing. NOT call service ITaasBigDataManager.setThingsBDM FUNCTION because some parameters are null!.");
           }
-//          t.join();
           
           if (sMode.equals(INIT))
           {
@@ -449,8 +458,7 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
         else
         {
           mLogger
-              .error("Component CM perform operation publishThingCheck. NO SUBSCRIPTION: "
-                  + sNewThingServiceName);
+              .error("Component CM perform operation publishThingCheck. NO SUBSCRIPTION: " + sNewThingServiceName);
         }
       }// for
     }
@@ -464,10 +472,12 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
           .error("Component CM perform operation publishThingInit. It has not been executed correctly. Exception: "
               + e.getMessage() + ".");
     }
-    mLogger
-        .debug("Component CM perform operation publishThingInit. Results: "
-            + bResults);
-    return bResults;
+    mLogger.debug("Component CM perform operation publishThingInit. Results: " + bResults);
+    if (bResults)
+      oConfigOSGi.sendData("The Thing Service "+sNewThingServiceName+" has been published sucessfully!.", "info", "AdaptationCM");
+    else
+      oConfigOSGi.sendData("The Thing Service "+sNewThingServiceName+" has not been published sucessfully!.", "error", "AdaptationCM");
+    return jResultType.toString();
   }
 
   public boolean subscribe(String sThingServiceName)
@@ -479,14 +489,13 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
     }
     catch (Exception e)
     {
-      mLogger
-          .error("Component CM perform operation subscribe. It has not been executed correctly.");
+      mLogger.error("Component CM perform operation subscribe. It has not been executed correctly.");
+      oConfigOSGi.sendData("The Thing Service has been published sucessfully!.", "info", "AdaptationCM");
       return false;
     }
 
-    mLogger
-        .debug("Component CM perform operation subscribe. Results: subscription "
-            + bResult);
+    mLogger.debug("Component CM perform operation subscribe. Results: subscription " + bResult);
+    oConfigOSGi.sendData("The Thing Service "+sThingServiceName+" has been subscribed sucessfully!.", "info", "AdaptationCM");
     return bResult;
   }
 
@@ -499,39 +508,35 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
     }
     catch (Exception e)
     {
-      mLogger
-          .error("Component CM perform operation unsubscribe. It has not been executed correctly.");
+      mLogger.error("Component CM perform operation unsubscribe. It has not been executed correctly.");
+      oConfigOSGi.sendData("The Thing Service "+sThingServiceName+" has been unsubscribed unsucessfully!.", "info", "AdaptationCM");
       return false;
     }
 
-    mLogger
-        .debug("Component CM perform operation unsubscribe. Results: subscription "
-            + bResult);
+    mLogger.debug("Component CM perform operation unsubscribe. Results: subscription "+ bResult);
+    oConfigOSGi.sendData("The Thing Service "+sThingServiceName+" has been unsubscribed sucessfully!.", "info", "AdaptationCM");
     return bResult;
   }
 
-  public boolean publishThingInit(ArrayList<ThingsData> oThingsDataList)
+  public String publishThingInit(ArrayList<ThingsData> oThingsDataList)
       throws Exception
   {
-    boolean bResults = true;
-    bResults = this.publishThing_local(oThingsDataList, INIT);
-    return bResults;
+    String json = this.publishThing_local(oThingsDataList, INIT);
+    return json;
   }
 
-  public boolean publishThingCheck(ArrayList<ThingsData> oThingsDataList)
+  public String publishThingCheck(ArrayList<ThingsData> oThingsDataList)
       throws Exception
   {
-    boolean bResults = true;
-    bResults = this.publishThing_local(oThingsDataList, CHECK);
-    return bResults;
+    String json = this.publishThing_local(oThingsDataList, CHECK);
+    return json;
   }
 
-  public boolean publishThing(ArrayList<ThingsData> oThingsDataList)
+  public String publishThing(ArrayList<ThingsData> oThingsDataList)
       throws Exception
   {
-    boolean bResults = true;
-    bResults = this.publishThing_local(oThingsDataList, NORMAL);
-    return bResults;
+    String json = this.publishThing_local(oThingsDataList, NORMAL);
+    return json;
   }
 
   // Java Client for GeoNames Webservices
@@ -705,33 +710,68 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
     return bCorrect;
   }
 
+public boolean removeThingUnreachable (String sThingName)
+{
+  boolean bCorrect = true;
+  try
+  {
+    mLogger.debug("Component CM perform operation removeThingUnreachable. Item: "+sThingName+".");
+    String sThingServiceName = cmservice.sparqlRemoveDevice(sThingName);
+
+    try{ qosservice.thingRemoved(sThingServiceName);}
+    catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to qosservice.thingRemoved("+sInstanceID+"). Exception: " + e.getMessage() + ".");}
+
+    List<String> sThingServiceList = new ArrayList<String>(); 
+    sThingServiceList.add(sThingServiceName);
+    
+    try { rmservice.deleteThingServices(sThingServiceList);}
+    catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to TaaSRM.deleteThingServices("+sThingServiceList.get(0)+"). Exception: " + e.getMessage() + ".");}
+    
+  }
+  catch (Exception e)
+  {
+    mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to QoSservice.thingRemoved or TaaSRM.deleteThingServices. Exception: " + e.getMessage() + ".");
+    oConfigOSGi.sendData("The Thing Service "+sThingName+" has been removed unsucessfully!.", "error", "AdaptationCM");
+  }
+  oConfigOSGi.sendData("The Thing Service "+sThingName+" has been removed sucessfully!.", "info", "AdaptationCM");
+  return bCorrect;
+}
+  
   public boolean removeThing (List<String> sThingList)
   {
     boolean bCorrect = true;
+    String sNameThread;
     try
     {
-    mLogger.info("Component CM perform operation removeThing. Items: "+sThingList.size()+".");
+    mLogger.debug("Component CM perform operation removeThing. Items: "+sThingList.size()+".");
     for (int i = 0; i < sThingList.size(); i++)
     {
       String sThingName = sThingList.get(i);
-      sInstanceID = "sensor_"+sThingName+"_"+sThingName;
-      String sThingServiceName = cmservice.sparqlRemoveDevice(sInstanceID);
-      try{ qosservice.thingRemoved(sThingServiceName);}
-      catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to qosservice.thingRemoved("+sInstanceID+"). Exception: " + e.getMessage() + ".");}
-     List<String> sThingServiceList = new ArrayList<String>(); 
- 	sThingServiceList.add(sThingServiceName);
-	try { rmservice.deleteThingServices(sThingServiceList);}
-    catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to TaaSRM.deleteThingServices. Exception: " + e.getMessage() + ".");}
+      String sInstanceID = "sensor_"+sThingName+"_"+sThingName;
+      String sThingServiceName = cmservice.getThingServiceName(sInstanceID);
+      try{ qosservice.unreachable(sThingServiceName);}
+      catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to qosservice.unreachable("+sThingServiceName+"). The following exception has been returned: " + e.getMessage() + ".");}
+      
+      List<String> sThingServiceList = new ArrayList<String>(); 
+      sThingServiceList.add(sThingServiceName);
+//      TODO - Javi aún no lo ha hecho
+//      try { rmservice.unreachable(sThingServiceList);}
+//      catch (Exception e) { mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to TaaSRM.deleteThingServices. Exception: " + e.getMessage() + ".");}
+      
+      java.util.Date date= new java.util.Date();
+      sNameThread = "threadRemove_"+sThingName+"_"+new Timestamp(date.getTime());
+      
+      mLogger.debug("Component CM perform operation removeThing, starting "+sNameThread+" thread");
+      new ReminderReachableRemove(2, sThingName, cmservice); //TODO!!!! 5m
+      }
     }
-
-  }
     catch (Exception e)
     {
       mLogger.error("Component CM perform operation removeThing. It has not been executed correctly the call to QoSservice.thingRemoved or TaaSRM.deleteThingServices. Exception: " + e.getMessage() + ".");
     }
     return bCorrect;
   }
-
+  
 
   public boolean sparqlUpdateProperty(String sThingServiceName,
       String sDataProperty, String sValue)
@@ -743,9 +783,11 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
       sNoValue = "false";
     else
       sNoValue = "true";
-
+    
     try
     {
+      cmservice = oConfigOSGi.getCmservice();
+      
       String sQueryUpdate = ""
           + "PREFIX BETaaS: <http://www.betaas.eu/2013/betaasOnt#> "
           + "DELETE {BETaaS:" + sThingServiceName + " BETaaS:" + sDataProperty
@@ -753,13 +795,6 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
           + " BETaaS:" + sDataProperty + " '" + sValue + "'} " + "WHERE { "
           + "} ";
        cmservice.sparqlUpdate(sQueryUpdate);
-//      String sNameThread = "ontology un/subscribe";
-//      mLogger
-//          .info("[CM] Adaptation Context Manager, starting "+sNameThread+" thread");
-//      Thread t = new Thread(new sparqlUpdateThread());
-//      t.setName(sNameThread);
-//      t.start();
-//      t.join();
     }
     catch (Exception e)
     {
@@ -770,32 +805,6 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
 
     return bResult;
   }
-
-  // public boolean sparqlRemoveStatement(String sThingServiceName, String
-  // sDataObject) throws Exception
-  // {
-  // ConfigBundleOSGi oConfigOSGi = ConfigBundleOSGiImpl.getInstance();
-  // cmservice = oConfigOSGi.getCmservice();
-  //
-  // try
-  // {
-  // String sQueryUpdate = ""
-  // + "PREFIX BETaaS: <http://www.betaas.eu/ontology#> "
-  // + "DELETE { "
-  // + "?service ?property ?value. "
-  // + "} "
-  // + "WHERE { "
-  // + "?service BETaaS:"+sDataObject+" '"+sThingServiceName+"'. "
-  // + "}";
-  // cmservice.sparqlUpdate(sQueryUpdate);
-  // }
-  // catch (Exception e)
-  // {
-  // mLogger.error("[CM] Adaptation Context Manager, sparqlRemoveStatement function. Exception "
-  // + e.getMessage());
-  // }
-  // return true;
-  // }
 
   public void getRealTimeAdaptedInformation()
   {
@@ -906,39 +915,10 @@ public class SemanticParserAdaptatorImpl implements SemanticParserAdaptator
     return sFormattedDT;
   }
 
-//  private static class sparqlUpdateThread implements Runnable
-//  {
-//    public void run()
-//    {
-//      try
-//      {
-//        cmservice.sparqlUpdate(sQueryUpdate);
-//        mLogger.debug("Component CM perform operation publishThingInit, closing "+Thread.currentThread().getName()+" thread");
-//      }
-//      catch (Exception e)
-//      {
-//        mLogger
-//            .error("Component CM perform operation publishThingInit, thread "+Thread.currentThread().getName()+". It has not been executed correctly. Exception: "
-//                + e.getMessage() + ".");
-//      }
-//    }
-//  }
-
-//  private static class sparqlRemoveStatementCascadeThread1 implements Runnable
-//  {
-//    public void run()
-//    {
-//      try
-//      {
-//        cmservice.sparqlRemoveStatementCascade(sQueryUpdate);
-//        mLogger.info("[CM] Adaptation Context Manager, closing "+Thread.currentThread().getName()+" thread");      
-//      }
-//      catch (Exception e)
-//      {
-//        mLogger
-//            .error("[CM] Adaptation Context Manager, publishThingInit function, thread "+Thread.currentThread().getName()+". It has not been executed correctly. Exception: "
-//                + e.getMessage() + ".");
-//      }
-//    }
-//  }
+  public boolean addWordnetConceptTerm(String sTerm, String sSynsetID, String sDefinition)
+  {
+    boolean bResult = true;
+    bResult = cmservice.addTerm(sTerm, sSynsetID, sDefinition);
+    return bResult;
+  }
 }

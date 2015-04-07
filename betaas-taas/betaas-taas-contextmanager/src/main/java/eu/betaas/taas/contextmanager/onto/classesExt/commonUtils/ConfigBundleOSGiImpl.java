@@ -20,7 +20,14 @@
 //Responsible: Tecnalia
 package eu.betaas.taas.contextmanager.onto.classesExt.commonUtils;
 
+import java.util.List;
+import java.util.Vector;
+
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
 import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 import eu.betaas.taas.contextmanager.api.impl.ThingsServiceManagerImpl;
 
@@ -34,7 +41,7 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
   private static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private IBigDataDatabaseService service;
   private static ConfigBundleOSGiImpl thing = null;
-
+  
   private ConfigBundleOSGiImpl()
   {
     super();
@@ -66,13 +73,15 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
 //    this.thing = null;
   }
 
-  public void setService(IBigDataDatabaseService service)
-  {
-    this.service = service;
-  }
+//  public void setService(IBigDataDatabaseService service)
+//  {
+//    this.service = service;
+//  }
+//
+//  public IBigDataDatabaseService getService()
+//  {
+//    return this.service;
+//  }
+  
 
-  public IBigDataDatabaseService getService()
-  {
-    return this.service;
-  }
 }

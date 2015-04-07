@@ -22,23 +22,30 @@ package eu.betaas.taas.qosmanager.monitoring.api;
 
 import java.util.ArrayList;
 
+import org.osgi.framework.BundleContext;
+
 import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
 import eu.betaas.taas.qosmanager.monitoring.api.impl.SLACalculation;
 
 public interface QoSManagerMonitoring
 {
   //BETAAS INTERFACE
-  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int iOptimalRequestRate);
-  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int iPeriod);
+  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate);
+  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod);
   public boolean unregisterMeasurementSLAMonitoring(String sThingServiceName);
   public SLACalculation calculateSLA(String sThingServiceName);
-  public SLACalculation calculateSLAPush(String sThingServiceName, int isgTaaSRequestRate);
+  public SLACalculation calculateSLAPush(String sThingServiceName, int iMilisecondTaaSRequestRate);
   public SLACalculation failureSLA(String sThingServiceName);
 
   
   //BLUEPRINT METHODS
   public void startService() throws Exception;
   public void closeService();
+  public void setContext(BundleContext context);
+  public BundleContext getContext();
+  public boolean isEnabled();
+  public void setEnabled(boolean enabledbus);
+//  public boolean getEnabled();
 
 //  public void setCmservice(ThingsServiceManager cmservice);
 //  public ThingsServiceManager getCmservice() throws Exception;

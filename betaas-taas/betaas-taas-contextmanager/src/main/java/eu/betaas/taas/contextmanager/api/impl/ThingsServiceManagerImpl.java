@@ -632,7 +632,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     sParameter = sParameter.toLowerCase();
     String sTypeThing = sParameter.substring(0, 1).toUpperCase()
         + sParameter.substring(1);
-    sTypeThing = "<" + PREFIX_BETAAS + "#" + sTypeThing + "Sensor>";
+    sTypeThing = "<" + PREFIX_BETAAS + "#" + sTypeThing + "Sensor>"; //TODO
 
     sLocationIdentifier = sLocationIdentifier.toLowerCase();
     sLocationIdentifier = sLocationIdentifier.replace(" ", "");
@@ -1300,7 +1300,6 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   // -
   // SKOS THING TYPES
   // /////////////////////////////////////////////////////////////////////////////
-  @SuppressWarnings("unused")
   public JsonObject checkThingType(String term, boolean type) {
     // true sensor
     // false actuator
@@ -1675,27 +1674,35 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     return joTempResultValue;
   }
 
+  public void addResource(String sConcept){
+    oOntoBetaas.addResource(sConcept);
+  }
   
-  
-  private void addThingType(String sBroaderConcept, String sConcept,
-      String sAltLabel, String sDefinition) {
+  private void addThingType(String sBroaderConcept, String sConcept, String sAltLabel, String sDefinition) {
     try {
       int i = sBroaderConcept.indexOf("#");
       if (i>0)
         sBroaderConcept = sBroaderConcept.substring(i+1);
       
-      mLogger.info("- Add Resource. BroaderConcept: "
-          + sBroaderConcept.substring(
-              sBroaderConcept.indexOf("#") + 1).toUpperCase()
+      mLogger.info("- Add Resource. BroaderConcept: " + sBroaderConcept.substring( sBroaderConcept.indexOf("#") + 1).toUpperCase()
           + ", Concept: " + sConcept.toUpperCase() + ", ID: "
           + sAltLabel + ", Definition: " + sDefinition + ".");
-      oOntoBetaas.addResource(sBroaderConcept, sConcept, sAltLabel,
-          sDefinition);
+      oOntoBetaas.addResource(sBroaderConcept, sConcept, sAltLabel, sDefinition);
+    } catch (Exception e) {
+      mLogger.error("AddThingType CM " + e.getMessage() + " " + e.getLocalizedMessage() + " " + e.getCause());
+    }
+  }
+
+  public void addTerm(String sConcept, String sAltLabel, String sDefinition) {
+    try {
+      mLogger.info("- Add Resource.  Concept: " + sConcept.toUpperCase() + ", ID: " + sAltLabel + ", Definition: " + sDefinition + ".");
+      oOntoBetaas.addResource(null, sConcept, sAltLabel, sDefinition);
     } catch (Exception e) {
       mLogger.error("AddThingType " + e.getMessage() + " " + e.getLocalizedMessage() + " " + e.getCause());
     }
   }
 
+  
   private boolean verifySynset(String altLabel) {
     boolean bCorrect = true;
     SparqlResultSet oSparqlResultSet = null;
@@ -1705,10 +1712,10 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
           + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
           + "SELECT  DISTINCT * WHERE { "
-          + "?broaderTerm rdf:type owl:NamedIndividual; "
-          + "   skos:definition ?definition; "
-          + "   skos:altLabel ?altLabel. "
-          + " OPTIONAL{?broaderTerm skos:narrower ?term.}"
+          + "?broaderTerm rdf:type owl:NamedIndividual. "
+          + " OPTIONAL{ ?broaderTerm skos:definition ?definition.} "
+          + " OPTIONAL{ ?broaderTerm skos:altLabel ?altLabel.} "
+          + " OPTIONAL{?broaderTerm skos:narrower ?term.} "
           + " FILTER strstarts(?altLabel,'" + altLabel + "') "
           + "}";
 
@@ -1914,3 +1921,4 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   }
   
 }
+

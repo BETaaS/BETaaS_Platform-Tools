@@ -28,7 +28,7 @@ public class QoSMonitoringMeasure
   
   private int sOptimalRequestRate;
   private Timestamp sMaximumTimeStamp;
-  
+
   private int sRequestRate;
   private Timestamp sInitialTimeStamp;
   private boolean sAvailability;

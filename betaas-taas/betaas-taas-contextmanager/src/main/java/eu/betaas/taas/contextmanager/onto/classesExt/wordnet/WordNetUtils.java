@@ -54,6 +54,7 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
 import eu.betaas.taas.contextmanager.api.impl.ThingsServiceManagerImpl;
 
 public class WordNetUtils
@@ -61,13 +62,15 @@ public class WordNetUtils
   // PUBLIC SECTION
 
   // PRIVATE SECTION
+//  private ThingsServiceManager oThingsServiceManager = new ThingsServiceManager();
+  
   private static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private static String WORDNET = "";
   private static String PREFIX_WORDNET = "";
   private final static String WORDNET_LINUX = "WordNetDictLinux";
   private final static String WORDNET_WIN = "WordNetDictWin";
   
-    private String sWordnetDirectory = null;
+  private String sWordnetDirectory = null;
   private URL urlWordnetDirectory = null;
   private IDictionary iDictionary = null;
   
@@ -84,6 +87,8 @@ public class WordNetUtils
   private final static String HYPERNYM = "hypernym";
   private final static String HYPERHYPERNYM = "hyperhypernym";
 
+  ThingsServiceManager oThingsServiceManager = new ThingsServiceManagerImpl();
+  
   public boolean init()
   {
     String[] includedWordnetFiles = null;
@@ -91,6 +96,7 @@ public class WordNetUtils
     try
     {
       mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. This is a wrapper for the MIT WordNet inteface that simplifies basic operations such as retrieving synonyms for a word.");
+      oThingsServiceManager.sendData("Starting Wordnet... a wrapper for the MIT WordNet inteface that simplifies basic operations such as retrieving synonyms for a word.","info", "Wordnet");
       File fileDestiny = null;
       String pathWordnetFileName = null;
 
@@ -102,7 +108,6 @@ public class WordNetUtils
       }
       else
         mLogger.error("ERROR, unknown SO");
-
       PREFIX_WORDNET = "/META-INF/" + WORDNET + "/";
       File pathWordnetDirectory = new File(tmpdir1, WORDNET);
 
@@ -188,25 +193,34 @@ public class WordNetUtils
         IIndexWord idxWord = iDictionary.getIndexWord(sLemmaToCompare, POS.NOUN);
         IWordID wordID = idxWord.getWordIDs().get(0);
         IWord word = iDictionary.getWord(wordID);
-
-        mLogger.info("Component CM perform operation WordNetUtils Module, checkWordnet function. Search synonyms for term: "
+        
+        String message = "Component CM perform operation WordNetUtils Module, checkWordnet function. Search synonyms for term: "
                 + sLemmaToCompare
                 + ", with the following WordnetID: "
                 + wordID
-                + ".");
-        mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. The "
+                + ".";
+        mLogger.info(message);
+        oThingsServiceManager.sendData(message,"info", "Wordnet");
+        
+        message = "Component CM perform operation WordNetUtils.checkWordnet. The "
                 + sLemmaToCompare
                 + " description is: "
-                + word.getSynset().getGloss() + ".");
+                + word.getSynset().getGloss() + ".";
+        mLogger.debug(message);
+        oThingsServiceManager.sendData(message,"info", "Wordnet");
+        
         ISynset synset = word.getSynset();
-        mLogger.info("Component CM perform operation WordNetUtils Module, checkWordnet function. Synonyms: " + synset.toString());
+        message = "Component CM perform operation WordNetUtils Module, checkWordnet function. Synonyms: " + synset.toString();
+        mLogger.info(message);
+        oThingsServiceManager.sendData(message,"info", "Wordnet");
         oListSynonyms = new ArrayList<String>();
 
         // iterate over words associated with the synset
         for (IWord w : synset.getWords()) //TODO podria ser un JSONArray¿?
         {
-          mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. Synonyms: "
-                  + w.getLemma());
+          message = "Component CM perform operation WordNetUtils.checkWordnet. Synonyms: " + w.getLemma();
+          mLogger.debug(message);
+          oThingsServiceManager.sendData(message,"info", "Wordnet");
           oListSynonyms.add(w.getLemma());
         }
       }
@@ -362,7 +376,7 @@ public class WordNetUtils
             String sLemma = iWord2.getLemma();
             
               JsonObject oHypernyms = new JsonObject();
-            oHypernyms.addProperty(TERM, sLemma);          
+            oHypernyms.addProperty(TERM, sLemma);
             aHypernyms.add(oHypernyms);
           }
         }
@@ -393,6 +407,7 @@ public class WordNetUtils
 
         urlWordnetDirectory = new URL("file", null, sWordnetDirectory);
         mLogger.info("Component CM perform operation WordNetUtils.checkWordnet. Wordnet dictionary path directory: " + PREFIX_WORDNET + ".");
+        oThingsServiceManager.sendData("Wordnet dictionary path directory: " + PREFIX_WORDNET + ".","info", "Wordnet");
 
         iDictionary = new Dictionary(urlWordnetDirectory);    
         iDictionary.open();

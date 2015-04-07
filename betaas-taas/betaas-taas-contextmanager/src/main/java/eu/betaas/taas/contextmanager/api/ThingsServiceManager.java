@@ -43,10 +43,12 @@ public interface ThingsServiceManager
   public String getContextThingServices();
   public JsonObject getMeasurementCM(String sThingServiceName);
   public String getContextualMeasurement(String sThingServiceName);
+  public boolean addTerm(String sConcept, String sAltLabel, String sDefinition);
   
-  
+  public void sendData(String description, String level, String originator);
   
   //ADAPTATION MODULE INTERFACE
+  public void addResource(String resource);
   public void sparqlUpdate(String sSparqlUpdate);
   public String sparqlRemoveDevice(String sDevice);
   public boolean sparqlRemoveAllStatements();
@@ -54,7 +56,8 @@ public interface ThingsServiceManager
   public boolean checkSubscribeService(String sThingServiceName);
   public JsonObject checkThingLocation(String term);
   public JsonObject checkThingType(String term, boolean type);
-  
+  public String getLastObservation(String sThingService);
+  public String getThingServiceName(String sThingName);
   
   //TAAS QoS MONITORING MODULE INTERFACE
   public String getMaximumResponseTime(String sThingServiceName);
@@ -69,4 +72,5 @@ public interface ThingsServiceManager
   public BundleContext getContext();
   public void setGwId(String gwId);
   public String getGwId();
+  
 }
