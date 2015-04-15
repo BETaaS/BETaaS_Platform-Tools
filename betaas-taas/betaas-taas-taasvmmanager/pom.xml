@@ -25,6 +25,7 @@
       <artifactId>org.osgi.core</artifactId>
     </dependency>
     
+    <!-- Deps -->
     <dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>			
