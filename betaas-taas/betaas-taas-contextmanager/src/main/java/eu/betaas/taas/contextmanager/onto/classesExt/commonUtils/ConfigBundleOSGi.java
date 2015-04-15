@@ -27,11 +27,10 @@ import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 public interface ConfigBundleOSGi
 {
   public void readConfigFileOSGi() throws Exception;
-
   public void closeConfigFileOSGi();
 
-  public void setService(IBigDataDatabaseService service) throws SQLException;
-
-  public IBigDataDatabaseService getService() throws SQLException;
+//  public void setService(IBigDataDatabaseService service) throws SQLException;
+//
+//  public IBigDataDatabaseService getService() throws SQLException;
   
 }

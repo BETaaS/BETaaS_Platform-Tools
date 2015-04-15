@@ -156,4 +156,17 @@ public class OntoBetaas
     }
   return bCorrect;
   }
+
+  public boolean addResource(String sConcept)
+  {
+    boolean bCorrect = true;
+    try{
+      bCorrect = m_oJenaEx.createConcept(sConcept);
+    }
+    catch(Exception e)
+    {
+      System.out.println("Exception OntoBetaas.addResource. "+ e.getMessage());
+    }
+  return bCorrect;
+  }
 }

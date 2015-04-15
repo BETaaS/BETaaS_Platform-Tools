@@ -26,11 +26,12 @@ import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 
 public interface SemanticParserAdaptator{
   
-  public boolean publishThingInit(ArrayList<ThingsData> oThingsDataList) throws Exception;
-  public boolean publishThingCheck(ArrayList<ThingsData> oThingsDataList) throws Exception;
-  public boolean publishThing(ArrayList<ThingsData> oThingsDataList) throws Exception;
-
+  public String publishThingInit(ArrayList<ThingsData> oThingsDataList) throws Exception;
+  public String publishThingCheck(ArrayList<ThingsData> oThingsDataList) throws Exception;
+  public String publishThing(ArrayList<ThingsData> oThingsDataList) throws Exception;
+  public boolean addWordnetConceptTerm(String sTerm, String sSynsetID, String sDefinition);
   public boolean removeThing(List<String> sThingServiceList);
+  public boolean removeThingUnreachable (String sThingName);
   
   public boolean subscribe(String sThingServiceName);
   public boolean unsubscribe(String sThingServiceName);

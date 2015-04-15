@@ -41,6 +41,16 @@
   </repositories>
 
   <dependencies>
+  <dependency>
+    <groupId>eu.betaas</groupId>
+      <artifactId>betaas-bus-interface</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.7</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-resources-plugin</artifactId>
@@ -98,6 +108,11 @@
       <type>zip</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>eu.betaas</groupId>
+      <artifactId>betaas-bus-interface</artifactId>
+      <version>${project.version}</version>
+     </dependency>
 
     <!-- Karaf Test Framework Version -->
     <dependency>
@@ -136,11 +151,12 @@
             </Export-Package>
             <Import-Package>
               com.google.gson,
-              <!-- eu.betaas.taas.bigdatamanager.database.service, -->
+              eu.betaas.taas.bigdatamanager.database.service,
               eu.betaas.taas.taasresourcesmanager.api,
               eu.betaas.taas.contextmanager.api,
               eu.betaas.taas.contextmanager.api.impl,
               eu.betaas.taas.bigdatamanager.core.services,
+              eu.betaas.rabbitmq.publisher.interfaces,
               javax.activation, javax.xml.bind.annotation,
               org.osgi.framework,
               org.osgi.service.blueprint,

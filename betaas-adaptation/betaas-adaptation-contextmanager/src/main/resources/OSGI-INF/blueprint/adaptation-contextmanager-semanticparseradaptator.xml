@@ -23,6 +23,7 @@
   <cm:property-placeholder persistent-id="betaas.gateway">
     <cm:default-properties>
       <cm:property name="gwId" value="-1"/>
+      <cm:property name="busenabled" value="false"/>
     </cm:default-properties>
   </cm:property-placeholder>
 
@@ -33,10 +34,11 @@
     destroy-method="closeConfigFileOSGi">
     <property name="bdservice" ref="taasCoreService" />
     <property name="rmservice" ref="resourcemanagerService" />
-<!--     <property name="dbservice" ref="databaseService" /> -->
     <property name="cmservice" ref="taasContextManager" />
-    <property name="qosservice" ref="QosService" /> 
+    <property name="qosservice" ref="QosService" />
     <property name="gwId" value="${gwId}"/>
+    <property name="enabledbus" value="${busenabled}"></property> 
+    <property name="context" ref="blueprintBundleContext"/>
   </bean>
 
   <!-- My published services -->
@@ -62,10 +64,10 @@
   </reference>
 
   <!-- The services I use -->
-<!--   <reference id="databaseService" availability="mandatory" -->
-<!--     activation="eager" -->
-<!--     interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService"> -->
-<!--   </reference> -->
+  <reference id="databaseService" availability="mandatory"
+    activation="eager"
+    interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService">
+  </reference>
   
       <!-- The services I use -->
   <reference id="taasContextManager" availability="mandatory"

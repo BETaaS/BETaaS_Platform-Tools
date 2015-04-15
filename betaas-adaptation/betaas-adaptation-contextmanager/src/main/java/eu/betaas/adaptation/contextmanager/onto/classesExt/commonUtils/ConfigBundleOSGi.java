@@ -22,6 +22,8 @@ package eu.betaas.adaptation.contextmanager.onto.classesExt.commonUtils;
 
 import java.sql.SQLException;
 
+import org.osgi.framework.BundleContext;
+
 import eu.betaas.taas.bigdatamanager.core.services.ITaasBigDataManager;
 import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager;
@@ -30,7 +32,8 @@ import eu.betaas.taas.qosmanager.api.QoSManagerInternalIF;
 public interface ConfigBundleOSGi
 {
   public void readConfigFileOSGi() throws Exception;
-
+  public void busMessage(String message);
+  public void sendData(String description, String level, String originator);
   public void closeConfigFileOSGi();
 
   public void setBdservice(ITaasBigDataManager bdservice) throws SQLException;
@@ -47,4 +50,10 @@ public interface ConfigBundleOSGi
   
   public void setGwId(String gwId);
   public String getGwId();
+  
+  public BundleContext getContext();
+  public void setContext(BundleContext context);
+  
+  public boolean isEnabledbus();
+  public void setEnabledbus(boolean enabledbus);
 }

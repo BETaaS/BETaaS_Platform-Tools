@@ -50,6 +50,7 @@ import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 import eu.betaas.taas.contextmanager.api.impl.ThingsServiceManagerImpl;
 import eu.betaas.taas.contextmanager.onto.classesExt.semantic.data.xml.sparqlResultSet.SparqlResult;
@@ -76,70 +77,6 @@ public class JenaSdbEx
   private final static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private final static String PREFIX_METAINF = "/META-INF/" + PREFIX_ONTOLOGY;
 
-
-//  public boolean init() throws Exception
-//  {
-//    boolean bCorrect = true;
-//    Dataset dataset = null;
-//    Dataset dataset_owl = null;
-//    Dataset dataset_skos = null;
-//    Model m_oModel_owl = null;
-//    Model m_oModel_skos = null;
-//    try
-//    {
-//      String sTmpTdbFilePath = createFolder(PREFIX_TDB).getAbsolutePath();
-//
-//      File sTmpTdbFilePath1 = new File(sTmpTdbFilePath);
-//      sTmpTdbFilePath1.deleteOnExit();
-//      if (sTmpTdbFilePath1.listFiles().length<=0) {     
-//        String sTmpTdbFilePath_owl = createFolder(PREFIX_TDB_OWL).getAbsolutePath();
-//        String sTmpTdbFilePath_skos = createFolder(PREFIX_TDB_SKOS).getAbsolutePath();
-//
-//        dataset = TDBFactory.createDataset(sTmpTdbFilePath);
-//        dataset_owl = TDBFactory.createDataset(sTmpTdbFilePath_owl);
-//        dataset_skos = TDBFactory.createDataset(sTmpTdbFilePath_skos);
-//
-//        m_oModel = dataset.getDefaultModel();
-//        m_oModel_owl = dataset_owl.getDefaultModel();
-//        m_oModel_skos = dataset_skos.getDefaultModel();
-//
-////        m_oModel_owl = RDFDataMgr.loadModel(PREFIX_METAINF_OWL);
-//        String sTmpOwlFilePath = sTmpTdbFilePath_owl + "/" + PREFIX_ONTOLOGY;
-//        this.copyOwl(sTmpOwlFilePath, PREFIX_METAINF_OWL);
-//        m_oModel_owl = RDFDataMgr.loadModel(sTmpOwlFilePath);
-//
-////        m_oModel_skos = RDFDataMgr.loadModel(PREFIX_METAINF_SKOS);
-//        sTmpOwlFilePath = sTmpTdbFilePath_owl + "/" + PREFIX_SKOS_ONTOLOGY;
-//        this.copyOwl(sTmpOwlFilePath, PREFIX_METAINF_SKOS);
-//        m_oModel_skos = RDFDataMgr.loadModel(sTmpOwlFilePath);
-//
-//        m_oModel.add(m_oModel_owl);
-//        m_oModel.add(m_oModel_skos);
-//
-//        if (m_oModel_owl != null) {
-//          m_oModel_owl.close();
-//          m_oModel_owl = null;
-//        }
-//        if (m_oModel_skos != null) {
-//          m_oModel_skos.close();
-//          m_oModel_skos = null;
-//        }
-//
-//        Resource resource1 = m_oModel.getResource(NS + "Property");
-//        Resource resource2 = m_oModel.getResource(Skos.Concept.toString());
-//        m_oModel.add(resource1, OWL.equivalentClass, resource2);
-//        }else{
-//          dataset = TDBFactory.createDataset(sTmpTdbFilePath);
-//          m_oModel = dataset.getDefaultModel(); //No sé pq, pero no deja crear m_oModel cuando se hace restart
-//        }
-//      } catch (Exception e) {
-//        // close();
-//        bCorrect = false;
-//        mLogger.error("Component CM perform operation JenaSdbEx.init. Exception: " + e.getMessage() + ", " + e.getLocalizedMessage() + ", " + e.toString() +".");
-//      }
-//
-//      return bCorrect;
-//    }
 
   public boolean init() throws Exception
   {
@@ -327,87 +264,6 @@ public class JenaSdbEx
     return pathDirectory;
   }
 
-//  public boolean copyOwl(String sExportFilePath) throws Exception
-//  {
-//    boolean bCorrect = true;
-//    InputStream oInputStream = null;
-//    OutputStream oOutputStream = null;
-//    try
-//    {
-//      oInputStream = this.getClass().getResourceAsStream(PREFIX_METAINF);
-//
-//      oOutputStream = new FileOutputStream(sExportFilePath);
-//
-//      int read = 0;
-//      byte[] bytes = new byte[1024];
-//
-//      while ((read = oInputStream.read(bytes)) != -1)
-//      {
-//        oOutputStream.write(bytes, 0, read);
-//      }
-//
-//      oOutputStream.close();
-//      oInputStream.close();
-//    }
-//    catch (IOException e)
-//    {
-//      e.printStackTrace();
-//    }
-//    finally
-//    {
-//      if (oInputStream != null)
-//      {
-//        try
-//        {
-//          oInputStream.close();
-//        }
-//        catch (IOException e)
-//        {
-//          e.printStackTrace();
-//        }
-//      }
-//      else
-//        bCorrect = false;
-//      if (oOutputStream != null)
-//      {
-//        try
-//        {
-//          // outputStream.flush();
-//          oOutputStream.close();
-//        }
-//        catch (IOException e)
-//        {
-//          e.printStackTrace();
-//        }
-//
-//      }
-//      else
-//        bCorrect = false;
-//    }
-//    return bCorrect;
-//  }
-
-//  public boolean close() throws Exception
-//  {
-//    boolean bCorrect = true;
-//    try
-//    {
-//      if (m_oModel != null)
-//      {
-//        m_oModel.close();
-//        m_oModel = null;
-//      }
-//    }
-//    catch (Exception e)
-//    {
-//      bCorrect = false;
-//      mLogger
-//          .error("Component CM perform operation JenaSdbEx.close. Exception: "
-//              + e.getMessage() + ".");
-//    }
-//    return bCorrect;
-//  }
-
   private SparqlVariable getSparqlVariableAttribs(QuerySolution oQuerySolution,
       String sVariableName, String sSparqlQuery) throws Exception
   {
@@ -487,9 +343,9 @@ public class JenaSdbEx
     SparqlResultSet oSparqlResultSet = new SparqlResultSet();
     try
     {
-       mLogger.debug("Component CM perform operation JenaSdbEx Module, sparqlQuery function. " +
-       "It is going to be executed the following SPARQL query:\n****************************************\n"
-       + sSparqlQuery + "\n****************************************\n"); 
+//       mLogger.debug("Component CM perform operation JenaSdbEx Module, sparqlQuery function. " +
+//       "It is going to be executed the following SPARQL query:\n****************************************\n"
+//       + sSparqlQuery + "\n****************************************\n"); 
       SparqlResultSet oTmpSparqlResultSet = new SparqlResultSet();
 
       // Create a new query
@@ -539,8 +395,8 @@ public class JenaSdbEx
     boolean bCorrect = true;
     try
     {
-       mLogger.debug("Component CM perform operation JenaSdbEx Module, sparqlUpdate function. It is going to be executed the following SPARQL update:\n****************************************\n"
-       + sSparqlUpdate + "\n****************************************\n");
+//       mLogger.debug("Component CM perform operation JenaSdbEx Module, sparqlUpdate function. It is going to be executed the following SPARQL update:\n****************************************\n"
+//       + sSparqlUpdate + "\n****************************************\n");
 
       GraphStore oGraphStore = GraphStoreFactory.create(m_oModel);
       UpdateRequest oUpdateRequest = UpdateFactory.create(sSparqlUpdate);
@@ -588,22 +444,37 @@ public class JenaSdbEx
       sDefinition = sDefinition.replace("\"", "");
       sDefinition = sDefinition.replace("\\", "");  
               
-      // Manually add the top concept because it's not in the tables
-      Resource top = m_oModel.createResource(NS + sConcept);
-      top.addProperty(RDF.type, Skos.Concept);
-      top.addProperty(RDF.type, ResourceFactory.createResource("http://www.w3.org/2002/07/owl#NamedIndividual"));
-      top.addProperty(Skos.prefLabel, sConcept);
-      top.addProperty(Skos.definition, sDefinition);
-      top.addProperty(Skos.altLabel, sAltLabel);
+      Resource skosConcept  = m_oModel.createResource(NS + sConcept);
+      skosConcept .addProperty(RDF.type, Skos.Concept);
+      skosConcept .addProperty(RDF.type, ResourceFactory.createResource("http://www.w3.org/2002/07/owl#NamedIndividual"));
+      skosConcept .addProperty(Skos.prefLabel, sConcept);
+      skosConcept .addProperty(Skos.definition, sDefinition);
+      skosConcept .addProperty(Skos.altLabel, sAltLabel);
       
-      if (!(sTopConcept == null))
-        top.addProperty(Skos.narrower,NS + sTopConcept);
       
+      if (!(sTopConcept == null)){
+        skosConcept .addProperty(Skos.narrower,NS + sTopConcept);
+      }
+      else{
+        //Call comming from TA
+        mLogger.info("Component CM perform operation JenaSdbEx.createSKOSConcept, TopConcept:" + sTopConcept +" sConcept: "+ sConcept +" sAltLabel: "+ sAltLabel +" sDefinition: "+ sDefinition);
+        skosConcept .addProperty(Skos.narrower,NS + "Sensor");
+      }
     } catch (Exception e) {
-      e.printStackTrace();
+      mLogger
+      .error("Component CM perform operation JenaSdbEx.createSKOSConcept. Exception: " + e.getMessage() + ".");
       bCorrect = false;
     }
     return bCorrect;
+  }
+
+  public boolean createConcept(String sConcept)
+  {
+  Resource resource =  m_oModel.getResource(NS+"Sensor");
+  Resource instance = m_oModel.createResource(NS+sConcept+"Sensor");
+  m_oModel.add(instance, RDF.type, RDFS.Class);
+  m_oModel.add(instance, RDFS.subClassOf, resource);
+  return true;
   }
 
 }
