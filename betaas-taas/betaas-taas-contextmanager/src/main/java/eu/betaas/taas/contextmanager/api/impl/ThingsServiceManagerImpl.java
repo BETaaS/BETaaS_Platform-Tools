@@ -18,8 +18,11 @@
 // Responsible: Tecnalia
 package eu.betaas.taas.contextmanager.api.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -35,9 +38,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
 import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
+//import eu.betaas.taas.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGi;
+//import eu.betaas.taas.contextmanager.onto.classesExt.commonUtils.ConfigBundleOSGiImpl;
 import eu.betaas.taas.contextmanager.onto.classesExt.semantic.data.xml.sparqlResultSet.SparqlResult;
 import eu.betaas.taas.contextmanager.onto.classesExt.semantic.data.xml.sparqlResultSet.SparqlResultSet;
 import eu.betaas.taas.contextmanager.onto.classesExt.semantic.data.xml.sparqlResultSet.SparqlVariable;
@@ -68,12 +77,12 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   private static Logger mLogger = Logger.getLogger(LOGGER_NAME);
 
   private IBigDataDatabaseService service;
-  private BundleContext mBundleContext;
+  private static BundleContext context;
   private ServiceListener sl;
   private static ThingsServiceManagerImpl thing = null;
   private static OntoBetaas oOntoBetaas = null;
   private WordNetUtils oWordNetUtils = null;
-
+  
   private String mGWID;
 
   private String PRESENCE = "presence";
@@ -83,7 +92,12 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   private String LIST_EQ = "eq_list";
   private String OPERATOR = "operator";
 
-  private ThingsServiceManagerImpl()
+  private boolean enabledbus=false;
+  private List<String> messageBuffer = new Vector<String>();
+  private String key = "monitoring.taas";
+  
+
+  public ThingsServiceManagerImpl()
   {
     super();
   }
@@ -390,9 +404,10 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           .error("Component CM perform operation getContextualMeasurement. It has not been executed correctly. Possible deviceID null value. Exception: "
               + e.getMessage() + ".");
     }
-    mLogger
-        .info("Component CM perform operation getContextualMeasurement. Results: "
-            + sThingServiceName);
+    mLogger.info("Component CM perform operation getContextualMeasurement. Results: " + sThingServiceName);
+    
+//    busMessage("Component CM perform operation getContextualMeasurement. Results: " + sThingServiceName);
+    sendData("Component CM perform operation getContextualMeasurement. Results: " + sThingServiceName + ".","info", "TaaSCM");
     return oThingsData.getJsonRepresentation();
 
   }
@@ -479,7 +494,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     {
       String filter = "(&(service.imported=*)(objectClass="
           + ThingsServiceManager.class.getName() + "))";
-      ServiceReference[] srl = mBundleContext.getServiceReferences(
+      ServiceReference[] srl = context.getServiceReferences(
           (String) null, filter);
 
       if (srl != null)
@@ -549,7 +564,11 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           .error("Component CM perform operation getContextThingServices_searchingGWs. It has not been executed correctly. Possible deviceID null value. Exception: "
               + e.getMessage() + ".");
     }
-
+    String message = "Thing Services related with the following context: "+
+        " Environment: " + bEnvironment +", Parameter: "+ sParameter + ", LocationIdentifier: " + sLocationIdentifier + 
+        ", LocationKeyword: "+ sLocationKeyword + ", Latitude "+ sLatitude + ", Longitude; " + sLongitude + ", Altitude: " + sAltitude + ", Radius: " +sRadius+". " +
+        "All the Thing Services on the ontology: "+ joThingServiceNameList.toString()+".";
+    sendData(message,"info", "TaaSCM");
     return sjoThingServiceNameList;
   }
 
@@ -585,7 +604,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     String sjoThingServiceNameList_remote = null;
     try
     {
-      ThingsServiceManager taasCMResource = (ThingsServiceManager) mBundleContext
+      ThingsServiceManager taasCMResource = (ThingsServiceManager) context
           .getService(sr);
       if (taasCMResource == null)
       {
@@ -632,7 +651,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     sParameter = sParameter.toLowerCase();
     String sTypeThing = sParameter.substring(0, 1).toUpperCase()
         + sParameter.substring(1);
-    sTypeThing = "<" + PREFIX_BETAAS + "#" + sTypeThing + "Sensor>";
+    sTypeThing = "<" + PREFIX_BETAAS + "#" + sTypeThing + "Sensor>"; //TODO
 
     sLocationIdentifier = sLocationIdentifier.toLowerCase();
     sLocationIdentifier = sLocationIdentifier.replace(" ", "");
@@ -967,9 +986,8 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
               + e.getMessage() + ".");
     }
 
-    mLogger
-        .info("Component CM perform operation getContextThingServices. Results: "
-            + joThingServiceNameList.toString());
+    mLogger.info("Component CM perform operation getContextThingServices. Results: " + joThingServiceNameList.toString());
+    sendData("List all the Thing Services on the ontology: " + joThingServiceNameList.toString()+".","info", "TaaSCM");
     return joThingServiceNameList.toString();
   }
 
@@ -993,10 +1011,10 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
     String sThingService = null;
     try
     {
-  sThingService = sparqRemoveStatementThingServices(sInstance);
-  int i = sThingService.indexOf("#");
-  if (i>0)
-    sThingService = sThingService.substring(i+1);
+      sThingService = sparqRemoveStatementThingServices(sInstance);
+      int i = sThingService.indexOf("#");
+      if (i>0)
+        sThingService = sThingService.substring(i+1);
   
       String subject = "http://www.betaas.eu/2013/betaasOnt#"+sInstance;
       sparqlRemoveStatement(subject);
@@ -1264,7 +1282,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
             {
               // mLogger.info("ServiceEvent.UNREGISTERING, GwId : " +
               // taasCMResource.getGwId()); // comment
-              mBundleContext.ungetService(sr);
+              context.ungetService(sr);
               sr = null;
             }
               break;
@@ -1278,7 +1296,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
       String filter = "(&(service.imported=*)(objectClass="
           + ThingsServiceManager.class.getName() + "))";
-      mBundleContext.addServiceListener(sl, filter);
+      context.addServiceListener(sl, filter);
     }
     catch (InvalidSyntaxException ise)
     {
@@ -1300,7 +1318,6 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   // -
   // SKOS THING TYPES
   // /////////////////////////////////////////////////////////////////////////////
-  @SuppressWarnings("unused")
   public JsonObject checkThingType(String term, boolean type) {
     // true sensor
     // false actuator
@@ -1313,23 +1330,34 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
     term = term.toLowerCase();
     mLogger.debug("Term: " + term.toUpperCase() + ".");
+//    busMessageWordnet("Term: " + term.toUpperCase() + ".");
+    sendData("Term: " + term.toUpperCase() + ".", "info", "Wordnet");
 
     try {
       // 1.- Verify if the term already exists on the ontology
       joTempResultValue = verifyTermOnOntology(term);
-      if (!(joTempResultValue == null))
+      if (!(joTempResultValue == null)){
         mLogger.debug("- The term " + term.toUpperCase() + " is on the ontology. ");
+//        busMessageWordnet("- The term " + term.toUpperCase() + " is on the ontology. ");
+        sendData("Term: " + term.toUpperCase() + ".", "info", "Wordnet");        
+      }
       else{
         // The term is not in the ontology
         mLogger.debug("- The term " + term.toUpperCase() + " is NOT on the ontology. ");
+//        busMessageWordnet("- The term " + term.toUpperCase() + " is NOT on the ontology. ");
+        sendData("- The term " + term.toUpperCase() + " is NOT on the ontology. ", "info", "Wordnet");
 
         // Get all the synsets related with that term
         JsonArray aSynset = oWordNetUtils.getSynsets(term, type); 
 
-        mLogger.debug("- Different senses for the term "
-            + term.toUpperCase() + ": ");
-        if (aSynset.size() < 1)
+        mLogger.debug("- Different senses for the term " + term.toUpperCase() + ": ");
+//        busMessageWordnet("- Different senses for the term " + term.toUpperCase() + ": ");
+        sendData("- Different senses for the term " + term.toUpperCase() + ": ", "info", "Wordnet");
+        if (aSynset.size() < 1){
           mLogger.debug("  No Synsets on Wordnet.");
+//          busMessageWordnet("  No Synsets on Wordnet.");
+          sendData("  No Synsets on Wordnet.", "info", "Wordnet");
+        }
 
         jaSynonymsO = new JsonArray();
         jaSynonymsW = new JsonArray();
@@ -1353,6 +1381,14 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           mLogger.debug("  Synset: " + sTotalSynset);
           mLogger.debug("  Synonyms: " + sSynonyms);
           mLogger.debug("  Definition: " + sDefinition);
+          
+//          busMessageWordnet("  Synset: " + sTotalSynset);
+//          busMessageWordnet("  Synonyms: " + sSynonyms);
+//          busMessageWordnet("  Definition: " + sDefinition);
+          
+          sendData("  Synset: " + sTotalSynset, "info", "Wordnet");
+          sendData("  Synonyms: " + sSynonyms, "info", "Wordnet");
+          sendData("  Definition: " + sDefinition, "info", "Wordnet");
 
           // Already exists some synonyms on the ontology
           if (bCorrect) {
@@ -1360,26 +1396,30 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
             joSynonymO.addProperty(SYNSETID, search8DigitSynset);
             joSynonymO.addProperty(SYNONYM, sSynonyms);
             joSynonymO.addProperty(DEFINITION, sDefinition);
-            mLogger.debug("    YES, on the ontology you can find synomyns to the term "
-                    + term.toUpperCase()
-                    + " with synset "
-                    + sTotalSynset + ".");
-            mLogger.debug("    The synonym common pattern is: "
-                + search4DigitSynset);
-            mLogger.debug("    Synonyms on the ontology: "
-                + lSynonyms.toUpperCase());
+            
+            mLogger.debug("    YES, on the ontology you can find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ".");
+            mLogger.debug("    The synonym common pattern is: " + search4DigitSynset);
+            mLogger.debug("    Synonyms on the ontology: " + lSynonyms.toUpperCase());
+            
+//            busMessageWordnet("    YES, on the ontology you can find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ".");
+//            busMessageWordnet("    The synonym common pattern is: " + search4DigitSynset);
+//            busMessageWordnet("    Synonyms on the ontology: " + lSynonyms.toUpperCase());
+            
+            sendData("    YES, on the ontology you can find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ".", "info", "Wordnet");
+            sendData("    The synonym common pattern is: " + search4DigitSynset, "info", "Wordnet");
+            sendData("    Synonyms on the ontology: " + lSynonyms.toUpperCase(), "info", "Wordnet");
+            
             jaSynonymsO.add(joSynonymO);
           } else {
             joSynonymW = new JsonObject();
             joSynonymW.addProperty(SYNSETID, search8DigitSynset);
             joSynonymW.addProperty(SYNONYM, sSynonyms);
             joSynonymW.addProperty(DEFINITION, sDefinition);
-            mLogger.debug("    NO, on the ontology you can't find synomyns to the term "
-                    + term.toUpperCase()
-                    + " with synset "
-                    + sTotalSynset
-                    + ". The synonym common pattern is: "
-                    + search4DigitSynset);
+
+            mLogger.debug("    NO, on the ontology you can't find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ". The synonym common pattern is: " + search4DigitSynset);
+//            busMessageWordnet("    NO, on the ontology you can't find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ". The synonym common pattern is: " + search4DigitSynset);
+            sendData("    NO, on the ontology you can't find synomyns to the term " + term.toUpperCase() + " with synset " + sTotalSynset + ". The synonym common pattern is: " + search4DigitSynset, "info", "Wordnet");
+            
             jaSynonymsW.add(joSynonymW);
           }
           mLogger.debug("");
@@ -1406,7 +1446,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
             JsonObject joTempResult = jaSynonymsO.get(0)
                 .getAsJsonObject();
-            addThingType(sBroaderTerm, term,
+            addTerm(sBroaderTerm, term,
                 joTempResult.get(SYNSETID).toString(),
                 joTempResult.get(DEFINITION).toString());
           }
@@ -1415,7 +1455,12 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
       mLogger.info("- Sending JSON to disambiguate to the TA.");
       mLogger.info("  JSON: " + joTempResultValue.toString());
+
+//      busMessageWordnet("- Sending JSON to disambiguate to the TA.");
+//      busMessageWordnet("  JSON: " + joTempResultValue.toString());
       
+      sendData("- Sending JSON to disambiguate to the TA.", "info", "Wordnet");
+      sendData("  JSON: " + joTempResultValue.toString(), "info", "Wordnet");
     } catch (Exception e) {
       mLogger.error("CheckThingType " + e.getMessage() + " "+ e.getLocalizedMessage() + " " + e.getCause());
     }
@@ -1443,15 +1488,22 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
     term = term.toLowerCase();
     mLogger.debug("Term: " + term.toUpperCase() + ".");
+//    busMessageWordnet("Term: " + term.toUpperCase() + ".");
+    sendData("Term: " + term.toUpperCase() + ".", "info", "Wordnet");
 
     try {
       // 1.- Verify if the term already exists on the ontology
       joTempResultValue = verifyTermOnOntology(term);
-      if (!(joTempResultValue == null))
+      if (!(joTempResultValue == null)){
         mLogger.debug("- The term " + term.toUpperCase() + " is on the ontology. ");
+//        busMessageWordnet("- The term " + term.toUpperCase() + " is on the ontology. ");
+        sendData("- The term " + term.toUpperCase() + " is on the ontology. ", "info", "Wordnet");
+      }
       else{
         // The term is not in the ontology
         mLogger.debug("- The term " + term.toUpperCase() + " is NOT on the ontology. ");
+//        busMessageWordnet("- The term " + term.toUpperCase() + " is NOT on the ontology. ");
+        sendData("- The term " + term.toUpperCase() + " is NOT on the ontology. ", "info", "Wordnet");
         
         // 2.- Get all the synsets related with that term
         JsonArray aSynset = oWordNetUtils.getSynsets(term, true);
@@ -1459,6 +1511,8 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
         mLogger.debug("- Different senses for the term " + term.toUpperCase() + ": ");
         if (aSynset.size() < 1)
           mLogger.debug("  No Synsets on Wordnet.");
+//        busMessageWordnet("  No Synsets on Wordnet.");
+        sendData("  No Synsets on Wordnet.", "info", "Wordnet");
 
         jaSynonymsO = new JsonArray();
         jaSynonymsW = new JsonArray();
@@ -1472,16 +1526,22 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           // 3.- Check synonyms on the ontology
           bCorrect = verifySynset(search4DigitSynset);
           mLogger.debug("  Synset: " + sTotalSynset);
+//          busMessageWordnet("  Synset: " + sTotalSynset);
+          sendData("  Synset: " + sTotalSynset, "info", "Wordnet");
 
           // SYNONYMS
           String sSynonyms = joLemma.get(SYNONYM).toString()
               .replace("\\\"", "");
           mLogger.debug("  Synonyms: " + sSynonyms);
+//          busMessageWordnet("  Synonyms: " + sSynonyms);
+          sendData("  Synonyms: " + sSynonyms, "info", "Wordnet");
 
           // DEFINITION
           String sDefinition = joLemma.get(DEFINITION).toString()
               .replace("\\\"", "");
           mLogger.debug("  Definition: " + sDefinition);
+//          busMessageWordnet("  Definition: " + sDefinition);
+          sendData("  Definition: " + sDefinition, "info", "Wordnet");
 
           // Already exists some synonyms on the ontology
           if (bCorrect) {
@@ -1495,6 +1555,21 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                     + sTotalSynset + ".");
             mLogger.debug("    The synonym common pattern is: " + search4DigitSynset);
             mLogger.debug("    Synonyms on the ontology: " + lSynonyms.toUpperCase());
+            
+//            busMessageWordnet("    YES, on the ontology you can find synomyns to the term "
+//                + term.toUpperCase()
+//                + " with synset "
+//                + sTotalSynset + ".");
+//            busMessageWordnet("    The synonym common pattern is: " + search4DigitSynset);
+//            busMessageWordnet("    Synonyms on the ontology: " + lSynonyms.toUpperCase());
+            
+            sendData("    YES, on the ontology you can find synomyns to the term "
+                + term.toUpperCase()
+                + " with synset "
+                + sTotalSynset + ".", "info", "Wordnet");
+            sendData("    The synonym common pattern is: " + search4DigitSynset, "info", "Wordnet");
+            sendData("    Synonyms on the ontology: " + lSynonyms.toUpperCase(), "info", "Wordnet");
+            
             jaSynonymsO.add(joSynonymO);
           } else {
             joSynonymW = new JsonObject();
@@ -1507,19 +1582,39 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                     + sTotalSynset
                     + ". The synonym common pattern is: "
                     + search4DigitSynset);
+//            busMessageWordnet("    NO, on the ontology you can't find synomyns to the term "
+//                + term.toUpperCase()
+//                + " with synset "
+//                + sTotalSynset
+//                + ". The synonym common pattern is: "
+//                + search4DigitSynset);
+            sendData("    NO, on the ontology you can't find synomyns to the term "
+                + term.toUpperCase()
+                + " with synset "
+                + sTotalSynset
+                + ". The synonym common pattern is: "
+                + search4DigitSynset, "info", "Wordnet");
             jaSynonymsW.add(joSynonymW);
 
             // HOLONYMS
             JsonArray aHolonym = joLemma.getAsJsonArray(HOLONYM);
             if (aHolonym == null) {//
               mLogger.debug("    NO, there is not holonyms for the term "+ term.toUpperCase()+ " on WORDNET.");
-
+//              busMessageWordnet("    NO, there is not holonyms for the term "+ term.toUpperCase()+ " on WORDNET.");
+              sendData("    NO, there is not holonyms for the term "+ term.toUpperCase()+ " on WORDNET.", "info", "Wordnet");
+              
               // HYPERNYMS
               JsonArray aHypernym = joLemma.getAsJsonArray(HYPERNYM);
-              if (aHypernym == null)
+              if (aHypernym == null){
                 mLogger.debug("    NO, there is not hypernyms for the term "+ term.toUpperCase()+ " on WORDNET.");
+//                busMessageWordnet("    NO, there is not hypernyms for the term "+ term.toUpperCase()+ " on WORDNET.");
+                sendData("    NO, there is not hypernyms for the term "+ term.toUpperCase()+ " on WORDNET.", "info", "Wordnet");
+              }
               else {
                 mLogger.debug("    YES, there are hypernyms for the term "+ term.toUpperCase()+ " on WORDNET. Hypernyms: "+ aHypernym.toString().toUpperCase());
+//                busMessageWordnet("    YES, there are hypernyms for the term "+ term.toUpperCase()+ " on WORDNET. Hypernyms: "+ aHypernym.toString().toUpperCase());
+                sendData("    YES, there are hypernyms for the term "+ term.toUpperCase()+ " on WORDNET. Hypernyms: "+ aHypernym.toString().toUpperCase(), "info", "Wordnet");
+
                 for (JsonElement eHypernym : aHypernym) {
                   JsonObject jobject = eHypernym.getAsJsonObject();
                   String sHypernym = jobject.get(TERM).toString().replace("\"", "");
@@ -1528,19 +1623,33 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                   if (!(oTerm == null)) {
                     mLogger.debug("      YES, the term "+ sHypernym.toString()+ " is on the ONTOLOGY. Hypernyms: "+ aHypernym.toString().toUpperCase());
                     mLogger.debug("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hypernym "+ sHypernym.toUpperCase());
-                    this.addThingType(sHypernym, term, search8DigitSynset, sDefinition); 
+                    
+//                    busMessageWordnet("      YES, the term "+ sHypernym.toString()+ " is on the ONTOLOGY. Hypernyms: "+ aHypernym.toString().toUpperCase());
+//                    busMessageWordnet("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hypernym "+ sHypernym.toUpperCase());
+                    
+                    sendData("      YES, the term "+ sHypernym.toString()+ " is on the ONTOLOGY. Hypernyms: "+ aHypernym.toString().toUpperCase(), "info", "Wordnet");
+                    sendData("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hypernym "+ sHypernym.toUpperCase(), "info", "Wordnet");
+                    
+                    this.addTerm(sHypernym, term, search8DigitSynset, sDefinition); 
                     firstSenseOnly = true;
                     joTempResultValue = oTerm;
                     break;
                   } else{
                     mLogger.debug("      NO, the term "+ sHypernym.toUpperCase()+ " is not on the ONTOLOGY.");
+//                    busMessageWordnet("      NO, the term "+ sHypernym.toUpperCase()+ " is not on the ONTOLOGY.");
+                    sendData("      NO, the term "+ sHypernym.toUpperCase()+ " is not on the ONTOLOGY.", "info", "Wordnet");
                     
                     // HYPERHYPERNYMS
                     JsonArray aHyperHypernym = joLemma.getAsJsonArray(HYPERHYPERNYM);
-                    if (aHyperHypernym == null)
+                    if (aHyperHypernym == null){
                       mLogger.debug("      NO, there is not hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET.");
+//                      busMessageWordnet("      NO, there is not hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET.");
+                      sendData("      NO, there is not hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET.", "info", "Wordnet");
+                    }
                     else {
                       mLogger.debug("      YES, there are hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET. Hyperhypernyms: "+ aHyperHypernym.toString().toUpperCase());
+//                      busMessageWordnet("      YES, there are hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET. Hyperhypernyms: "+ aHyperHypernym.toString().toUpperCase());
+                      sendData("      YES, there are hyperhypernyms for the term "+ sHypernym.toUpperCase()+ " on WORDNET. Hyperhypernyms: "+ aHyperHypernym.toString().toUpperCase(), "info", "Wordnet");
                       for (JsonElement eHyperHypernym : aHyperHypernym) {
                         JsonObject jobject2 = eHyperHypernym.getAsJsonObject();
                         String sHyperHypernym = jobject2.get(TERM).toString().replace("\"", "");
@@ -1549,12 +1658,22 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                         if (!(oTerm == null)) {
                           mLogger.debug("          YES, the term "+ sHyperHypernym.toString()+ " is on the ONTOLOGY. HyperHypernyms: "+ aHyperHypernym.toString().toUpperCase());
                           mLogger.debug("          Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperhypernym "+ sHyperHypernym.toUpperCase());
-                          this.addThingType(sHyperHypernym, term, search8DigitSynset, sDefinition);
+                          
+//                          busMessageWordnet("          YES, the term "+ sHyperHypernym.toString()+ " is on the ONTOLOGY. HyperHypernyms: "+ aHyperHypernym.toString().toUpperCase());
+//                          busMessageWordnet("          Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperhypernym "+ sHyperHypernym.toUpperCase());
+                          
+                          sendData("          YES, the term "+ sHyperHypernym.toString()+ " is on the ONTOLOGY. HyperHypernyms: "+ aHyperHypernym.toString().toUpperCase(), "info", "Wordnet");
+                          sendData("          Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperhypernym "+ sHyperHypernym.toUpperCase(), "info", "Wordnet");
+                          
+                          this.addTerm(sHyperHypernym, term, search8DigitSynset, sDefinition);
                           firstSenseOnly = true;
                           joTempResultValue = oTerm;
                           break;
-                        } else
+                        } else{
                           mLogger.debug("          NO, the term "+ sHyperHypernym.toUpperCase()+ " is not on the ONTOLOGY.");
+//                          busMessageWordnet("          NO, the term "+ sHyperHypernym.toUpperCase()+ " is not on the ONTOLOGY.");
+                          sendData("          NO, the term "+ sHyperHypernym.toUpperCase()+ " is not on the ONTOLOGY.", "info", "Wordnet");
+                        }
                       }
                     }
 
@@ -1566,6 +1685,8 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
             } else {
               mLogger.debug("    YES, there are holonyms for the term "+ term.toUpperCase()+ " on WORDNET. Holonyms: "+ aHolonym.toString().toUpperCase());
+//              busMessageWordnet("    YES, there are holonyms for the term "+ term.toUpperCase()+ " on WORDNET. Holonyms: "+ aHolonym.toString().toUpperCase());
+              sendData("    YES, there are holonyms for the term "+ term.toUpperCase()+ " on WORDNET. Holonyms: "+ aHolonym.toString().toUpperCase(), "info", "Wordnet");
               for (JsonElement eHolonym : aHolonym) {
                 JsonObject jobject = eHolonym.getAsJsonObject();
                 String sHolonym = jobject.get(TERM).toString().replace("\"", "");
@@ -1574,20 +1695,33 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                 if (!(oTerm == null)) {
                   mLogger.debug("      YES, the term "+ sHolonym.toUpperCase()+ " is on the ONTOLOGY. Holonyms: "+ aHolonym.toString().toUpperCase());
                   mLogger.debug("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the holonym "+ sHolonym.toUpperCase());
-                  this.addThingType(sHolonym, term, search8DigitSynset, sDefinition);
+                  
+//                  busMessageWordnet("      YES, the term "+ sHolonym.toUpperCase()+ " is on the ONTOLOGY. Holonyms: "+ aHolonym.toString().toUpperCase());
+//                  busMessageWordnet("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the holonym "+ sHolonym.toUpperCase());
+                  
+                  sendData("      YES, the term "+ sHolonym.toUpperCase()+ " is on the ONTOLOGY. Holonyms: "+ aHolonym.toString().toUpperCase(), "info", "Wordnet");
+                  sendData("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the holonym "+ sHolonym.toUpperCase(), "info", "Wordnet");
+                  
+                  this.addTerm(sHolonym, term, search8DigitSynset, sDefinition);
                   firstSenseOnly = true;
                   joTempResultValue = oTerm;
                   break;
                 } else{
                   mLogger.debug("      NO, the term "+ sHolonym.toUpperCase()+ " is not on the ONTOLOGY.");
+//                  busMessageWordnet("      NO, the term "+ sHolonym.toUpperCase()+ " is not on the ONTOLOGY.");
+                  sendData("      NO, the term "+ sHolonym.toUpperCase()+ " is not on the ONTOLOGY.", "info", "Wordnet");
                 
                   
                   // HYPERHOLONYMS
                   JsonArray aHyperHolonym = joLemma.getAsJsonArray(HYPERHOLONYM);
                   if (aHyperHolonym == null) {//
                     mLogger.debug("    NO, there is not hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET.");
+//                    busMessageWordnet("    NO, there is not hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET.");
+                    sendData("    NO, there is not hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET.", "info", "Wordnet");
                   } else {
                     mLogger.debug("    YES, there are hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET. Hyperholonyms: "+ aHyperHolonym.toString().toUpperCase());
+//                    busMessageWordnet("    YES, there are hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET. Hyperholonyms: "+ aHyperHolonym.toString().toUpperCase());
+                    sendData("    YES, there are hyperholonyms for the term "+ term.toUpperCase()+ " on WORDNET. Hyperholonyms: "+ aHyperHolonym.toString().toUpperCase(), "info", "Wordnet");
                     for (JsonElement eHyperHolonym : aHyperHolonym) {
                       JsonObject jobject1 = eHyperHolonym.getAsJsonObject();
                       String sHyperHolonym = jobject1.get(TERM).toString().replace("\"", "");
@@ -1596,12 +1730,22 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
                       if (!(oTerm == null)) {
                         mLogger.debug("      YES, the term "+ sHyperHolonym.toUpperCase()+ " is on the ONTOLOGY. HyperHolonyms: "+ aHyperHolonym.toString().toUpperCase());
                         mLogger.debug("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperholonym "+ sHyperHolonym.toUpperCase());
-                        this.addThingType(sHyperHolonym, term, search8DigitSynset, sDefinition);
+                        
+//                        busMessageWordnet("      YES, the term "+ sHyperHolonym.toUpperCase()+ " is on the ONTOLOGY. HyperHolonyms: "+ aHyperHolonym.toString().toUpperCase());
+//                        busMessageWordnet("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperholonym "+ sHyperHolonym.toUpperCase());
+                        
+                        sendData("      YES, the term "+ sHyperHolonym.toUpperCase()+ " is on the ONTOLOGY. HyperHolonyms: "+ aHyperHolonym.toString().toUpperCase(), "info", "Wordnet");
+                        sendData("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. Term related with the hyperholonym "+ sHyperHolonym.toUpperCase(), "info", "Wordnet");
+                        
+                        this.addTerm(sHyperHolonym, term, search8DigitSynset, sDefinition);
                         firstSenseOnly = true;
                         joTempResultValue = oTerm;
                         break;
-                      } else
+                      } else{
                         mLogger.debug("      NO, the term "+ sHyperHolonym.toUpperCase()+ " is not on the ONTOLOGY.");
+//                        busMessageWordnet("      NO, the term "+ sHyperHolonym.toUpperCase()+ " is not on the ONTOLOGY.");
+                        sendData("      NO, the term "+ sHyperHolonym.toUpperCase()+ " is not on the ONTOLOGY.", "info", "Wordnet");
+                      }
                     }
                   }
                   
@@ -1646,7 +1790,8 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
             if (jaSynonymsW.size() == 1){
               joTempResultValue.add(DISAMBIGUATION, new JsonPrimitive(false));
               mLogger.debug("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. ");
-//              this.addThingType(null, term, search8DigitSynset, sDefinition);
+              sendData("      Add term "+ term.toUpperCase()+ " on the ONTOLOGY. ", "info", "Wordnet");
+//              this.addThingType(null, term, search8DigitSynset, sDefinition); //TODO
             }
             else 
               joTempResultValue.add(DISAMBIGUATION, new JsonPrimitive(true));
@@ -1661,7 +1806,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
               joTempResultValue.add(SYNONYMS, jaSynonymsO);
               
               JsonObject joTempResult = jaSynonymsO.get(0).getAsJsonObject();
-              addThingType(sBroaderTerm, term,joTempResult.get(SYNSETID).toString(),joTempResult.get(DEFINITION).toString());
+              addTerm(sBroaderTerm, term,joTempResult.get(SYNSETID).toString(),joTempResult.get(DEFINITION).toString());
             }
           }
         }
@@ -1669,33 +1814,60 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
       
       mLogger.info("- Sending JSON to disambiguate to the TA.");    
       mLogger.info("  JSON: " + joTempResultValue.toString());
+      
+//      busMessageWordnet("- Sending JSON to disambiguate to the TA.");
+//      busMessageWordnet("  JSON: " + joTempResultValue.toString());
+      
+      sendData("- Sending JSON to disambiguate to the TA.", "info", "Wordnet");
+      sendData("  JSON: " + joTempResultValue.toString(), "info", "Wordnet");
+      
     } catch (Exception e) {
       mLogger.error("CheckThingLocation " + e.getMessage() + " "  + e.getLocalizedMessage() + " " + e.getCause());
     }
     return joTempResultValue;
   }
 
+  public void addResource(String sConcept){
+    oOntoBetaas.addResource(sConcept);
+  }
   
-  
-  private void addThingType(String sBroaderConcept, String sConcept,
-      String sAltLabel, String sDefinition) {
+  private boolean addTerm(String sBroaderConcept, String sConcept, String sAltLabel, String sDefinition) {
+    boolean bCorrect = true;
     try {
       int i = sBroaderConcept.indexOf("#");
       if (i>0)
         sBroaderConcept = sBroaderConcept.substring(i+1);
       
-      mLogger.info("- Add Resource. BroaderConcept: "
-          + sBroaderConcept.substring(
-              sBroaderConcept.indexOf("#") + 1).toUpperCase()
+      String message = "- Add Resource. BroaderConcept: " + sBroaderConcept.substring( sBroaderConcept.indexOf("#") + 1).toUpperCase()
           + ", Concept: " + sConcept.toUpperCase() + ", ID: "
-          + sAltLabel + ", Definition: " + sDefinition + ".");
-      oOntoBetaas.addResource(sBroaderConcept, sConcept, sAltLabel,
-          sDefinition);
+          + sAltLabel + ", Definition: " + sDefinition + ".";
+      mLogger.info(message);
+//      busMessageWordnet(message);
+      sendData(message, "info", "Wordnet");
+      
+      bCorrect = oOntoBetaas.addResource(sBroaderConcept, sConcept, sAltLabel, sDefinition);
+    } catch (Exception e) {
+      mLogger.error("AddThingType CM " + e.getMessage() + " " + e.getLocalizedMessage() + " " + e.getCause());
+    }
+    return bCorrect;
+  }
+
+  public boolean addTerm(String sConcept, String sAltLabel, String sDefinition) {
+    boolean bCorrect = true;
+    try {
+      String message = "- Add Resource.  Concept: " + sConcept.toUpperCase() + ", ID: " + sAltLabel + ", Definition: " + sDefinition + ".";
+      mLogger.info(message);
+//      busMessageWordnet (message);
+      sendData(message, "info", "Wordnet");
+      
+      bCorrect = oOntoBetaas.addResource(null, sConcept, sAltLabel, sDefinition);
     } catch (Exception e) {
       mLogger.error("AddThingType " + e.getMessage() + " " + e.getLocalizedMessage() + " " + e.getCause());
     }
+    return bCorrect;
   }
 
+  
   private boolean verifySynset(String altLabel) {
     boolean bCorrect = true;
     SparqlResultSet oSparqlResultSet = null;
@@ -1705,10 +1877,10 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
           + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
           + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
           + "SELECT  DISTINCT * WHERE { "
-          + "?broaderTerm rdf:type owl:NamedIndividual; "
-          + "   skos:definition ?definition; "
-          + "   skos:altLabel ?altLabel. "
-          + " OPTIONAL{?broaderTerm skos:narrower ?term.}"
+          + "?broaderTerm rdf:type owl:NamedIndividual. "
+          + " OPTIONAL{ ?broaderTerm skos:definition ?definition.} "
+          + " OPTIONAL{ ?broaderTerm skos:altLabel ?altLabel.} "
+          + " OPTIONAL{?broaderTerm skos:narrower ?term.} "
           + " FILTER strstarts(?altLabel,'" + altLabel + "') "
           + "}";
 
@@ -1747,7 +1919,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
               int i = sVarValue.lastIndexOf("#");
               if (i>0)
                 sVarValue = sVarValue.substring( i + 1);
-//TODO        Synonyms on the ontology: 05018103 LUMINOSITY - 05018785 LUMINESCENCE - 05018103 BRIGHTNESS - 05018103 LIGHT - 05018103 LIGHT - 05018103 LIGHT - 05018103 LIGHT - 
+//Synonyms on the ontology: 05018103 LUMINOSITY - 05018785 LUMINESCENCE - 05018103 BRIGHTNESS - 05018103 LIGHT - 05018103 LIGHT - 05018103 LIGHT - 05018103 LIGHT - 
               lSynonyms = lSynonyms + "" + sVarValue + " - ";
               sBroaderTerm = sVarValue;
             }
@@ -1869,7 +2041,7 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
       oOntoBetaas.exportOwl();
       oOntoBetaas.close();
       oOntoBetaas = null;
-      mBundleContext.removeServiceListener(sl);
+      context.removeServiceListener(sl);
       this.sl = null;
       mLogger.info("Component CM has stopped.");
     }
@@ -1893,12 +2065,12 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
 
   public void setContext(BundleContext context)
   {
-    mBundleContext = context;
+    this.context = context;
   }
 
   public BundleContext getContext()
   {
-    return mBundleContext;
+    return this.context;
   }
 
   public void setGwId(String gwId)
@@ -1912,5 +2084,150 @@ public class ThingsServiceManagerImpl implements ThingsServiceManager
   {
     return mGWID;
   }
+
+  public String getLastObservation(String sThingName)
+  {
+      SparqlResultSet oSparqlResultSet = null;
+      String sLastObservation = "";
+      int i;
+
+      try
+      {
+        String sQuery = ""
+            + "PREFIX BETaaS: <http://www.betaas.eu/2013/betaasOnt#> "
+            + "SELECT ?lastObservation " + "WHERE { " 
+            + "?observation BETaaS:observedBy BETaaS:"+sThingName+ ". "
+            + "?observation BETaaS:observation_result_time ?lastObservation. "
+            + "}";
+        oSparqlResultSet = oOntoBetaas.sparqlQuery(sQuery);
+
+        ArrayList<SparqlResult> sparqlResultsList = new ArrayList<SparqlResult>();
+        sparqlResultsList = oSparqlResultSet.getSparqlResultsList();        
+
+        for (i = 0; i < sparqlResultsList.size(); i++)
+        {
+          SparqlResult results = (SparqlResult) sparqlResultsList.get(i);
+
+          ArrayList<SparqlVariable> sparqlVariablesList = new ArrayList<SparqlVariable>();
+          sparqlVariablesList = results.getSparqlVariablesList();
+          for (int y = 0; y < sparqlVariablesList.size(); y++)
+          {
+            String sVarName = sparqlVariablesList.get(y).getSparqlVariableName();
+            if (sVarName.equals("lastObservation"))
+              sLastObservation = sparqlVariablesList.get(y)
+                  .getSparqlVariableValue();
+          }
+        }
+      }
+      catch (Exception e)
+      {
+        mLogger
+            .error("Component CM perform operation getLastObservation. It has not been executed correctly. Exception: "
+                + e.getMessage() + ".");
+      }
+      return sLastObservation;
+    }
+
+
+
+  public String getThingServiceName(String sThingName)
+  {
+    SparqlResultSet oSparqlResultSet = null;
+    String sThingServiceName = "";
+    int i;
+
+    try
+    {
+      String sQuery = ""
+          + "PREFIX BETaaS: <http://www.betaas.eu/2013/betaasOnt#> "
+          + "SELECT ?name "
+          + "WHERE { " 
+          + "BETaaS:"+sThingName+ " BETaaS:hasService ?service. "
+          + "?service BETaaS:thingserviceID ?name. "
+          + "}";
+      oSparqlResultSet = oOntoBetaas.sparqlQuery(sQuery);
+
+      ArrayList<SparqlResult> sparqlResultsList = new ArrayList<SparqlResult>();
+      sparqlResultsList = oSparqlResultSet.getSparqlResultsList();
+      for (i = 0; i < sparqlResultsList.size(); i++)
+      {
+        SparqlResult results = (SparqlResult) sparqlResultsList.get(i);
+
+        ArrayList<SparqlVariable> sparqlVariablesList = new ArrayList<SparqlVariable>();
+        sparqlVariablesList = results.getSparqlVariablesList();
+        for (int y = 0; y < sparqlVariablesList.size(); y++)
+        {
+          String sVarName = sparqlVariablesList.get(y).getSparqlVariableName();
+          if (sVarName.equals("name"))
+            sThingServiceName = sparqlVariablesList.get(y).getSparqlVariableValue();
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      mLogger
+          .error("Component CM perform operation getLastObservation. It has not been executed correctly. Exception: "
+              + e.getMessage() + ".");
+    }
+    return sThingServiceName;
+
+  }
   
+  
+  public void busMessage(String message){
+    mLogger.debug("Checking queue");
+    if (!enabledbus)return;
+    mLogger.debug("Sending to queue");
+    ServiceReference serviceReference = this.getContext().getServiceReference(Publisher.class.getName());
+    if (serviceReference==null){
+      mLogger.warn("Requested to publish data to queue, but service betaas publisher not found");
+      messageBuffer.add(message);
+      return;
+    }
+    Publisher service = (Publisher) this.getContext().getService(serviceReference); 
+    if (service==null){
+      mLogger.warn("Requested to publish data to queue, but service betaas publisher not found");
+      messageBuffer.add(message);
+      return;
+    }
+
+    if (messageBuffer.size()>0){
+      mLogger.warn("Buffered data available, publishing this data now with key ");
+      for (int i =0 ; i<messageBuffer.size();i++){
+        service.publish(key,messageBuffer.get(i));
+        messageBuffer.remove(i);
+      }
+      
+    }
+  
+    mLogger.debug("This is the message built "+message);
+    
+    mLogger.debug("Sending to "); 
+    service.publish(key,message);
+    mLogger.debug("Sent to queue " + key);
+  }
+  
+  
+  public void sendData(String description, String level, String originator) {
+    java.util.Date date= new java.util.Date();
+    Timestamp timestamp = new Timestamp(date.getTime());
+    Message msg = new Message();
+    msg.setDescritpion(description);
+    msg.setLayer(Layer.TAAS);
+    msg.setLevel(level);
+    msg.setOrigin(originator);
+    msg.setTimestamp(timestamp.getTime());
+    MessageBuilder msgBuilder = new MessageBuilder();
+    String json = msgBuilder.getJsonEquivalent(msg);
+    busMessage(json);
+  }
+  
+  public boolean isEnabledbus() {
+    return enabledbus;
+  }
+
+  public void setEnabledbus(boolean enabledbus) {
+    this.enabledbus = enabledbus;
+  }
 }
+

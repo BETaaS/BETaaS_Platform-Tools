@@ -21,11 +21,19 @@
 package eu.betaas.taas.qosmanager.monitoring.api.impl;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
 import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
 import eu.betaas.taas.qosmanager.monitoring.api.QoSManagerMonitoring;
 import eu.betaas.taas.qosmanager.monitoring.api.impl.QoSMonitoringMeasure;
@@ -42,6 +50,11 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
   private ArrayList<QoSMonitoringMeasure> oThingServiceQoSMeasure = new ArrayList<QoSMonitoringMeasure>();
   private static QoSManagerMonitoringImpl thing = null;
   
+  private static BundleContext context;
+  private boolean enabled=false;
+  private List<String> messageBuffer = new Vector<String>();
+  private String key = "monitoring.taas.qosmonitoring";
+  
   private QoSManagerMonitoringImpl()
   {
     super();
@@ -50,13 +63,14 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
 
   
 //  public boolean registerMeasurementSLAMonitoringPull(String sThingServiceName, int sOptimalRequestRate)
-  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sOptimalRequestRate)
+  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate)
   {
     Timestamp tMaximumTimeStamp;
     boolean bResults = true;
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
       mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       if (!(oThingServiceMeasure == null))
       {
         int iRequestRate = oThingServiceMeasure.getRequestRate();
@@ -68,7 +82,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         QoSMonitoringMeasure monitoringMeasure = new QoSMonitoringMeasure();
         monitoringMeasure.setThingServiceName(sThingServiceName);
 
-        monitoringMeasure.setOptimalRequestRate(sOptimalRequestRate);
+        monitoringMeasure.setOptimalRequestRate(sMilisecondMinInterRequestRate);
 
         int iRequestRate = monitoringMeasure.getRequestRate();
         iRequestRate = 1;
@@ -94,17 +108,17 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring function.");
         oThingServiceMeasure = null;
       }
-
     return bResults;
   }
   
-  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int iPeriod)
+  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod)
   {
     Timestamp tMaximumTimeStamp;
     boolean bResults = true;
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
       mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       if (!(oThingServiceMeasure == null))
       {
         int iRequestRate = oThingServiceMeasure.getRequestRate();
@@ -115,8 +129,10 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       {
         QoSMonitoringMeasure monitoringMeasure = new QoSMonitoringMeasure();
         monitoringMeasure.setThingServiceName(sThingServiceName);
+        
+        monitoringMeasure.setOptimalRequestRate(sMilisecondMinInterRequestRate);
 
-        monitoringMeasure.setPeriod(iPeriod);
+        monitoringMeasure.setPeriod(iMilisecondPeriod);
 
         int iRequestRate = monitoringMeasure.getRequestRate();
         iRequestRate = 1;
@@ -166,6 +182,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
   {
     boolean bResults = false;
       mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
       if (!(oThingServiceMeasure == null))
       {
@@ -202,6 +219,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
       mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. "+sThingServiceName+" Thing Service.");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       if (!(oThingServiceMeasure == null) && (oThingServiceMeasure.getAvailability()))
       {
         iSuccess++;
@@ -214,18 +232,18 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         Timestamp tsMaximum = oThingServiceMeasure.getMaximumTimeStamp();
         Timestamp tsInitial = oThingServiceMeasure.getInitialTimeStamp();
         Date date = new Date();
-        Timestamp tsFinal = new Timestamp(date.getTime());
-        Timestamp ts = diff(tsInitial, tsFinal);
+        Timestamp tsActual = new Timestamp(date.getTime());
+        Timestamp ts = diff(tsInitial, tsActual);
         LOGTest.debug("Monitoring End");
         
         if (tsMaximum.equals("")) iUnsuccess++;
         else
           //Constructs a Timestamp object using a milliseconds time value.
           if (ts.getTime() < tsMaximum.getTime()){ 
-            iSuccess++;
+            iUnsuccess++;
           }
           else{
-            iUnsuccess++;
+            iSuccess++;
           }
       }else{
         iUnsuccess=3;
@@ -327,7 +345,16 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
     return this.cmservice;
   }
 
+  public void setContext(BundleContext context)
+  {
+    this.context = context;
+  }
 
+  public BundleContext getContext()
+  {
+    return this.context;
+  }
+  
 
   public SLACalculation failureSLA(String sThingServiceName)
   {
@@ -352,7 +379,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
 
 
 
-  public SLACalculation calculateSLAPush(String sThingServiceName, int isgTaaSRequestRate)
+  public SLACalculation calculateSLAPush(String sThingServiceName, int iMilisecondTaaSRequestRate)
   {
       int iSuccess = 0;
       int iUnsuccess = 0;
@@ -366,6 +393,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       
         QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
         mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. "+sThingServiceName+" Thing Service.");
+        sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
         if (!(oThingServiceMeasure == null) && (oThingServiceMeasure.getAvailability()))
         {
           iSuccess++;
@@ -383,11 +411,11 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
           if (isgMaxRequestRate==0) iUnsuccess++;
           else
             //Constructs a Timestamp object using a seconds time value.
-            if (isgTaaSRequestRate < isgMaxRequestRate){ 
-              iSuccess++;
+            if (iMilisecondTaaSRequestRate < isgMaxRequestRate){ 
+              iUnsuccess++;
             }
             else{
-              iUnsuccess++;
+              iSuccess++;
             }
         }else{
           iUnsuccess=3;
@@ -407,5 +435,71 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       return resultSLA;
   }
 
+  public void busMessage(String message){
+    mLogger.debug("Checking queue");
+    if (!enabled)return;
+    mLogger.debug("Sending to queue");
+    ServiceReference serviceReference = this.getContext().getServiceReference(Publisher.class.getName());
+    if (serviceReference==null){
+      mLogger.warn("Requested to publish data to queue, but service betaas publisher not found");
+      messageBuffer.add(message);
+      return;
+    }
+    Publisher service = (Publisher) this.getContext().getService(serviceReference); 
+    if (service==null){
+      mLogger.warn("Requested to publish data to queue, but service betaas publisher not found");
+      messageBuffer.add(message);
+      return;
+    }
 
+    if (messageBuffer.size()>0){
+      mLogger.warn("Buffered data available, publishing this data now with key ");
+      for (int i =0 ; i<messageBuffer.size();i++){
+        service.publish(key,messageBuffer.get(i));
+        messageBuffer.remove(i);
+      }
+      
+    }
+  
+    mLogger.debug("This is the message built "+message);
+    
+    mLogger.debug("Sending to "); 
+    service.publish(key,message);
+    mLogger.debug("Sent to queue " + key);
+  }
+  
+  
+  public void sendData(String description, String level, String originator) {
+    java.util.Date date= new java.util.Date();
+    Timestamp timestamp = new Timestamp(date.getTime());
+    Message msg = new Message();
+    msg.setDescritpion(description);
+    msg.setLayer(Layer.TAAS);
+    msg.setLevel(level);
+    msg.setOrigin(originator);
+    msg.setTimestamp(timestamp.getTime());
+    MessageBuilder msgBuilder = new MessageBuilder();
+    String json = msgBuilder.getJsonEquivalent(msg);
+    busMessage(json);
+  }
+  
+//  public boolean isEnabledbus() {
+//    return enabledbus;
+//  }
+//
+//  public void setEnabledbus(boolean enabledbus) {
+//    this.enabledbus = enabledbus;
+//  }
+//  
+//  public boolean getEnabledbus() {
+//    return enabledbus;
+//  }
+  
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
 }
