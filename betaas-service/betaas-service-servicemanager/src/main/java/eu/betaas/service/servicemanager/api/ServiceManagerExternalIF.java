@@ -58,7 +58,7 @@ public interface ServiceManagerExternalIF {
 //    @Consumes("application/xml; charset=UTF-8")
   	public String installApplication(String manifestContent); 
 	
-	//TODO: add credentials to getApplicationServices call
+	
 	/**
 	 * Get the list of services identifiers
 	 * @return a json structure (as a String) containing the list of service ID installed for the app
@@ -69,7 +69,7 @@ public interface ServiceManagerExternalIF {
 	public String getApplicationServices(/*@PathParam("appID")*/ String appID);
 	
 
-	//TODO: add credentials to uninstallApplication params
+	
 	/** It is used to uninstall a previously installed application
 	 * @param appID the ID returned by SM during the installation process
 	 * @param manifestContent the manifest from which credentials will be taken
