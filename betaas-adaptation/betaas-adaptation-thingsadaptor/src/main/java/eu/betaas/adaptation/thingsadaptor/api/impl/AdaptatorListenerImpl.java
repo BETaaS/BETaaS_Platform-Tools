@@ -50,7 +50,7 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 
 	public static AdaptatorListenerImpl getInstance() {
 		Logger mLogger = Logger.getLogger("betaas.adaptation");
-		mLogger.info("Called getInstance!"); // comment
+		mLogger.debug("Called getInstance!"); // comment
 		if (listener == null) {
 			listener = new AdaptatorListenerImpl();
 		}
@@ -58,14 +58,14 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	}
 
 	public boolean notify(String type, String resourceID, HashMap<String, String> value) {
-		mLogger.info("Got notification from adaptation plugin for DeviceID:"+resourceID + " with value : " + value);
+		mLogger.debug("Got notification from adaptation plugin for DeviceID:"+resourceID + " with value : " + value);
 		ThingConstructor thingConstructor = new ThingConstructor(adaptationcm);
 		thingConstructor.notifyMeasurment(resourceID, value);
 		return false;
 	}
 	
 	public boolean removeThing(String thingId) {
-		mLogger.info("Got notification from adaptation plugin that DeviceID:"+thingId + " was removed");
+		mLogger.debug("Got notification from adaptation plugin that DeviceID:"+thingId + " was removed");
 		List<String> ids = new ArrayList<String>();
 		ids.add(thingId);
 		adaptationcm.removeThing(ids);
@@ -73,7 +73,6 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	}
 
 	public void start() {
-		mLogger.info("context is:"+(context != null));
 		AdaptorClient sClient = AdaptorClient.instance(context);
 		adaptationPlugin = sClient.getApService();
 		setMyServiceRegistered();
@@ -106,14 +105,14 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 					}
 						break;
 					default:
-						mLogger.info("default event");
+						mLogger.debug("default event");
 						break;
 					}
 				}
 			};
 			context.addServiceListener(sl);
 		} catch (Exception e) {
-			mLogger.info("EXCEPTION: " + e.getMessage());
+			mLogger.error("EXCEPTION: " + e.getMessage());
 		}
 	}
 
