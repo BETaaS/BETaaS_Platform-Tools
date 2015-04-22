@@ -240,14 +240,7 @@ public class ExternalAPIImpl implements ServiceManagerExternalIF {
 				return false;
 			}
 			
-//			// convert the data to a Json structure
-//			try {
-//				JsonElement jelement = new JsonParser().parse(data);
-//		    	jobject = jelement.getAsJsonObject();
-//			} catch (Exception e) {
-//				mLogger.error("Cannot parse json input data: " + data);
-//				return false;
-//			}
+
 			
 			RequestManager reqMng = new RequestManager();
 			
