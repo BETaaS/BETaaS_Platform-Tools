@@ -56,6 +56,9 @@ In order to star using BETaaS, first you will need to setup the environment:
 
 * [Setup and deployment of BETaaS](/betaas-docs/github/installationofBETaaS.md)
 
+In order to speed up development, Instant BETaaS, an Ubuntu virtual machine with BETaaS installed and configured is provided:
+* [Instant BETaaS](/betaas-docs/github/how-to-instantbetaas.md)
+
 ### BETaaS Tutorials:
 
 The following examples are provided:
@@ -63,6 +66,7 @@ The following examples are provided:
 * [How to build a things adapter for BETaaS](/betaas-docs/github/how_to_write_TA_Plugin.md)
 * [Step by Step BETaaS application How To](/betaas-docs/github/how-to-AndroidApp.md)
 * [How to build a Data Task](/betaas-docs/github/betaas-service-datatask.md)
+* [How to run BETaaS on UDOO board](http://www.hackster.io/betaas-consortium/udoo-betaas1)
 
 ### BETaaS Demo Applications:
 
