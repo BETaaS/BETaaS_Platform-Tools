@@ -17,12 +17,12 @@ limitations under the License.
 package eu.betaas.taas.securitymanager.core.service.impl;
 
 import java.security.Security;
-import java.security.interfaces.ECPublicKey;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -31,7 +31,6 @@ import org.osgi.util.tracker.ServiceTracker;
 import eu.betaas.taas.securitymanager.authentication.service.IEncryptDecryptService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService;
-
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
 import eu.betaas.taas.securitymanager.common.model.BcCredential;
@@ -118,8 +117,8 @@ public class SecureGWCommService implements ISecGWCommService {
 		if(ecmqvExtServ != null){
 			// the actual invocation of initEcmqv 
 			eMsg = ecmqvExtServ.initEcmqv(
-					((ECPublicKey)myEphKp.getPublic()).getW().getAffineX().toByteArray(),	// the X-coordinate of EC public key param. 
-					((ECPublicKey)myEphKp.getPublic()).getW().getAffineY().toByteArray(), // the Y-coordinate of EC public key param.
+					((ECPublicKeyParameters)myEphKp.getPublic()).getQ().normalize().getXCoord().toBigInteger().toByteArray(),	// the X-coordinate of EC public key param. 
+					((ECPublicKeyParameters)myEphKp.getPublic()).getQ().normalize().getYCoord().toBigInteger().toByteArray(), // the Y-coordinate of EC public key param.
 					myCert.getEncoded());
 		}
 			

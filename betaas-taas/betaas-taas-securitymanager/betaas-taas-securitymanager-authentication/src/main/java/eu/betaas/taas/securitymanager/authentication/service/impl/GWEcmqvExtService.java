@@ -91,9 +91,10 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		BcCredential myCredential = gwCertificateService.loadMyCertificate(
 				PKCS12Utils.GW_CERT);
 		// get the public key of intermediate certificate from GW*
-		AsymmetricKeyParameter verKey = ECKeyPairGen.generateECPublicKey(
+//		AsymmetricKeyParameter verKey = ECKeyPairGen.generateECPublicKey(
+//				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
+		AsymmetricKeyParameter verKey = PublicKeyFactory.createKey(
 				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
-		
 		// get my own certificate
 		myCert = (X509CertificateHolder)myCredential.getCertificateChain()[0];
 		
@@ -264,7 +265,7 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		
 		eMsg.setEphemeralPublicX(myEphPub.getQ().normalize().getXCoord().
 				toBigInteger().toByteArray());
-		eMsg.setEphemeralPublicY(myEphPub.getQ().normalize().getXCoord().
+		eMsg.setEphemeralPublicY(myEphPub.getQ().normalize().getYCoord().
 				toBigInteger().toByteArray());
 		
 		return eMsg;

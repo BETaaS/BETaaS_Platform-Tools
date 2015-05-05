@@ -20,7 +20,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -58,7 +57,7 @@ public class EncryptDecryptService implements IEncryptDecryptService {
     IvParameterSpec ivSpec = new IvParameterSpec(new byte[16]);
     
     try {
-			out = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
+			out = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			// initialize the encryption
 			out.init(Cipher.ENCRYPT_MODE, key, ivSpec);
 			
@@ -66,9 +65,6 @@ public class EncryptDecryptService implements IEncryptDecryptService {
 			
 			return result;
 		} catch (NoSuchAlgorithmException e) {
-			log.error("Encryption error: " + e.getMessage());
-			return null;
-		} catch (NoSuchProviderException e) {
 			log.error("Encryption error: " + e.getMessage());
 			return null;
 		} catch (NoSuchPaddingException e) {
@@ -97,7 +93,7 @@ public class EncryptDecryptService implements IEncryptDecryptService {
     IvParameterSpec ivSpec = new IvParameterSpec(new byte[16]);
     
     try {
-			in = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
+			in = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			// initialize the decryption
 			in.init(Cipher.DECRYPT_MODE, key,ivSpec);
 			
@@ -105,9 +101,6 @@ public class EncryptDecryptService implements IEncryptDecryptService {
 			
 			return new String(result);
 		} catch (NoSuchAlgorithmException e) {
-			log.error("Decryption error: " + e.getMessage());
-			return null;
-		} catch (NoSuchProviderException e) {
 			log.error("Decryption error: " + e.getMessage());
 			return null;
 		} catch (NoSuchPaddingException e) {
