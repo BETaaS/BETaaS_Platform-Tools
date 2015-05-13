@@ -59,5 +59,5 @@ http://localhost:8080/IntrusionDetection/
 - The Linux Container web panel username/password are admin/admin
 - The username/password of each linux container are ubuntu/ubuntu
 
-[Link 1]:https://drive.google.com/file/d/0B6ruPOwpLiDCR1VYQzgzdHVoVHM/view?usp=sharing
-[Link 2]:https://mega.co.nz/#!3MxiRJqI!3jmtuROGiRxrwcdocb5WmfWkYcgSMXYdXN1AAgyOA-w
+[Link 1]:https://drive.google.com/file/d/0B6ruPOwpLiDCTHVPNlkzM3lZeW8/view?usp=sharing
+[Link 2]:https://mega.co.nz/#!DEhGEB7a!iwOaMmy0hhaDeXgntmC0tPCcfrpUvG9ctQMc49CXbG4
