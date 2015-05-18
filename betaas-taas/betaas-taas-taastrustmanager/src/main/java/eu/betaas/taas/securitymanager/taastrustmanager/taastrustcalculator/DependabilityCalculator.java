@@ -34,7 +34,7 @@ public class DependabilityCalculator
 		logger.debug("Calculating dependability...");
 		// 2 - Calculate MTBF
 		
-		// 3 - Perform the Z-test
+		// 3 - Calculate Trustability and normalize
 		
 		
 		return 2.5f;
