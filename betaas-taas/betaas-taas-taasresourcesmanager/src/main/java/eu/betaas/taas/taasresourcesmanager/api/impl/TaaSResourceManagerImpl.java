@@ -1,4 +1,4 @@
-/**
+﻿/**
 
 Copyright 2014 ATOS SPAIN S.A.
 
@@ -90,6 +90,7 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 	public String allocateResources(Feature appFeature) 
 	{		
 		logger.info ("Allocate resources method (with feature) invoked!");
+		logger.info ("Look for " + appFeature.getFeature() + " in " + appFeature.getLocation().getLocationIdentifier() + "-" + appFeature.getLocation().getLocationKeyword() + " with period " + appFeature.getPeriod());
 		ResourcesAllocator myAllocator = new ResourcesAllocator();		
 		return myAllocator.allocateResources(appFeature);
 	}

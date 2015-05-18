@@ -47,6 +47,7 @@ public class RecoveryManager
 			Application myApp = appCatalog.getApplication(myAppId);
 			
 		}
+		logger.info ("Removed!");
 		
 	}
 	
