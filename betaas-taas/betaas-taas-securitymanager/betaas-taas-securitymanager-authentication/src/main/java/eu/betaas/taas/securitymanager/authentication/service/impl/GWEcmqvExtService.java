@@ -18,6 +18,7 @@ package eu.betaas.taas.securitymanager.authentication.service.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.Extension;
@@ -31,10 +32,9 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-//import org.osgi.util.tracker.ServiceTracker;
 
-//import eu.betaas.service.instancemanager.api.InstanceManagerExternalIF;
-//import eu.betaas.taas.securitymanager.authentication.activator.ExtAuthenticationActivator;
+import eu.betaas.taas.securitymanager.authentication.catalog.ExpireKeyGwCatalog;
+import eu.betaas.taas.securitymanager.authentication.catalog.KeyGwCatalog;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService;
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
@@ -55,6 +55,8 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 	private Logger log = Logger.getLogger("betaas.taas.securitymanager");
 	
 	private IGatewayCertificateService gwCertificateService;
+	
+	private static final long VALID_PERIOD = 10 * 60 * 1000; // 10 minutes 
 	
 	/**	My Certificate */
 	private X509CertificateHolder myCert;	
@@ -89,9 +91,10 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		BcCredential myCredential = gwCertificateService.loadMyCertificate(
 				PKCS12Utils.GW_CERT);
 		// get the public key of intermediate certificate from GW*
-		AsymmetricKeyParameter verKey = ECKeyPairGen.generateECPublicKey(
+//		AsymmetricKeyParameter verKey = ECKeyPairGen.generateECPublicKey(
+//				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
+		AsymmetricKeyParameter verKey = PublicKeyFactory.createKey(
 				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
-		
 		// get my own certificate
 		myCert = (X509CertificateHolder)myCredential.getCertificateChain()[0];
 		
@@ -262,23 +265,35 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		
 		eMsg.setEphemeralPublicX(myEphPub.getQ().normalize().getXCoord().
 				toBigInteger().toByteArray());
-		eMsg.setEphemeralPublicY(myEphPub.getQ().normalize().getXCoord().
+		eMsg.setEphemeralPublicY(myEphPub.getQ().normalize().getYCoord().
 				toBigInteger().toByteArray());
-				
+		
 		return eMsg;
 	}
 
-	public boolean lastEcmqv(byte[] mac) {
+	public long lastEcmqv(byte[] mac, String gwId) {
 		// TODO Auto-generated method stub
 		boolean isValid = false;
 		
 		// verify the received MAC 3
 		isValid = verifyMac3(mac);
 		
-		// TODO: there should be a method to notify that the ECMQV procedure is done
-		// and we (this GW) can use the k2 as the session key 
-		
-		return isValid;
+		if(isValid){
+			Date expire = new Date();
+			long keyExpire = expire.getTime() + VALID_PERIOD;
+			
+			// add the k2 in the catalog
+			KeyGwCatalog keyGwCat = KeyGwCatalog.instance();
+			keyGwCat.addKeyGw(gwId, k2);
+			
+			// add the expire time of the key in the catalog
+			ExpireKeyGwCatalog expireGwCat = ExpireKeyGwCatalog.instance();
+			expireGwCat.addExpireKeyGw(gwId, keyExpire);
+			
+			return keyExpire;
+		}
+		else
+			return -1;
 	}
 
 	// blueprint set reference to the IGatewayCertificateService

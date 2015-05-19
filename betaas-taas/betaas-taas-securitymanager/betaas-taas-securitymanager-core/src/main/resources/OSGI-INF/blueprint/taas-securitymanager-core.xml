@@ -21,6 +21,12 @@ limitations under the License.
             xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
             xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
 
+		<cm:property-placeholder persistent-id="betaas.gateway" >
+		 <cm:default-properties>
+		  <cm:property name="gwId" value="-1"/>
+		 </cm:default-properties>
+		</cm:property-placeholder>
+		
 		<bean id="serviceInitGwStarBean" class="eu.betaas.taas.securitymanager.core.service.impl.InitGWStarService">
     	<property name="gwStarCertIntService" ref="gwStarCertificateIntService"/>
     </bean>
@@ -29,7 +35,9 @@ limitations under the License.
     <bean id="serviceGwSecCommBean" class="eu.betaas.taas.securitymanager.core.service.impl.SecureGWCommService">
     	<property name="context" ref="blueprintBundleContext"/>
     	<property name="gwCertificateService" ref="gwCertificateService"/>
-    	<property name="gwEcmqvIntService" ref="gwEcmqvInttService"/>
+    	<property name="gwEcmqvIntService" ref="gwEcmqvIntService"/>
+    	<property name="encryptDecryptService" ref="encryptDecryptService"/>
+    	<property name="gwId" value="${gwId}"/>
     </bean>
     <service ref="serviceGwSecCommBean" interface="eu.betaas.taas.securitymanager.core.service.ISecGWCommService"/>
     
@@ -45,7 +53,9 @@ limitations under the License.
     <reference id="gwStarCertificateIntService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayStarCertificateIntService">
     </reference>
     
-    <reference id="gwEcmqvInttService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService">
+    <reference id="gwEcmqvIntService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService">
     </reference>
-
+    
+    <reference id="encryptDecryptService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.authentication.service.IEncryptDecryptService">
+    </reference>
 </blueprint>

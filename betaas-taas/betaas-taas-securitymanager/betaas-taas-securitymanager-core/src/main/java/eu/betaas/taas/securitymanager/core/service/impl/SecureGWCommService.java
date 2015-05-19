@@ -17,18 +17,20 @@ limitations under the License.
 package eu.betaas.taas.securitymanager.core.service.impl;
 
 import java.security.Security;
-import java.security.interfaces.ECPublicKey;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+
+import eu.betaas.taas.securitymanager.authentication.service.IEncryptDecryptService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService;
-
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
 import eu.betaas.taas.securitymanager.common.model.BcCredential;
@@ -56,8 +58,14 @@ public class SecureGWCommService implements ISecGWCommService {
 	/** Reference to GWCertificateService from blueprint */
 	private IGatewayCertificateService gwCertificateService;
 	
+	/** Reference to EncryptDecryptService from blueprint */
+	private IEncryptDecryptService encryptService;
+	
 	/** Tracker of GWEcmqvExtService */
 	private ServiceTracker ecmqvExtTracker;
+	
+	/**  This GW ID */
+	private String mGwId;
 	
 	public SecureGWCommService(){
 //		this.coreActivator = coreActivator;
@@ -66,7 +74,7 @@ public class SecureGWCommService implements ISecGWCommService {
 	
 	public boolean deriveSharedKeys(String gwDestId) throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
-		boolean sendLast = false;
+		boolean result = false;
 		
 		log.info("Start deriving shared keys");
 
@@ -109,8 +117,8 @@ public class SecureGWCommService implements ISecGWCommService {
 		if(ecmqvExtServ != null){
 			// the actual invocation of initEcmqv 
 			eMsg = ecmqvExtServ.initEcmqv(
-					((ECPublicKey)myEphKp.getPublic()).getW().getAffineX().toByteArray(),	// the X-coordinate of EC public key param. 
-					((ECPublicKey)myEphKp.getPublic()).getW().getAffineY().toByteArray(), // the Y-coordinate of EC public key param.
+					((ECPublicKeyParameters)myEphKp.getPublic()).getQ().normalize().getXCoord().toBigInteger().toByteArray(),	// the X-coordinate of EC public key param. 
+					((ECPublicKeyParameters)myEphKp.getPublic()).getQ().normalize().getYCoord().toBigInteger().toByteArray(), // the Y-coordinate of EC public key param.
 					myCert.getEncoded());
 		}
 			
@@ -124,15 +132,94 @@ public class SecureGWCommService implements ISecGWCommService {
 		// to the other GW
 			
 		if(mac3!=null && ecmqvExtServ!=null){
-			sendLast = ecmqvExtServ.lastEcmqv(mac3);
-			log.info("the MAC 3 is correctly confirmed");
+			long sendLast = ecmqvExtServ.lastEcmqv(mac3, mGwId);
+			// set the expire time and k2 at the catalog of the internal interface 
+			gwEcmqvIntService.setKeyAndExpireTime(gwDestId, sendLast);
+			// closing the service tracker
+			ecmqvExtTracker.close();
+			if(sendLast >= 0){
+				log.info("the MAC 3 is correctly confirmed");
+				result = true;
+			}
+			else
+				log.info("the MAC 3 isn't valid!!");
 		}
-		
-		// closing the service tracker
-		ecmqvExtTracker.close();
-			
-		return sendLast;
+		return result;
 	}
+	
+	public byte[] doEncryptData(String gwDestId, String data){
+		//check if the key associated with gwDestId exists and is not expired
+		boolean isK2 = false;
+		byte[] k2 = gwEcmqvIntService.getK2(gwDestId);
+		
+		if(k2==null){
+			// initiate ECMQV protocol
+			try {
+				isK2 = deriveSharedKeys(gwDestId);
+				if(isK2)
+					k2 = gwEcmqvIntService.getK2(gwDestId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				log.error("Exception in ECMQV key agreement protocol: "+e.getMessage());
+				return null;
+			}
+		}
+		else{
+			// if the key has been expired
+			if((new Date()).getTime() >= gwEcmqvIntService.getExpireTime(gwDestId)){
+				// again initiate ECMQV protocol
+				try {
+					isK2 = deriveSharedKeys(gwDestId);
+					if(isK2)
+						k2 = gwEcmqvIntService.getK2(gwDestId);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else
+				isK2 = true;
+		}
+		// start the encryption
+		if(isK2)
+			return encryptService.doEncryption(k2, data);
+		else{
+			log.warn("There is problem with secret key (k2) associated with GW ID: "
+					+gwDestId);
+			return null;
+		}
+	}
+	
+	public String doDecryptData(String gwOriId, byte[] encrypted){
+		//check if the key associated with gwDestId exists and is not expired
+		boolean isK2 = false;
+		byte[] k2 = gwEcmqvIntService.getK2(gwOriId);
+			
+		// we can assume that k2 exists since the received encrypted message uses k2
+		// now just check if k2 is not expired
+		if((new Date()).getTime() >= gwEcmqvIntService.getExpireTime(gwOriId)){
+			// initiate ECMQV protocol
+			try {
+				isK2 = deriveSharedKeys(gwOriId);
+				if(isK2)
+					k2 = gwEcmqvIntService.getK2(gwOriId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else{
+			isK2 = true;
+		}
+		// start the decryption
+		if(isK2)
+			return encryptService.doDecryption(k2, encrypted);
+		else{
+			log.warn("There is problem with secret key (k2) associated with GW ID: "
+					+ gwOriId);
+			return null;
+		}
+	} 
 
 	/**
 	 * Blueprint set reference to BundleContext
@@ -160,5 +247,19 @@ public class SecureGWCommService implements ISecGWCommService {
 			IGatewayCertificateService gwCertificateService) {
 		this.gwCertificateService = gwCertificateService;
 		log.debug("Got the GWCertificateService...");
+	}
+	
+	public void setEncryptDecryptService(
+			IEncryptDecryptService encryptDecryptService){
+		this.encryptService = encryptDecryptService;
+		log.debug("Got the EncryptDecryptService...");
+	}
+
+	/**
+	 * Blueprint set reference to gwId of this GW
+	 * @param gwId
+	 */
+	public void setGwId(String gwId) {
+		this.mGwId = gwId;
 	}
 }

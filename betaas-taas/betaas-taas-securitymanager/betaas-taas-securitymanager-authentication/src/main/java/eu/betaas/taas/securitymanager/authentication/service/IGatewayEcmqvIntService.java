@@ -46,4 +46,27 @@ public interface IGatewayEcmqvIntService {
 	 * @throws Exception 
 	 */
 	public byte[] responseEcmqv(EcmqvMessage eMsg) throws Exception;
+	
+	/**
+	 * A method to set the expire time as well as the k2 of the shared key as a 
+	 * result of lastEcmqv method from the external interface of a remote GW, in 
+	 * the catalogs.
+	 * @param remoteGwId
+	 * @param time
+	 */
+	public void setKeyAndExpireTime(String remoteGwId, long time);
+	
+	/**
+	 * A method to retrieve the expire time of the shared key associated with a 
+	 * remote GW. 
+	 * @return
+	 */
+	public long getExpireTime(String remoteGwId);
+	
+	/**
+	 * A method to retrieve k2 to be used for encryption associated with a remote 
+	 * GW. 
+	 * @return
+	 */
+	public byte[] getK2(String remoteGwId);
 }

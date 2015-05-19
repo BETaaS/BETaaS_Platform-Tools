@@ -74,6 +74,7 @@ import eu.betaas.service.securitymanager.capability.elements.helper.AccessType;
 import eu.betaas.service.securitymanager.capability.elements.helper.IssuerType;
 import eu.betaas.service.securitymanager.capability.model.CapabilityExternal;
 import eu.betaas.service.securitymanager.capability.model.Token;
+import eu.betaas.service.securitymanager.capability.utils.CapToJsonUtils;
 import eu.betaas.service.securitymanager.capability.utils.CapToXmlUtils;
 import eu.betaas.service.securitymanager.capability.utils.CapabilityUtils;
 import eu.betaas.service.securitymanager.credential.AppCertCatalog;
@@ -254,12 +255,12 @@ public class AuthorizationService implements IAuthorizationService {
 //		exCap.setAccessRights(accessRights);
 		
 		// creating digital signature
-		String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);	
-		String siJson = CapToXmlUtils.createSubjectInfoXml(si);
-		String arJson = CapToXmlUtils.createAccessRightsXml(accessRights);
-		String riJson = CapToXmlUtils.createResourceIdXml(thingServiceId);
-		String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
-		String revUrlJson = CapToXmlUtils.createRevocationUrlXml(REVOCATION_URL);
+		String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);	
+		String siJson = CapToJsonUtils.createSubjectInfoJson(si);
+		String arJson = CapToJsonUtils.createAccessRightsJson(accessRights);
+		String riJson = CapToJsonUtils.createResourceIdJson(thingServiceId);
+		String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
+		String revUrlJson = CapToJsonUtils.createRevocationUrlJson(REVOCATION_URL);
 		String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 				+revUrlJson;
 		
@@ -317,7 +318,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 		
 		// TODO: need to include all the exCap in the JSON format (JSON array)		
-		return CapToXmlUtils.createTokenXml(token);
+		return CapToJsonUtils.createTokenJson(token);
 	}
 	
 	/**
@@ -385,12 +386,12 @@ public class AuthorizationService implements IAuthorizationService {
 		log.info("The access rights have been set!!");
 		
 		// creating digital signature
-		String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);
-		String siJson = CapToXmlUtils.createSubjectInfoXml(si);
-		String arJson = CapToXmlUtils.createAccessRightsXml(accessRights);
-		String riJson = CapToXmlUtils.createResourceIdXml(thingServiceId);
-		String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
-		String revUrlJson = CapToXmlUtils.createRevocationUrlXml(REVOCATION_URL);
+		String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);
+		String siJson = CapToJsonUtils.createSubjectInfoJson(si);
+		String arJson = CapToJsonUtils.createAccessRightsJson(accessRights);
+		String riJson = CapToJsonUtils.createResourceIdJson(thingServiceId);
+		String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
+		String revUrlJson = CapToJsonUtils.createRevocationUrlJson(REVOCATION_URL);
 		String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 				+revUrlJson;
 		
@@ -452,7 +453,7 @@ public class AuthorizationService implements IAuthorizationService {
 			token.getCapability().add(exCap);
 		}
 		
-		return CapToXmlUtils.createTokenXml(token);
+		return CapToJsonUtils.createTokenJson(token);
 	}
 	
 	/**
@@ -656,12 +657,12 @@ public class AuthorizationService implements IAuthorizationService {
 				// revocation URL
 				String revocationUrl = cap.getRevocationUrl();
 				
-				String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);
-				String siJson = CapToXmlUtils.createSubjectInfoXml(si);
-				String arJson = CapToXmlUtils.createAccessRightsXml(ars);
-				String riJson = CapToXmlUtils.createResourceIdXml(resourceId);
-				String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
-				String revUrlJson = CapToXmlUtils.createRevocationUrlXml(revocationUrl);
+				String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);
+				String siJson = CapToJsonUtils.createSubjectInfoJson(si);
+				String arJson = CapToJsonUtils.createAccessRightsJson(ars);
+				String riJson = CapToJsonUtils.createResourceIdJson(resourceId);
+				String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
+				String revUrlJson = CapToJsonUtils.createRevocationUrlJson(revocationUrl);
 				String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 						+revUrlJson;
 				
