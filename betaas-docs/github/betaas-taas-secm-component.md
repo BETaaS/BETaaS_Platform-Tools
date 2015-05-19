@@ -47,7 +47,8 @@ The project betaas-taas-securitymanager-certificate provides generic APIs to oth
 	certificatePath = {PATH}/betaas/data/securityConfig/certificate/
 
 #### BETaaS Maven Project betaas-taas-securitymanager-authentication
-The project betaas-taas-securitymanager-authentication provides generic APIs to other BETaaS security manager component (i.e. betaas-taas-securitymanager-core) to establish a key agreement protocol based on ECMQV (Elliptic Curve Menezes-Qu-Vanstone) between two gateways.
+The project betaas-taas-securitymanager-authentication provides generic APIs to other BETaaS security manager component (i.e. betaas-taas-securitymanager-core) to establish a key agreement protocol based on ECMQV (Elliptic Curve Menezes-Qu-Vanstone) between two gateways. 
+It also provides API to encrypt and decrypt the communicated messages between two gateways using the key derived from the key agreement protocol mentioned earlier.
 
 #### BETaaS Maven Project betaas-taas-securitymanager-core
 The project betaas-taas-securitymanager-core  provides generic APIs to other BETaaS components outside the security manager to create certificate for both the instance and gateways, as well as to establish key agreement between two gateways for secure communication. So, basically this component encapsulate the complex security mechanisms into a set of simple APIs to the other components in BETaaS.
