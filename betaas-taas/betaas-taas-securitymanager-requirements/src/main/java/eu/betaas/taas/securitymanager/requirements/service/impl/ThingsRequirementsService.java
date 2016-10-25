@@ -11,7 +11,7 @@ import eu.betaas.adaptation.thingsadaptor.api.ThingsAdaptor;
 import eu.betaas.taas.securitymanager.requirements.activator.SecurityRequirementsActivator;
 import eu.betaas.taas.securitymanager.requirements.helper.Ids;
 import eu.betaas.taas.securitymanager.requirements.service.IThingsRequirementsService;
-import eu.betaas.taas.taastrustmanager.api.TaaSTrustManager;
+import eu.betaas.taas.securitymanager.taastrustmanager.api.TaaSTrustManager;
 
 public class ThingsRequirementsService implements IThingsRequirementsService {
 

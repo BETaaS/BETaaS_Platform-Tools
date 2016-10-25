@@ -9,7 +9,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import eu.betaas.adaptation.thingsadaptor.api.ThingsAdaptor;
 import eu.betaas.taas.securitymanager.requirements.service.IThingsRequirementsService;
 import eu.betaas.taas.securitymanager.requirements.service.impl.ThingsRequirementsService;
-import eu.betaas.taas.taastrustmanager.api.TaaSTrustManager;
+import eu.betaas.taas.securitymanager.taastrustmanager.api.TaaSTrustManager;
 
 public class SecurityRequirementsActivator implements BundleActivator {
 	/** Handling Service Requirements Service Registration */

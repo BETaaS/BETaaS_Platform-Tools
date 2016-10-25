@@ -50,7 +50,7 @@
           	<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Version>${project.version}</Bundle-Version>
             <Bundle-Activator>eu.betaas.taas.securitymanager.requirements.activator.SecurityRequirementsActivator</Bundle-Activator>
-            <Import-Package>org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.apache.*,eu.betaas.taas.taastrustmanager.api.*,eu.betaas.adaptation.thingsadaptor.api.*</Import-Package>
+            <Import-Package>org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.apache.*,eu.betaas.taas.securitymanager.taastrustmanager.api.*,eu.betaas.adaptation.thingsadaptor.api.*</Import-Package>
             <Export-Package>
             	eu.betaas.taas.securitymanager.requirements.service;version=${project.version}                         
             </Export-Package>
