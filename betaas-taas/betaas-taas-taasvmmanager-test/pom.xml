@@ -7,12 +7,12 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
 
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-taasvmmanager-test</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   <packaging>bundle</packaging>
   <name>BETaaS TaaS VM Manager REST interface for testing</name>
   <description>BETaaS TaaS VM Manager Test APÑ:qI</description>

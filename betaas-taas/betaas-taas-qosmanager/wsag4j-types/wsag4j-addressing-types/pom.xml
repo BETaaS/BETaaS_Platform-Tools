@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.betaas.net.sf.wsag4j</groupId>
 		<artifactId>wsag4j-types</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.0.2</version>
 	</parent>
 
 	<artifactId>wsag4j-addressing-types</artifactId>

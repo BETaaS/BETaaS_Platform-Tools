@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-utils</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <artifactId>betaas-adaptation-simulator</artifactId>
   <name>BETaaS Adaptation Simulator</name>

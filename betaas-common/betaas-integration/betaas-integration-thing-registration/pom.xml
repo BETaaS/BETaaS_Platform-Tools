@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-integration</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-integration-thing-registration</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   <packaging>bundle</packaging>
   <name>BETaaS Integration Thing Registration</name>
   <description>This bundle integrate services for BETaaS Thing Registration</description>

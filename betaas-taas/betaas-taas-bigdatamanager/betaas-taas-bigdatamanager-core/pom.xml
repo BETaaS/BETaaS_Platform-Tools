@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-bigdatamanager</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-bigdatamanager-core</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   <packaging>bundle</packaging>
   <name>BETaaS TaaS Big Data Manager Core</name>
   <description>BETaaS BigData Manager TaaS Core</description>

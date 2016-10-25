@@ -7,12 +7,12 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
 
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-contextmanager-linkeddata</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   <packaging>bundle</packaging>
   <name>BETaaS Linked Data Connector</name>
   <description>Linked Data Connector for the TaaS layer</description>

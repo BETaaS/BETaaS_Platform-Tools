@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-dependabilitymanager</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.0.2</version>
 	</parent>
 	
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-dependabilitymanager-server</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
 	
 	<packaging>bundle</packaging>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="betaas-karaf3" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
 <repository>mvn:org.apache.cxf.karaf/apache-cxf/2.7.7/xml/features</repository>
-	<feature name="betaas-baseline" version="3.0.2-SNAPSHOT">
+	<feature name="betaas-baseline" version="3.0.2">
 	
 		<feature>http</feature>
 		<feature>cxf</feature>
@@ -67,161 +67,161 @@
 		<bundle start-level='80'>wrap:mvn:org.jboss.security/jboss-xacml/2.0.9.Final</bundle>
 		<bundle start-level='80'>wrap:mvn:org.jboss.security/jboss-sunxacml/2.0.9.Final</bundle>
 		<bundle start-level='80'>wrap:mvn:commons-configuration/commons-configuration/1.10</bundle>
-		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/3.0.2-SNAPSHOT</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/3.0.2</bundle>	
 		<bundle start-level='82'>wrap:mvn:edu.mit/jwi/2.2.3</bundle>
 		<bundle start-level='80'>mvn:org.apache.commons/commons-lang3/3.1</bundle>
 		
 	</feature>
 
-	 <feature name="wsag4j-negotiation"  version="3.0.2-SNAPSHOT">
-		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-common-types/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation-types/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-addressing-types/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-agreement-types/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='82'>mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation/3.0.2-SNAPSHOT</bundle>
+	 <feature name="wsag4j-negotiation"  version="3.0.2">
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-common-types/3.0.2</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation-types/3.0.2</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-addressing-types/3.0.2</bundle>
+		<bundle start-level='80'>wrap:mvn:eu.betaas.net.sf.wsag4j/wsag4j-agreement-types/3.0.2</bundle>
+		<bundle start-level='82'>mvn:eu.betaas.net.sf.wsag4j/wsag4j-negotiation/3.0.2</bundle>
 		
     </feature>
 	
-	<feature name="adaptation-thingsadaptor" version="3.0.2-SNAPSHOT">
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2-SNAPSHOT</bundle>	
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/3.0.2-SNAPSHOT</bundle>		
+	<feature name="adaptation-thingsadaptor" version="3.0.2">
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2</bundle>	
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/3.0.2</bundle>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/3.0.2</bundle>		
 	</feature>
 	
-	<feature name="adaptation-contextmanager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-contextmanager/3.0.2-SNAPSHOT</bundle>	
+	<feature name="adaptation-contextmanager" version="3.0.2">
+		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-contextmanager/3.0.2</bundle>	
 	</feature>
-	<feature name="adaptation-thingsadaptor-coap" version="3.0.2-SNAPSHOT">
+	<feature name="adaptation-thingsadaptor-coap" version="3.0.2">
 		<feature>betaas-baseline</feature>
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2-SNAPSHOT</bundle>	
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2</bundle>	
 		<bundle start-level='82'>mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
-		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/3.0.2-SNAPSHOT</bundle>			
+		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/3.0.2</bundle>			
 	</feature>
 	
-	<feature name="adaptation-thingsadaptor-sim" version="3.0.2-SNAPSHOT">
+	<feature name="adaptation-thingsadaptor-sim" version="3.0.2">
 		<feature>betaas-baseline</feature>
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2-SNAPSHOT</bundle>	
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/3.0.2-SNAPSHOT</bundle>		
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-plugin/3.0.2</bundle>	
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-simulator/3.0.2</bundle>
+		<bundle start-level='86'>mvn:eu.betaas/betaas-adaptation-thingsadaptor/3.0.2</bundle>		
 	</feature>
 	
-	<feature name="adaptation-coap" version="3.0.2-SNAPSHOT">
+	<feature name="adaptation-coap" version="3.0.2">
 		<bundle start-level='82' >mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
-		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-coap/3.0.2-SNAPSHOT</bundle>	
+		<bundle start-level='85' >mvn:eu.betaas/betaas-adaptation-coap/3.0.2</bundle>	
 	</feature>
 	
 	<!--TaaS layer features -->
-	<feature name="taas-contextmanager" version="3.0.2-SNAPSHOT">
-    	<bundle start-level='83'>mvn:eu.betaas/betaas-taas-contextmanager/3.0.2-SNAPSHOT</bundle>	
+	<feature name="taas-contextmanager" version="3.0.2">
+    	<bundle start-level='83'>mvn:eu.betaas/betaas-taas-contextmanager/3.0.2</bundle>	
 	</feature>	
 	
-	<feature name="taas-database" version="3.0.2-SNAPSHOT">
-	    	<bundle start-level='81'>mvn:eu.betaas/betaas-taas-bigdatamanager-database/3.0.2-SNAPSHOT</bundle>		
+	<feature name="taas-database" version="3.0.2">
+	    	<bundle start-level='81'>mvn:eu.betaas/betaas-taas-bigdatamanager-database/3.0.2</bundle>		
 	</feature>	
 	
-	<feature name="taas-bdm" version="3.0.2-SNAPSHOT">
-    	<bundle start-level='82'>mvn:eu.betaas/betaas-taas-bigdatamanager-core/3.0.2-SNAPSHOT</bundle>	
+	<feature name="taas-bdm" version="3.0.2">
+    	<bundle start-level='82'>mvn:eu.betaas/betaas-taas-bigdatamanager-core/3.0.2</bundle>	
 	</feature>
 	
-	<feature name="taas-vmmanager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-taas-vmmanager/3.0.2-SNAPSHOT</bundle>
+	<feature name="taas-vmmanager" version="3.0.2">
+		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-taas-vmmanager/3.0.2</bundle>
 	</feature>
 	
-	<feature name="taas-itaasresourcesmanager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='81'>mvn:eu.betaas/betaas-taas-itaasresourcesmanager/3.0.2-SNAPSHOT</bundle>	
+	<feature name="taas-itaasresourcesmanager" version="3.0.2">
+		<bundle start-level='81'>mvn:eu.betaas/betaas-taas-itaasresourcesmanager/3.0.2</bundle>	
 	</feature>
 	
-	<feature name="taas-taasresourcesmanager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='83' >mvn:eu.betaas/betaas-taas-taasresourcesmanager/3.0.2-SNAPSHOT</bundle>	
+	<feature name="taas-taasresourcesmanager" version="3.0.2">
+		<bundle start-level='83' >mvn:eu.betaas/betaas-taas-taasresourcesmanager/3.0.2</bundle>	
 	</feature>
 	
-	<feature name="taas-taastrustmanager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85' >mvn:eu.betaas/betaas-taas-trustmanager/3.0.2-SNAPSHOT</bundle>		
+	<feature name="taas-taastrustmanager" version="3.0.2">
+		<bundle start-level='85' >mvn:eu.betaas/betaas-taas-trustmanager/3.0.2</bundle>		
 	</feature>
 	
-    <feature name="taas-qosmanager-interface"  version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-monitoring/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-interface/3.0.2-SNAPSHOT</bundle>
+    <feature name="taas-qosmanager-interface"  version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-monitoring/3.0.2</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-interface/3.0.2</bundle>
 		
     </feature>
     
-    <feature name="taas-qosmanager-core"  version="3.0.2-SNAPSHOT">
+    <feature name="taas-qosmanager-core"  version="3.0.2">
     	<!-- This will install betaas taas qos manager core bundle -->
-    	<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-core/3.0.2-SNAPSHOT</bundle>
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-taas-qosmanager-core/3.0.2</bundle>
     </feature>
 
-    <feature name="service-servicemanager"  version="3.0.2-SNAPSHOT">
+    <feature name="service-servicemanager"  version="3.0.2">
     	<!-- This will install betaas taas qos manager core bundle -->
-    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/3.0.2-SNAPSHOT</bundle>
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/3.0.2</bundle>
     </feature>	
 
-	<feature name="taas-security-requirements" version="3.0.2-SNAPSHOT">
+	<feature name="taas-security-requirements" version="3.0.2">
 		<bundle start-level='80'>mvn:org.bouncycastle/bcprov-jdk15on/1.50</bundle>	
 		<bundle start-level='80'>mvn:org.bouncycastle/bcprov-ext-jdk15on/1.50</bundle>	
 		<bundle start-level='80'>mvn:org.bouncycastle/bcpkix-jdk15on/1.50</bundle>	
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-common/3.0.2-SNAPSHOT</bundle>	
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-core/3.0.2-SNAPSHOT</bundle>	
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-certificate/3.0.2-SNAPSHOT</bundle>	
-		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-security-gwcomm-initiator/3.0.2-SNAPSHOT</bundle>-->
-		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-authentication/3.0.2-SNAPSHOT</bundle>	
-		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-requirements/3.0.2-SNAPSHOT</bundle>	-->
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-common/3.0.2</bundle>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-core/3.0.2</bundle>	
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-certificate/3.0.2</bundle>	
+		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-security-gwcomm-initiator/3.0.2</bundle>-->
+		<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-authentication/3.0.2</bundle>	
+		<!--<bundle start-level='85'>mvn:eu.betaas/betaas-taas-securitymanager-requirements/3.0.2</bundle>	-->
 	</feature>	
 	
 	<!--Service layer features -->
 	
-	<feature name="service-bdm" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-interface/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-application-data-service/3.0.2-SNAPSHOT</bundle>
-    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-core/3.0.2-SNAPSHOT</bundle>
+	<feature name="service-bdm" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-interface/3.0.2</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask/3.0.2</bundle>
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-application-data-service/3.0.2</bundle>
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-core/3.0.2</bundle>
 	</feature>
 			
-	<feature name="service-bdmsource-database" version="3.0.2-SNAPSHOT">
-    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-database/3.0.2-SNAPSHOT</bundle>
+	<feature name="service-bdmsource-database" version="3.0.2">
+    	<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-data-connector-database/3.0.2</bundle>
 	</feature>
 
-	<feature name="service-bdm-hadoop" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-sqoop/3.0.2-SNAPSHOT</bundle>		
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-sqooploader/3.0.2-SNAPSHOT</bundle>		
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-hivejdbc/3.0.2-SNAPSHOT</bundle>
-		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-bigdatamanager-analytics-manager/3.0.2-SNAPSHOT</bundle>
+	<feature name="service-bdm-hadoop" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-sqoop/3.0.2</bundle>		
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-sqooploader/3.0.2</bundle>		
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-analytics-hivejdbc/3.0.2</bundle>
+		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-bigdatamanager-analytics-manager/3.0.2</bundle>
 	</feature>
 
-	<feature name="bigdataTask" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask-advanced/3.0.2-SNAPSHOT</bundle>
+	<feature name="bigdataTask" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-bigdatamanager-service-datatask-advanced/3.0.2</bundle>
 	</feature>
 	
-	<feature name="ServiceManager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/3.0.2-SNAPSHOT</bundle>
+	<feature name="ServiceManager" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-servicemanager/3.0.2</bundle>
 	</feature>	
 	
-	<feature name="ServiceManager-stop" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-servicemanager/3.0.2-SNAPSHOT</bundle>
+	<feature name="ServiceManager-stop" version="3.0.2">
+		<bundle start-level='85' start="false">mvn:eu.betaas/betaas-service-servicemanager/3.0.2</bundle>
 	</feature>	
 	
-	<feature name="InstanceManager" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-instancemanager-server/3.0.2-SNAPSHOT</bundle>
+	<feature name="InstanceManager" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-instancemanager-server/3.0.2</bundle>
 	</feature>
 	
-	<feature name="service-security" version="3.0.2-SNAPSHOT">
-		<bundle start-level='85'>mvn:eu.betaas/betaas-service-securitymanager/3.0.2-SNAPSHOT</bundle>
+	<feature name="service-security" version="3.0.2">
+		<bundle start-level='85'>mvn:eu.betaas/betaas-service-securitymanager/3.0.2</bundle>
 	</feature>
 	
-	<feature name="betaas-bus" version="3.0.2-SNAPSHOT">
+	<feature name="betaas-bus" version="3.0.2">
 		<bundle start-level='80'>mvn:com.rabbitmq/amqp-client/3.3.3</bundle>	
-		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/3.0.2-SNAPSHOT</bundle>	
-		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-publisher/3.0.2-SNAPSHOT</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-interface/3.0.2</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-publisher/3.0.2</bundle>	
 	</feature>
-		<feature name="betaas-subscriber" version="3.0.2-SNAPSHOT">
-		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-subscriber/3.0.2-SNAPSHOT</bundle>	
+		<feature name="betaas-subscriber" version="3.0.2">
+		<bundle start-level='82'>mvn:eu.betaas/betaas-bus-subscriber/3.0.2</bundle>	
 	</feature>
 
-	<feature name="betaas-coap-adapter" version="3.0.2-SNAPSHOT">
+	<feature name="betaas-coap-adapter" version="3.0.2">
 		<bundle start-level='82'>mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT</bundle>	
-		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/3.0.2-SNAPSHOT</bundle>	
+		<bundle start-level='82'>mvn:eu.betaas/betaas-adaptation-coap/3.0.2</bundle>	
 	</feature>	
 	
-	<feature name="betaas-demo-gateway" version="3.0.2-SNAPSHOT">
+	<feature name="betaas-demo-gateway" version="3.0.2">
 		<feature>betaas-baseline</feature>
 		<feature>taas-database</feature>
 		<feature>wsag4j-negotiation</feature>	

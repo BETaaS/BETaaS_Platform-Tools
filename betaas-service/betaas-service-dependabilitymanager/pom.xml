@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <modules>
 	  <module>betaas-service-dependabilitymanager-server</module>
@@ -13,7 +13,7 @@
   
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-dependabilitymanager</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   
 	<packaging>pom</packaging>
 	<name>BETaaS Dependability Manager Server</name>

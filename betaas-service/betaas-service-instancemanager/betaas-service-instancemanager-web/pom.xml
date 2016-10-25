@@ -2,13 +2,13 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-instancemanager</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.0.2</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-instancemanager-web</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   
   <packaging>war</packaging>
   <name>BETaaS Instance Manager Web</name>

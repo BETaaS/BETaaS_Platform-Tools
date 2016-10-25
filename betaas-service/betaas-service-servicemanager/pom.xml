@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.0.2</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-servicemanager</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Service Manager</name>
 	<description>Service Manager at service layer</description>
@@ -44,7 +44,7 @@
 	    <dependency>
 		  <groupId>eu.betaas</groupId>
 		  <artifactId>betaas-taas-bigdatamanager-database</artifactId>
-		  <version>3.0.2-SNAPSHOT</version>
+		  <version>3.0.2</version>
 	    </dependency>
 	    <dependency>
 	      <groupId>eu.betaas</groupId>

@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-taas-qosmanager</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.0.2</version>
 	</parent>
 
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-taas-qosmanager-core</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
 
 	<packaging>bundle</packaging>
 	<name>BETaaS QoS Manager Core</name>

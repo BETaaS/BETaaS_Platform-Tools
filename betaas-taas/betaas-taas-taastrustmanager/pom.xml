@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-trustmanager</artifactId>
-  <version>3.0.2-SNAPSHOT</version>  
+  <version>3.0.2</version>  
   <packaging>bundle</packaging>
   <name>BETaaS TaaS Trust Manager</name>
   <description>Trust Manager for the TaaS layer</description>

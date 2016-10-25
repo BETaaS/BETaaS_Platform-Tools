@@ -124,14 +124,14 @@ var esJsonArray = {
     "extendedServices": [
         {
             "name": "LEZ",
-            "url": "eu.betaas/LEZ-extended-service/3.0.2-SNAPSHOT"
+            "url": "eu.betaas/LEZ-extended-service/3.0.2"
         },
         {
             "name": "parking-extended-service",
-            "url": "eu.betaas/parking-extended-service/3.0.2-SNAPSHOT"
+            "url": "eu.betaas/parking-extended-service/3.0.2"
         },
         {
             "name": "city-parking-extended-service",
-            "url": "eu.betaas/city-parking-extended-service/3.0.2-SNAPSHOT"
+            "url": "eu.betaas/city-parking-extended-service/3.0.2"
         }]
 };
