@@ -30,6 +30,7 @@
 	<module>betaas-utils</module>
 	<module>betaas-plugins</module>
 	<module>betaas-configuration</module>
+    <module>betaas-examples</module>
   </modules>
  
    <repositories>

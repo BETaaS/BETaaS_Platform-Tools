@@ -5,23 +5,18 @@
     <artifactId>betaas-superpom</artifactId>
     <version>3.0.2-SNAPSHOT</version>
   </parent>
-  <modules>
-	<module>betaas-service-bigdatamanager</module>
-    <module>betaas-service-instancemanager</module>
-    <module>betaas-service-servicemanager</module>
-    <module>betaas-service-dependabilitymanager</module>
-    <module>betaas-service-securitymanager</module>
-    <module>betaas-service-trustmanager</module>
-  </modules>  
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.betaas</groupId>
-  <artifactId>betaas-service</artifactId>
+  <artifactId>betaas-examples</artifactId>
   <version>3.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>BETaaS Service</name>
-  <description>BETaaS  Service</description>
-  
-  
-  
+  <name>BETaaS Examples</name>
+  <description>BETaaS Examples</description>
+
+  <modules>
+  	<module>IntrusionDetection</module>
+  	<module>LEZ-extended-service</module>
+  </modules>
   
 </project>

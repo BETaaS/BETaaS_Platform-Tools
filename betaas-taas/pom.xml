@@ -14,9 +14,6 @@
   <name>BETaaS TaaS</name>
   <description>BETaaS  TaaS</description>
   
-  
-  
-  
   <modules>
   	<module>betaas-taas-qosmanager</module>
   	<module>betaas-taas-contextmanager</module>
@@ -26,6 +23,9 @@
 	<module>betaas-taas-bigdatamanager</module>
 	<module>betaas-taas-taastrustmanager</module>
 	<module>betaas-taas-taasvmmanager</module>
+    <module>betaas-taas-taasvmmanager-test</module>
 	<module>betaas-taas-securitymanager</module>
+    <module>betaas-taas-securitymanager-requirements</module>
   </modules>
+  
 </project>
