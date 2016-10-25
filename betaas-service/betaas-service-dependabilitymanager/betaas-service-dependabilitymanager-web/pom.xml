@@ -2,13 +2,13 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-dependabilitymanager</artifactId>
-		<version>3.0.2</version>
+		<version>3.0.3-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-dependabilitymanager-web</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   
   <packaging>war</packaging>
   <name>BETaaS Dependability Manager Web</name>

@@ -3,12 +3,12 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-qosmanager</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   
   <groupId>eu.betaas.net.sf.wsag4j</groupId>
   <artifactId>wsag4j-negotiation</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   
   <packaging>bundle</packaging>
   <name>WSAG4J: negotiation bundle</name>

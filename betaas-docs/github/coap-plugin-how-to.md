@@ -38,7 +38,7 @@ Open the Apache Karaf console and stop the BETaaS Adaptation Simulator, then dep
 ```
 stop <BUNDLE_ID>
 osgi:install mvn:org.eclipse.californium/californium-osgi/1.0.0-SNAPSHOT
-osgi:install mvn:eu.betaas/betaas-adaptation-coap/3.0.2
+osgi:install mvn:eu.betaas/betaas-adaptation-coap/3.0.3-SNAPSHOT
 ```
 
 #CoAP Server simulator

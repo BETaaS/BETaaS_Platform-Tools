@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-bigdatamanager</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS TaaS Big Data Manager</name>
   <description>Bundle that manage data at TaaS level</description>

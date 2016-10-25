@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-securitymanager-authentication</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <name>BETaaS Taas Security Manager authentication bundle</name>
   <description>Authentication manager bundle in TaaS layer</description>
   <dependencies>

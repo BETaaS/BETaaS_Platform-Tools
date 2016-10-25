@@ -3,13 +3,13 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-superpom</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-adaptation</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS Adaptation</name>
   <description>BETaaS  Adaptation</description>

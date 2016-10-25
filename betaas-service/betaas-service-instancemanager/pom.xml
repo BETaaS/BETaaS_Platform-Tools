@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <modules>
 	  <module>betaas-service-instancemanager-server</module>
@@ -13,7 +13,7 @@
   
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-instancemanager</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   
 	<packaging>pom</packaging>
   <name>BETaaS Instance Manager</name>

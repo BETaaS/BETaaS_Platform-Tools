@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-qosmanager</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-qosmanager-monitoring</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BETaaS TaaS QoS Monitoring</name>
   <description>QoS Manager Monitoring.</description>

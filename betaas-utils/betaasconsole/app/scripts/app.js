@@ -25,7 +25,7 @@ var app = angular
             sshaddress: 'localhost:8180',
             monitoring: 'off',
             amqptopic: 'betaas_queue',
-            versionui: '3.0.2'
+            versionui: '3.0.3-SNAPSHOT'
         }
     })
    

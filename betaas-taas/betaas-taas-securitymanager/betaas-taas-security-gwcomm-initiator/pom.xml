@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-security-consumer</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   
   <name>BETaaS TaaS Security Consumer bundle</name>
   <description>A bundle that consumes security services published by betaas-taas-securitymanager-core, i.e. initiating GW*, joining an instance, and initiating shared key</description>

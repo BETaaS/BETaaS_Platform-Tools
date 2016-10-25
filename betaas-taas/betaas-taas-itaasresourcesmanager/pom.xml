@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-itaasresourcesmanager</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>TaaS Resource Manager Interface</name>
   <description>TaaS Resource Manager interface to avoid circular references</description>

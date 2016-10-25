@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-plugins</artifactId>
-		<version>3.0.2</version>
+		<version>3.0.3-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-adaptation-plugin</artifactId>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Adaptation Plugin</name>
 	<description>Plugin for the adaptation layer</description>

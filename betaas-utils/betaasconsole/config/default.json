@@ -7,5 +7,5 @@
 	"ads_ws" : "localhost:18002",
 	"instancemanager" : "localhost:9302",
 	"monitoring" : "off",
-    "versionui" : "3.0.2"
+    "versionui" : "3.0.3-SNAPSHOT"
 }

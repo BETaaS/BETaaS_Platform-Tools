@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service-bigdatamanager</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-bigdatamanager-analytics-sqooploader</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3-SNAPSHOT</version>
   <name>BETaaS Service Big Data Manager Sqoop to HDFS loader</name>
   <description>BETaaS Service Big Data Manager HDFS SQOOP Loader Service</description>
   <packaging>bundle</packaging>
@@ -45,13 +45,13 @@
     <dependency>
       	<groupId>eu.betaas</groupId>
   		<artifactId>betaas-service-bigdatamanager-data-connector-interface</artifactId>
-  		<version>3.0.2</version>                
+  		<version>3.0.3-SNAPSHOT</version>                
 	</dependency>
  
 	<dependency>
 	  <groupId>eu.betaas</groupId>
 	  <artifactId>betaas-service-bigdatamanager-sqoop</artifactId>
-	  <version>3.0.2</version>
+	  <version>3.0.3-SNAPSHOT</version>
 	</dependency>
  	            
   </dependencies> 

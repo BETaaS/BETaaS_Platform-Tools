@@ -241,7 +241,7 @@ mvn clean install
 
 Run Apache Karaf by issue `karaf`, then inside the Karaf Console issue the following command where `<IP_ADDRESS_ZOOKEEPER_SERVER>` is the ip adress of the host where you will run the Zookeeper server:
 ```sh
-features:addurl mvn:eu.betaas/betaas-features/3.0.2/xml
+features:addurl mvn:eu.betaas/betaas-features/3.0.3-SNAPSHOT/xml
 features:install betaas-demo-gateway
 features:chooseurl cxf-dosgi 1.5.0
 config:propset -p org.apache.cxf.dosgi.discovery.zookeeper.server clientPort 2181

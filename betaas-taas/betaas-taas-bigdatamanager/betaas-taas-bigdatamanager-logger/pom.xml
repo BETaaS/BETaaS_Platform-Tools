@@ -3,11 +3,11 @@
 	<parent>
 	  <groupId>eu.betaas</groupId>
 	  <artifactId>betaas-taas-bigdatamanager</artifactId>
-	  <version>3.0.2</version>
+	  <version>3.0.3-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-taas-bigdatamanager-logger</artifactId>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Taas Big Data Manager Logger Service</name>
 	<description>Service that log data to a local database</description>

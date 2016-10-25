@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-instancemanager</artifactId>
-		<version>3.0.2</version>
+		<version>3.0.3-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-instancemanager-server</artifactId>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Instance Manager Server</name>
 	<description>Instance Manager at Service Layer</description>

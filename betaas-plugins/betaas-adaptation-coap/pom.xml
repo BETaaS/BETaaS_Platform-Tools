@@ -4,7 +4,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-plugins</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>betaas-adaptation-coap</artifactId>
   <packaging>bundle</packaging>
