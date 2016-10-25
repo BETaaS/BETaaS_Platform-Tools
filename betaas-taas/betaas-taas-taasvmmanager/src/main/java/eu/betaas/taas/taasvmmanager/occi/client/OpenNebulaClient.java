@@ -46,12 +46,12 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.core.util.Base64;
 
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.OCCIClient;
 import eu.betaas.taas.taasvmmanager.occi.OCCIException;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Compute;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.ComputeCollection;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.ComputeState;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceTypeCollection;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Link;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Network;

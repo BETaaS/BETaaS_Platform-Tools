@@ -41,6 +41,15 @@ import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 public class ApplicationRegistry {
     /** Prefix automatically given to services in the registry */
     public final static String APP_SERVICE_NAME_PREFIX = "appService";
+    
+    
+    public final static String NOTIFICATION_TYPE_GCM = "type:gcm:";
+    public final static String NOTIFICATION_TYPE_REST = "type:rest:";
+    
+    public enum NotificationAddressType {
+    	REST_NOTIFICATION_ADDRESS,
+    	GCM_NOTIFICATION_ADDRESS
+    };
 	
 	/**
 	 * Class Constructor
@@ -61,13 +70,25 @@ public class ApplicationRegistry {
 	 * @param credentials Base64-encoded
 	 * @param notificationAddress is the HTTP address prefix to be used to provide back 
 	 *                            the data to the application.
+	 * @param type specifies the type of notifications to be issued (GCM/REST)
 	 * @return the new registry row
 	 */
 	public AppRegistryRow addNewApplication(String appName, 
 			                                String credentials,
-                                            String notificationAddress) {
+                                            String notificationAddress,
+                                            NotificationAddressType type) {
 		
 		String appId = getNewID();
+		
+		// Add a prefix to the notification address to be stored in the registry
+		if (notificationAddress != null) {
+			if (type == NotificationAddressType.GCM_NOTIFICATION_ADDRESS) {
+				notificationAddress = NOTIFICATION_TYPE_GCM + notificationAddress;
+			} else {
+				notificationAddress = NOTIFICATION_TYPE_REST + notificationAddress;
+			}
+		}
+		
 		AppRegistryRow res = new AppRegistryRow(appId, appName, credentials, notificationAddress);
 		
 		// Update the registry in RAM
@@ -98,6 +119,16 @@ public class ApplicationRegistry {
 //		
 //		return res;
 //	}
+	/**
+	 * @param position 
+	 * @return the registry row corresponding to the specified position in the vector
+	 */
+	public AppRegistryRow getAppAt(int position) {
+		if(position >= mApplicationRegistry.size())
+			return null;
+		else
+				return mApplicationRegistry.get(position);
+	}
 	
 	/**
 	 * @param appID

@@ -47,15 +47,22 @@
     init-method="startService" 
     destroy-method="closeService">
     <property name="cmservice" ref="taasContextManager" />
+<!--     <property name="qosservice" ref="QosService" /> -->
     <property name="context" ref="blueprintBundleContext"/>
     <property name="enabled" value="${busenabled}"/>
   </bean>
   
-        <!-- The services I use -->
+  <!-- The services I use -->
   <reference id="taasContextManager" availability="mandatory"
     activation="eager"
     interface="eu.betaas.taas.contextmanager.api.ThingsServiceManager">
   </reference>
+  
+  <!-- The services I use -->
+<!--   <reference id="QosService" availability="mandatory" -->
+<!--     activation="eager" -->
+<!--     interface="eu.betaas.taas.qosmanager.api.QoSManagerInternalIF"> -->
+<!--   </reference> -->
 
   <!-- My published services -->
   <service ref="QoSManagerMonitoringBean"

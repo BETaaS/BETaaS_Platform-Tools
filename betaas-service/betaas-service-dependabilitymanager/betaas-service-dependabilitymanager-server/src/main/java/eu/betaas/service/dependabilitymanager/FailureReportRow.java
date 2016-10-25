@@ -22,10 +22,31 @@ package eu.betaas.service.dependabilitymanager;
  */
 public class FailureReportRow {
 
-	public String date;
+	/*public String date;
 	public String layer; 
 	public String code;
 	public String level;
 	public String originator; 
+	public String description;*/
+	
+	public String notification_time;
+	
+	public int layer;
+	
+	public int code;
+	
+	public int level;
+	
+	public String originator;
+	
 	public String description;
+	
+	public FailureReportRow(String localDate, int localLayer,int localCode, int localLevel,String localOriginator, String localDescription){
+		notification_time = localDate;
+		layer = localLayer; 
+		code = localCode;
+		level = localLevel;
+		originator = localOriginator; 
+		description = localDescription;
+	}
 }

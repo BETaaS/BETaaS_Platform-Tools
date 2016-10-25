@@ -19,6 +19,8 @@ package eu.betaas.service.servicemanager.extended.registry;
 import java.util.Iterator;
 import java.util.Vector;
 
+import eu.betaas.service.servicemanager.application.registry.AppRegistryRow;
+
 
 /**
  * It represents a row of the Extended services registry
@@ -95,6 +97,8 @@ public class ExtServiceRegistryRow {
 		}
 		return false;
 	}
+	
+	
 
 	/** Unique generated identifier of the service associated to application */
 	public String mExtServiceID;

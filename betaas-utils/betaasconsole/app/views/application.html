@@ -1,0 +1,15 @@
+<div ng-model="applications">
+    <h3>Application Management</h3>	  
+     <p style="text-align: center">	   
+        <button ng-click="init()"  class="btn btn-info">Load</button>	  
+    </p>	  
+    
+    <table class="table table-striped">	    
+      <thead ng-show="applications.length"><tr><th>Name</th><th>Id</th><th>Extended</th><th></th><th></th></tr></thead>
+      <tr ng-repeat="application in applications" ng-class="rowForApplication(application)" ng-click="manageApplication(application)">
+          <td style="cursor : pointer">{{ application.name }}</td>
+          <td style="cursor : pointer">{{ application.id }}</td>
+          <td style="cursor : pointer">{{ application.extended }}</td>
+      </tr>
+    </table>	 
+</div>

@@ -19,8 +19,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Test;
 
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Compute;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.ObjectFactory;
 
 /**

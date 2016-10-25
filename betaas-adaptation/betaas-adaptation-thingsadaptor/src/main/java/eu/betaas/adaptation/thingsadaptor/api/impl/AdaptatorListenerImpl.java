@@ -41,7 +41,7 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	private static BundleContext context;
 	ServiceReference sr;
 	private static AdaptatorListenerImpl listener = null;
-	private IAdaptorPlugin adaptationPlugin;
+	private List<IAdaptorPlugin> adaptationPlugin;
 	private SemanticParserAdaptator adaptationcm;
 
 	private AdaptatorListenerImpl() {
@@ -50,7 +50,7 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 
 	public static AdaptatorListenerImpl getInstance() {
 		Logger mLogger = Logger.getLogger("betaas.adaptation");
-		mLogger.debug("Called getInstance!"); // comment
+		mLogger.info("Called getInstance!"); // comment
 		if (listener == null) {
 			listener = new AdaptatorListenerImpl();
 		}
@@ -58,14 +58,14 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	}
 
 	public boolean notify(String type, String resourceID, HashMap<String, String> value) {
-		mLogger.debug("Got notification from adaptation plugin for DeviceID:"+resourceID + " with value : " + value);
+		mLogger.info("Got notification from adaptation plugin for DeviceID:"+resourceID + " with value : " + value);
 		ThingConstructor thingConstructor = new ThingConstructor(adaptationcm);
 		thingConstructor.notifyMeasurment(resourceID, value);
 		return false;
 	}
 	
 	public boolean removeThing(String thingId) {
-		mLogger.debug("Got notification from adaptation plugin that DeviceID:"+thingId + " was removed");
+		mLogger.info("Got notification from adaptation plugin that DeviceID:"+thingId + " was removed");
 		List<String> ids = new ArrayList<String>();
 		ids.add(thingId);
 		adaptationcm.removeThing(ids);
@@ -73,6 +73,7 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	}
 
 	public void start() {
+		mLogger.debug("context is:"+(context != null));
 		AdaptorClient sClient = AdaptorClient.instance(context);
 		adaptationPlugin = sClient.getApService();
 		setMyServiceRegistered();
@@ -84,7 +85,7 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 	}
 
 	public void setMyServiceRegistered() {
-		mLogger.info("####Registering the AdaptatorListenerImpl.");
+		mLogger.debug("####Registering the AdaptatorListenerImpl.");
 		try {
 			sl = new ServiceListener() {
 				public void serviceChanged(ServiceEvent ev) {
@@ -94,21 +95,26 @@ public class AdaptatorListenerImpl implements IAdaptorListener {
 					switch (ev.getType()) {
 					case ServiceEvent.REGISTERED: {
 						mLogger.info("Register event");
-						adaptationPlugin.setListener(adaptationLResource);
+						for (int i = 0; i < adaptationPlugin.size(); i++) {
+							adaptationPlugin.get(i).setListener(adaptationLResource);
+						}
 					}
 						break;
 					case ServiceEvent.UNREGISTERING: {
 						mLogger.info("Unregister event");
-						adaptationPlugin.setListener(null);
+						for (int i = 0; i < adaptationPlugin.size(); i++) {
+							adaptationPlugin.get(i).setListener(null);
+						}
 						context.ungetService(sr);
 						sr = null;
 					}
 						break;
 					default:
-						mLogger.debug("default event");
+						mLogger.info("default event");
 						break;
 					}
 				}
+
 			};
 			context.addServiceListener(sl);
 		} catch (Exception e) {

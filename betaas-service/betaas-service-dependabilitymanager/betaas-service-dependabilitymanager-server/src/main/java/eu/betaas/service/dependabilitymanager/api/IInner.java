@@ -86,18 +86,6 @@ public interface IInner {
 		}
 	}
 	
-	/**
-	 * Used by BETaaS components inside a GW to communicate a failure to DM
-	 * @param layer
-	 * @param code
-	 * @param level
-	 * @param originator
-	 * @param description
-	 */
-	public void notifyFailure(FAILURE_LAYER layer, 
-			                  FAILURE_CODE code, 
-			                  FAILURE_LEVEL level,
-			                  String originator, 
-			                  String description);
+
 	
 }

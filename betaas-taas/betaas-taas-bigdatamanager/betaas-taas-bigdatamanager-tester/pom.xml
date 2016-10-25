@@ -3,11 +3,11 @@
 	<parent>
 	  <groupId>eu.betaas</groupId>
 	  <artifactId>betaas-taas-bigdatamanager</artifactId>
-	  <version>2.1-release</version>
+	  <version>3.0.2-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-taas-bigdatamanager-tester</artifactId>
-	<version>2.1-release</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Taas Big Data Manager tester Service</name>
 	<description>Service that log data to a service database</description>

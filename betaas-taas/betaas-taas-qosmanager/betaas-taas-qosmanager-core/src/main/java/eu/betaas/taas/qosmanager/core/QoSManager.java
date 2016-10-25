@@ -23,21 +23,34 @@ You may obtain a copy of the License at
 
 package eu.betaas.taas.qosmanager.core;
 
+import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
 import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 import eu.betaas.taas.qosmanager.api.QoSManagerExternalIF;
 
+
 public class QoSManager {
-	
+	private static Logger logger = Logger.getLogger("betaas.taas");
+	private BundleContext context; 
+	private String key = "monitoring.taas";
 	private QoSManagerExternalIF qosm_star;
 	private IBigDataDatabaseService service;
 	private int poolSize = 5;
 	private ExecutorService pool;
 	
-	public QoSManager(){
+	public QoSManager(BundleContext context){
 		pool = Executors.newFixedThreadPool(poolSize);
+		this.context = context;
 	}
 	
 	public String getTemplate() {
@@ -71,6 +84,33 @@ public class QoSManager {
 
 	public ExecutorService getPool() {
 		return pool;
+	}
+	private void busMessage(String message){
+		logger.debug("Checking queue");
+		logger.debug("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		logger.debug("Sending to queue");
+		if (serviceReference==null)return;
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		logger.debug("Sending");
+		service.publish(key,message);
+		logger.debug("Sent");
+		
+		
+	}
+	public void sendData(String description, String level, String originator) {
+		java.util.Date date= new java.util.Date();
+		Timestamp timestamp = new Timestamp(date.getTime());
+		Message msg = new Message();
+		msg.setDescritpion(description);
+		msg.setLayer(Layer.TAAS);
+		msg.setLevel(level);
+		msg.setOrigin(originator);
+		msg.setTimestamp(timestamp.getTime());
+		MessageBuilder msgBuilder = new MessageBuilder();
+		String json = msgBuilder.getJsonEquivalent(msg);
+		busMessage(json);
+		
 	}
 
 }

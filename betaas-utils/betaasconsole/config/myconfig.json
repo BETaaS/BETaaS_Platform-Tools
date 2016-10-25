@@ -1,0 +1,9 @@
+{
+    "ip" : "localhost",
+    "port" : "1337",
+	"amqpserver" : "10.15.5.55:49155",
+	"queue_topic" : "#",
+	"ads_ws" : "localhost:18002",
+	"im_ws" : "localhost:9302",
+	"monitoring" : "off"	
+}

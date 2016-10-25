@@ -1,0 +1,31 @@
+<div>
+    <h3>Manage Things</h3>
+    <p style="text-align: center">
+        <button ng-click="getThings()" class="btn btn-info">Refresh</button>
+        <button ng-click="openThingPanel()" class="btn btn-info">Add Simulated Things</button>
+    </p>
+    <table class="table table-striped">
+        <tr >
+            <td>Id</td>
+            <td>Type</td>
+            <td>Measurement</td>
+            <td>Unit</td>
+            <td>Floor</td>
+            <td>Altitude</td>
+            <td>Latitude</td>
+            <td>Longitude</td>
+            <td>Protocol</td>
+        </tr>
+        <tr ng-click="deleteThingPanel(thing)" ng-repeat="thing in things" ng-class="rowForThing(thing)">
+            <td style="cursor : pointer">{{ thing.id }}</td>
+            <td style="cursor : pointer">{{ thing.type }}</td>
+            <td style="cursor : pointer">{{ thing.measurement }}</td>
+            <td style="cursor : pointer">{{ thing.unit }}</td>
+            <td style="cursor : pointer">{{ thing.floor }}</td>
+            <td style="cursor : pointer">{{ thing.altitude }}</td>
+            <td style="cursor : pointer">{{ thing.latitude }}</td>
+            <td style="cursor : pointer">{{ thing.longitude }}</td>
+            <td style="cursor : pointer">{{ thing.protocol }}</td>
+        </tr>
+    </table>
+</div>

@@ -63,6 +63,16 @@ public class ActiveFeature
 		logger.debug("Number of subscriptions requested: " + (awaiting.size()+invoked.size()));
 	}
 	
+	public void removeSubscription (String idThingService)
+	{
+		logger.info("Remove subscription for " + featureId + ": " + idThingService);
+		
+		awaiting.remove(idThingService);
+		invoked.remove(idThingService);
+		
+		logger.debug("Number of subscriptions registered: " + (awaiting.size()+invoked.size()));
+	}
+	
 	public void notifyReceived (String idThingService, ThingsData data)
 	{		
 		// Check if the received data belongs to a pending thing service

@@ -1,0 +1,47 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>BETaaS Admin GUI</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="styles/bootstrap.min.css" />
+    <link rel="stylesheet" href="styles/ngDialog.min.css" />
+    <link rel="stylesheet" href="styles/bootstrap-table.min.css" />
+    <link rel="stylesheet" href="styles/ngDialog-theme-default.css" />
+	<script src="scripts/library/jquery-2.1.3.min.js"></script>
+	<script src="scripts/library/angular.min.js"></script>
+	<script src="scripts/library/angular-ui-router.min.js"></script>
+	<script src="scripts/library/ngDialog.min.js"></script>
+    <script src="scripts/library/ui-bootstrap-tpls-0.12.1.min.js"></script>
+    <script src="scripts/library/bootstrap-table.min.js"></script>
+     
+	<script src="scripts/app.js"></script>
+	<script src="scripts/components/factory.js"></script>
+    <script src="scripts/controllers/login.js"></script>
+      
+    <script src="scripts/controllers/header.js"></script>
+	<script src="scripts/controllers/footer.js"></script>
+    <script src="scripts/controllers/instance.js"></script>
+	<script src="scripts/controllers/thing.js"></script>
+    <script src="scripts/controllers/monitoring.js"></script>
+    <script src="scripts/controllers/semantic.js"></script>
+    <script src="scripts/controllers/application.js"></script>  
+    <script src="scripts/controllers/service.js"></script>
+	<script src="scripts/controllers/task.js"></script>
+	<script src="scripts/controllers/setting.js"></script>
+    <script src="scripts/controllers/header.js"></script>
+    
+    <link rel="stylesheet" href="styles/main.css">
+
+  </head>
+  <body ng-app="betaasadminuiApp" class="container">
+      
+    <div ui-view="header"></div>
+    <div class="container" ui-view="content"></div>
+    <footer class="footer">
+        <div ui-view="footer"></div>
+     </footer>  
+    </body>
+</html>

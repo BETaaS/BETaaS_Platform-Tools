@@ -43,7 +43,7 @@ public class FileUtils {
 
 			InputStream file =new FileInputStream(sensorFile);
 			BufferedReader in = new BufferedReader(new InputStreamReader(file));
-			mLogger.info("Going to read data from the file...:"+sensorFile.getName());			
+			mLogger.debug("Going to read data from the file...:"+sensorFile.getName());			
 			if((line = in.readLine()) != null){
 				headers = line;
 			}
@@ -52,14 +52,14 @@ public class FileUtils {
 			}
 			
 			if (counter != null) {
-				mLogger.info("counter : " + counter);
+				mLogger.debug("counter : " + counter);
 				if(counter >= lines.size()){				    
 					final int x = counter%lines.size();
-					mLogger.info("x : " + x);
+					mLogger.debug("x : " + x);
 					sensorHash = readLineDataInArray(headers,lines.get(x), sensorHash);
 				} else {
 					int x = counter;
-					mLogger.info("x : " + x);
+					mLogger.debug("x : " + x);
 					sensorHash = readLineDataInArray(headers,lines.get(x), sensorHash);
 				}
 			}
@@ -81,7 +81,7 @@ public class FileUtils {
 
 			InputStream file =new FileInputStream(sensorFile);
 			BufferedReader in = new BufferedReader(new InputStreamReader(file));
-			mLogger.info("Going to read data from the file...:"+sensorFile.getName());		
+			mLogger.debug("Going to read data from the file...:"+sensorFile.getName());		
 			if((line = in.readLine()) != null){
 				headers = line;
 			}

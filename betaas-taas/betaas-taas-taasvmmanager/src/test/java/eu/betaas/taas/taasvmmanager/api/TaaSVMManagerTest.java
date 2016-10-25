@@ -25,19 +25,14 @@ package eu.betaas.taas.taasvmmanager.api;
 
 import static org.junit.Assert.*;
 
-import java.awt.color.CMMException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 
-import eu.betaas.taas.taasvmmanager.api.impl.TaaSVMManagerImpl;
-import eu.betaas.taas.taasvmmanager.cloudsclients.VMProperties;
-import eu.betaas.taas.taasvmmanager.cloudsclients.VMRequest;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.ComputeState;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Availability;
+import eu.betaas.taas.taasvmmanager.api.datamodel.VMRequest;
 
 /**
  * 
@@ -79,13 +74,18 @@ public class TaaSVMManagerTest {
 		request.setCores(1);
 		request.setMemory(128);
 		
-		vmHref = vmManager.createVM(request);
+		try {
+			vmHref = vmManager.createVM(request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertNotNull(vmHref);
 	}
 	
 	private void testRemoveVM() {
-		VMProperties properties;
-		ArrayList<String> vms;
+		/*VMProperties properties;
+		ArrayList<String> vms;*/
 		
 		/*vmManager.deleteVM(vmHref);
 		try {
@@ -106,7 +106,7 @@ public class TaaSVMManagerTest {
 	}
 	
 	private void testGetAvailability() {
-		HashMap<InstanceType, Integer> cpuPref, memPref;
+		List<Availability> cpuPref, memPref;
 		cpuPref = vmManager.getAvailability();
 		memPref = vmManager.getAvailability();
 		

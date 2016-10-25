@@ -27,6 +27,7 @@
         <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssuredRequestInternal</class>
         <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMAssuredRequestStar</class>
         <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.DMNotifiedFailure</class>
+        <class>eu.betaas.taas.bigdatamanager.database.hibernate.data.SimulatedThing</class>
         
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         

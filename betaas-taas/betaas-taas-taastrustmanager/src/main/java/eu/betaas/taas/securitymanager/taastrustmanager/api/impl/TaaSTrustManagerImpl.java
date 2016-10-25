@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import eu.betaas.taas.securitymanager.taastrustmanager.api.TaaSTrustManager;
+import eu.betaas.taas.securitymanager.taastrustmanager.messaging.MessageManager;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasaggregator.ThingServiceTrust;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.TaaSBDMClient;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasthread.TrustTaaSThread;
@@ -34,6 +35,7 @@ public class TaaSTrustManagerImpl implements TaaSTrustManager
 {
 	private Logger logger= Logger.getLogger("betaas.taas");
 	private TrustTaaSThread trustThread;
+	private MessageManager mManager;
 	
 	public void start()  
 	{		
@@ -41,10 +43,13 @@ public class TaaSTrustManagerImpl implements TaaSTrustManager
 				
 		// here we could execute some basic testing at the beginning, so we check everything is in place
 		
+		mManager = MessageManager.instance();
+		
 		// Start the background thread which will be recalculating trust
 		trustThread = TrustTaaSThread.instance();		
 		
 		logger.info("TaaS Trust Manager started!");
+		mManager.monitoringPublish("TaaS Trust Manager started!");
 	}
 	
 	public void stop() 

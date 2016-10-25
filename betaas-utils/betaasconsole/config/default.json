@@ -1,0 +1,11 @@
+{
+    "ip" : "localhost",
+    "port" : "1337",
+    "backend" : "localhost:1337",
+	"amqpserver" : "10.15.5.55:49155",
+	"amqptopic" : "#",
+	"ads_ws" : "localhost:18002",
+	"instancemanager" : "localhost:9302",
+	"monitoring" : "off",
+    "versionui" : "3.0.2-SNAPSHOT"
+}

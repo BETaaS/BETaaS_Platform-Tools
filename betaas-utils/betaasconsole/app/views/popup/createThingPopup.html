@@ -1,0 +1,114 @@
+<div>
+
+    <div class="modal-header">
+        <h3>Create a new thing</h3>
+    </div>
+    <div class="modal-body" >
+        <form novalidate>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Type: </label>
+                <select ng-model="thing.type">     
+                    <option>Presence</option>
+                    <option>Temperature</option>
+                    <option>Traffic</option>
+                    <option>Moistness</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Output: </label>
+                <input type="checkbox" ng-model="thing.output" value="false"/>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" > Digital: </label>
+                <input type="checkbox" ng-model="thing.isdigital" value="false" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Environment: </label>
+                <input type="checkbox" ng-model="thing.environment" value="false"/>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Response time: </label>
+                <input type="text" ng-model="thing.responsetime" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Memory: </label>
+                <input type="text" ng-model="thing.memory" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Battery Cost: </label>
+                <input type="text" ng-model="thing.batteryCost" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Battery Level: </label>
+                <input type="text" ng-model="thing.batteryLevel" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Device ID: </label>
+                <input type="text" ng-model="thing.deviceID" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Unit: </label>
+                <input type="text" ng-model="thing.unit" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Latitude: </label>
+                <input type="text" ng-model="thing.latitude" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Longitude: </label>
+                <input type="text" ng-model="thing.longitude" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Altitude: </label>
+                <input type="text" ng-model="thing.altitude" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Floor: </label>
+                <input type="text" ng-model="thing.floor" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Location keyword: </label>
+                <input type="text" ng-model="thing.locationKeyword" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Location ID: </label>
+                <input type="text" ng-model="thing.locationIdentifier" />
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Protocol: </label>
+                <select ng-model="thing.protocol">
+                    <option>ETSI</option>
+                    <option>Coap</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label"> Computational Cost: </label>
+                <input type="number" name="input" ng-model="thing.cost" min="0" max="99" required/>
+            </div>
+            </p>
+        </form>
+        <div>
+            <div class="form-group" ng-show="isambiguouslocation">
+                <label class="col-sm-4 control-label" > Location Terms: </label>
+                <select class="col-sm-4 control-label" ng-model="item"  ng-options="item as item.definition for item in contextLocation" ng-model="item">
+                    <option style="display:none" value="">select a term</option>
+                    <input type="button" class="btn btn-info" ng-click="disambiguateLocation(thing.locationKeyword,item.synsetID,item.definition)"value="Disambiguate" />
+                </select>
+                
+            </div>
+            <div class="form-group" ng-show="isambiguoustype">
+                <label class="col-sm-4 control-label"> Type Terms: </label>
+                <select class="col-sm-4 control-label" ng-model="item"  ng-options="item as item.definition for item in contextType" ng-model="item">
+                    <option style="display:none" value="">select a term</option>
+                 <input type="button" class="btn btn-info" ng-click="disambiguateType(thing.type,item.synsetID,item.definition)" value="Disambiguate" />
+                </select>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-info" ng-click="addThing(thing)" value="{{ischecked}}" />
+            <input type="button" class="btn btn-info" ng-click="cancel()" value="Close" />
+        </div>
+            
+</div>
+</div>

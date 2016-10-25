@@ -1,0 +1,16 @@
+<div>	  
+    <h3>Extended Services Console</h3>	  
+    <p style="text-align: center">  
+        <button ng-click="open()" class="btn btn-info">Add a Service to list</button>
+    </p>	  
+    <table class="table table-striped">	  
+      <tr ng-repeat="service in services" ng-class="rowForService(service)">
+            <td style="cursor : pointer">{{ service.name }}</td>
+            <td style="cursor : pointer">{{ service.url }}</td>
+           <td><input type="button" value="Manage" class="btn btn-primary" ng-click="manageService(service)"/></td>
+            <td><input type="button" value="Remove" class="btn btn-primary" ng-click="removeService(service)"/></td>
+           
+            <td></td>
+      </tr>
+    </table>	 
+</div>

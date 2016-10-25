@@ -23,7 +23,6 @@ package eu.betaas.service.instancemanager;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
@@ -43,6 +42,9 @@ import eu.betaas.service.instancemanager.config.Configuration;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager;
 import eu.betaas.taas.securitymanager.core.service.IInitGWStarService;
 import eu.betaas.taas.securitymanager.core.service.IJoinInstanceService;
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
 
 /**
  * This class represents the IM and implements its inner functionalities
@@ -56,6 +58,9 @@ public class InstanceManager implements IMStarHandler {
 	public final static String DOSGI_PROP_BACKUP_STAR = "isBackupStar";
 	public final static String DOSGI_PROP_ADMIN_ADDRESS = "adminAddress";
 	public final static String DOSGI_PROP_ADMIN_DESCRIPTION = "description";
+	
+	public final static String MONITORING = "monitoring";
+	public final static String DEPENDABILITY = "dependability";
 		
 	/** The name of the log4j logger to be used by IM */
 	public final static String LOGGER_NAME = "betaas.service";
@@ -695,6 +700,47 @@ public class InstanceManager implements IMStarHandler {
 	
 	private synchronized boolean isJoined() {
 		return mGWRegistry.hasJoined(mConfiguration.mGW.mID);
+	}
+	
+	public void busMessage(String message, String level, String type){
+		
+		String key = type + ".service";
+		if (mContextProvider == null) {
+			mLogger.warn("Cannot get context provider for TaaSRM");
+			return;
+		}
+		BundleContext context = mContextProvider.getBundleContext();
+		if (context == null) {
+			mLogger.warn("Null bundle context for TaaSRM");
+			return;
+		}
+				
+		mLogger.info("Checking queue");
+		mLogger.info("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		mLogger.info("Sending to queue");
+		if (serviceReference==null)return;
+		
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		Message infoMessage = new Message();
+		
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date now = calendar.getTime();
+
+		
+		infoMessage.setTimestamp(now.getTime());
+		infoMessage.setLayer(Message.Layer.SERVICE);
+		infoMessage.setLevel(level);
+		infoMessage.setOrigin("instance-manager");
+		infoMessage.setDescritpion(message);
+		
+		MessageBuilder newMessage = new MessageBuilder();
+		
+		
+		mLogger.info("Sending key: " + key + " message: "+ newMessage.getJsonEquivalent(infoMessage));
+		service.publish(key, newMessage.getJsonEquivalent(infoMessage));
+		mLogger.info("Message sent to queue");
+		
 	}
 
 	/** Logger */

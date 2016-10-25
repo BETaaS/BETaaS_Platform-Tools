@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint default-activation="eager" 
+            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+
+	<cm:property-placeholder persistent-id="betaas.gateway">
+		<cm:default-properties>
+	  	<cm:property name="gwId" value="-1"/>
+	  	<cm:property name="countryCode" value="DK"/>
+	  	<cm:property name="state" value="Nordjylland"/>
+	  	<cm:property name="location" value="Aalborg"/>
+	  	<cm:property name="orgName" value="BETaaS"/>
+	  </cm:default-properties>
+	</cm:property-placeholder>
+	
+	<bean id = "secConsumerBean" 
+	class = "eu.betaas.taas.securitymanager.gwcomm.activator.GWSecCommActivator" 
+	init-method="start" destroy-method="stop">
+		<property name="context" ref="blueprintBundleContext"/>
+		<property name="gwId" value="${gwId}"/>
+		<property name="countryCode" value="${countryCode}"></property>
+	  <property name="state" value="${state}"></property>
+	  <property name="location" value="${location}"></property>
+	  <property name="orgName" value="${orgName}"></property>
+		<property name="gwStarCoreService" ref="gwStarCoreService"/>
+		<property name="joinCoreService" ref="joinCoreService"/>
+		<property name="secCommCoreService" ref="secCommCoreService"/>
+		<!-- <property name="addStringService" ref="addStringService"/> -->
+	</bean>	
+	
+	<reference id="gwStarCoreService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.core.service.IInitGWStarService" />
+	<reference id="joinCoreService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.core.service.IJoinInstanceService" />
+	<reference id="secCommCoreService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.core.service.ISecGWCommService" />
+	<!-- <reference id="addStringService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.encrypttest.api.IAddStringService" /> -->
+</blueprint>

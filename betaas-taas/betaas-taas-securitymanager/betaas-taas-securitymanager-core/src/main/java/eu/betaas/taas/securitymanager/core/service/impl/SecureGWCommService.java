@@ -31,12 +31,14 @@ import org.osgi.util.tracker.ServiceTracker;
 import eu.betaas.taas.securitymanager.authentication.service.IEncryptDecryptService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService;
+
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
 import eu.betaas.taas.securitymanager.common.model.BcCredential;
 import eu.betaas.taas.securitymanager.common.mqv.EcmqvMessage;
 //import eu.betaas.taas.securitymanager.core.activator.SecMTaasCoreActivator;
 import eu.betaas.taas.securitymanager.core.service.ISecGWCommService;
+import eu.betaas.taas.securitymanager.core.utils.CoreBetaasBus;
 
 /**
  * Class implementation of ISecGWCommService interface
@@ -67,6 +69,17 @@ public class SecureGWCommService implements ISecGWCommService {
 	/**  This GW ID */
 	private String mGwId;
 	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private CoreBetaasBus bus;
+		
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		// set the GW ID
+		bus = new CoreBetaasBus(context);
+	}
+	
 	public SecureGWCommService(){
 //		this.coreActivator = coreActivator;
 //		this.context = coreActivator.getContext();
@@ -77,6 +90,7 @@ public class SecureGWCommService implements ISecGWCommService {
 		boolean result = false;
 		
 		log.info("Start deriving shared keys");
+		bus.sendData("Start deriving shared keys", "info", "SecM");
 
 		BcCredential myCertStore = null;
 
@@ -110,6 +124,8 @@ public class SecureGWCommService implements ISecGWCommService {
 			// check if gatewayId of remote GW equals to gwDestId of this GW
 			if(ref.getProperty("gwId").equals(gwDestId)){
 				log.debug("Found ExtEcmqv service of the GW destination ID");
+				bus.sendData("Found ExtEcmqv service of the GW destination ID", "debug", 
+						"SecM");
 				ecmqvExtServ = (IGatewayEcmqvExtService) context.getService(ref);
 			}
 		}
@@ -139,20 +155,24 @@ public class SecureGWCommService implements ISecGWCommService {
 			ecmqvExtTracker.close();
 			if(sendLast >= 0){
 				log.info("the MAC 3 is correctly confirmed");
+				bus.sendData("the MAC 3 is correctly confirmed", "info", "SecM");
 				result = true;
 			}
-			else
+			else{
 				log.info("the MAC 3 isn't valid!!");
+				bus.sendData("the MAC 3 isn't valid", "warning", "SecM");
+			}
 		}
 		return result;
 	}
 	
-	public byte[] doEncryptData(String gwDestId, String data){
+	public String doEncryptData(String gwDestId, String data){
 		//check if the key associated with gwDestId exists and is not expired
 		boolean isK2 = false;
 		byte[] k2 = gwEcmqvIntService.getK2(gwDestId);
 		
 		if(k2==null){
+			log.debug("k2 is not found, need to initiate key agreement protocol.");
 			// initiate ECMQV protocol
 			try {
 				isK2 = deriveSharedKeys(gwDestId);
@@ -161,12 +181,15 @@ public class SecureGWCommService implements ISecGWCommService {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				log.error("Exception in ECMQV key agreement protocol: "+e.getMessage());
+				bus.sendData("Exception in ECMQV key agreement protocol", "error", 
+						"SecM");
 				return null;
 			}
 		}
 		else{
 			// if the key has been expired
 			if((new Date()).getTime() >= gwEcmqvIntService.getExpireTime(gwDestId)){
+				log.debug("k2 is expired, need to initiate key agreement protocol.");
 				// again initiate ECMQV protocol
 				try {
 					isK2 = deriveSharedKeys(gwDestId);
@@ -181,16 +204,20 @@ public class SecureGWCommService implements ISecGWCommService {
 				isK2 = true;
 		}
 		// start the encryption
+		log.debug("start encrypting data...");
+		log.debug("isK2: "+isK2);
 		if(isK2)
 			return encryptService.doEncryption(k2, data);
 		else{
 			log.warn("There is problem with secret key (k2) associated with GW ID: "
 					+gwDestId);
+			bus.sendData("There is problem with secret key (k2) associated with GW "+
+					"ID: " +gwDestId, "warning", "SecM");
 			return null;
 		}
 	}
 	
-	public String doDecryptData(String gwOriId, byte[] encrypted){
+	public String doDecryptData(String gwOriId, String encrypted){
 		//check if the key associated with gwDestId exists and is not expired
 		boolean isK2 = false;
 		byte[] k2 = gwEcmqvIntService.getK2(gwOriId);
@@ -217,6 +244,8 @@ public class SecureGWCommService implements ISecGWCommService {
 		else{
 			log.warn("There is problem with secret key (k2) associated with GW ID: "
 					+ gwOriId);
+			bus.sendData("There is problem with secret key (k2) associated with GW "+
+					"ID: " +gwOriId, "warning", "SecM");
 			return null;
 		}
 	} 

@@ -25,9 +25,9 @@ package eu.betaas.taas.taasvmmanager.occi;
 
 import java.util.List;
 
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Compute;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.ComputeCollection;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceTypeCollection;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Network;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.NetworkCollection;
@@ -330,5 +330,5 @@ public interface OCCIClient {
 	 * 
 	 * @return status of the cloud
 	 */
-	public OCCIClientStatus getStatus ();
+	public OCCIClientStatus getStatus () throws OCCIException;
 }

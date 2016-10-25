@@ -48,7 +48,11 @@ import eu.betaas.service.bigdatamanager.service.datatask.data.TaskInfo.TaskType;
 public class DatabaseRecentdataTask implements AnalyticTask {
 
 	
-	private final String TASK_1_QUERY = "SELECT thingID,location,measurement,max(timestamp) from T_THING_DATA GROUP BY thingID,location,measurement ORDER BY thingID";
+	private final String TASK_1_QUERY_old = "SELECT thingID,location,measurement,max(timestamp) from T_THING_DATA GROUP BY thingID,location,measurement ORDER BY thingID";
+	private final String TASK_1_QUERY = "select a.thingID, a.location_identifier, a.measurement, a.timestamp from T_THING_DATA a join (SELECT thingID, MAX(timestamp) as lastval FROM T_THING_DATA GROUP BY thingID) b on a.thingID = b.thingID AND a.timestamp = lastval ORDER BY location";
+	
+	
+	
 	private TaskData taskdata;
 	private TaskInfo taskInfo;
 	private static String taskDescription="This task return from the databases service the last reported value for each thing";

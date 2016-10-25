@@ -34,15 +34,17 @@ public class Reader implements Runnable {
 	IAdaptorListener listener;
 	String thingId;
 	String sensorsFolder;
+	int seconds;
 	Logger mLogger = Logger.getLogger("betaas.thingsadaptor");
 	int counter = 0;
 	
-	public Reader(final String thingId, final String sensorsFolder, IAdaptorListener listener) {
+	public Reader(final String thingId, final String sensorsFolder, IAdaptorListener listener, int seconds) {
 		super();
 		
 		this.thingId = thingId;
 		this.listener = listener;
 		this.sensorsFolder = sensorsFolder;
+		this.seconds = seconds;
 	}
 
 
@@ -81,7 +83,7 @@ public class Reader implements Runnable {
 				}
 				listener.notify(type, thingId, sensorHash);	
 				counter++;
-				Thread.sleep(10000);
+				Thread.sleep(seconds*1000);
 			}			
 			
 		} catch (InterruptedException e) {

@@ -38,6 +38,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayStarCertificateExtService;
+import eu.betaas.taas.securitymanager.certificate.utils.CertificateBetaasBus;
 import eu.betaas.taas.securitymanager.common.certificate.utils.Config;
 import eu.betaas.taas.securitymanager.common.certificate.utils.GWCertificateUtilsBc;
 import eu.betaas.taas.securitymanager.common.model.ArrayOfCertificate;
@@ -72,6 +73,9 @@ public class GWStarCertificateExtService implements
 	/** Certificate path -- from Blueprint */
 	private String certPath;
 	
+	/** Class that handles BETaaS BUS in certificate bundle */
+	CertificateBetaasBus bus;
+	
 	public GWStarCertificateExtService(){}	
 	
 	/**
@@ -80,7 +84,7 @@ public class GWStarCertificateExtService implements
 	public void setup(){
 		// set the GW ID
 		Config.gwId = this.mGwId;
-		
+		bus = new CertificateBetaasBus(context);
 //		log.debug("Tracking the External Certificate Manager service...");
 //		extCertTracker = new ServiceTracker(context, 
 //				IGatewayStarCertificateExtService.class.getName(), null);
@@ -142,6 +146,8 @@ public class GWStarCertificateExtService implements
 			certReq = new PKCS10CertificationRequest(gwCertReq);
 		} catch (IOException e) {
 			log.error("Error decoding the PKCS10CertificationRequest: "+e.getMessage());
+			bus.sendData("Error decoding the PKCS10CertificationRequest", "error", 
+					"SecM");
 			e.printStackTrace();
 		}
 		// retrieve the public key of the requesting GW
@@ -152,6 +158,8 @@ public class GWStarCertificateExtService implements
 		} catch (IOException e) {
 			log.error("Error creating ECPublicKeyParameters from SubjectPublicKeyInfo: "
 					+e.getMessage());
+			bus.sendData("Error creating ECPublicKeyParameters from SubjectPublicKeyInfo", 
+					"error", "SecM");
 			e.printStackTrace();
 		}
 		String ufn = null;
@@ -198,10 +206,13 @@ public class GWStarCertificateExtService implements
 					"intermediate", "end", ecKeyParams, ufn, certPath);
 		} catch (Exception e) {
 			log.error("Error generating Certificate for GW: "+e.getMessage());
+			bus.sendData("Error generating Certificate for GW", "error", "SecM");
 			e.printStackTrace();
 		}	
 		
 		log.info("Certificate for new joining GW has been created...");
+		bus.sendData("Certificate for new joining GW has been created", "info", 
+				"SecM");
 		
 		return certs;
 	}
@@ -237,7 +248,7 @@ public class GWStarCertificateExtService implements
 	 * Method to close this bundle referred in Blueprint 
 	 */
 	public void close(){
-		log.info("Closing certificate bundle...");
+//		log.info("Closing certificate bundle...");
 		// closing the tracker if they have been opened
 		if(extCertTracker != null)
 			extCertTracker.close();

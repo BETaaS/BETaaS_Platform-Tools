@@ -1,0 +1,43 @@
+<div>   
+    <h3>Current Settings</h3> 
+    <br></br>
+    <div>
+      <form novalidate>
+        <div class="form-group">
+            <label for="imurl" > Instance Manager URL: </label>
+            <input if="imurl" type="text" ng-model="settings.instancemanager" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="amqpid"> Monitoring AMQP URL: </label>
+            <input id="ampqid" type="text" ng-model="settings.monitoringamqp" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="microserverid"> Microserver URL: </label>
+            <input id="microserverid" type="text" ng-model="settings.backend" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="sshclient"> Karaf ES Server: </label>
+            <input id="sshclient" type="text" ng-model="settings.sshaddress" class="form-control"/>
+        </div>  
+        <div class="form-group">
+            <label for="queueid"> AMPQ Topic: </label>
+            <input id="queueid" type="text" ng-model="settings.amqptopic" class="form-control"/>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="activemonitoring" ng-model="settings.monitoring" value="on" />Background Monitoring Active
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="activemonitoring" ng-model="settings.monitoring" value="off" />Background Monitoring Not Active
+            </label>
+        </div>
+        <div>
+            <button class="btn btn-info"  ng-click="reset()">Reset</button>
+            <button type="submit" class="btn btn-info" ng-click="update(settings)">Update</button>
+        </div>
+      </form>
+     <br></br>
+    </div>	
+</div>

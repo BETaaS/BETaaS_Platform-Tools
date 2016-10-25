@@ -23,6 +23,9 @@ Francisco Javier Nieto. Atos Research and Innovation, Atos SPAIN SA
 package eu.betaas.taas.taasresourcesmanager.catalogs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.apache.log4j.Logger;
 
 public class Resource 
 {
@@ -30,24 +33,27 @@ public class Resource
 	public static final int VIRTUALRESOURCE = 1;
 	
 	public static final int UNAVAILABLE = 0;
-	public static final int ALLOCATED = 1;
-	public static final int FREE = 2;
-	
+	public static final int AVAILABLE = 1;
+		
 	private int resourceType;
 	private String resourceId;
 	private String physicalResourceId;
 	private int status;
 	private String gatewayId;
-	private ArrayList<String> allocatedFeatures;
+	private HashMap<String, Integer> allocatedPushFeatures;
+	private ArrayList<String> allocatedPullFeatures;
+	private Logger logger= Logger.getLogger("betaas.taas");
 	
 	public Resource (String id, String physicalId, int type, String gateway)
 	{
 		resourceId = id;
 		physicalResourceId = physicalId;
 		resourceType = type;
-		status = 2;	//We'll consider that the initial status is Available and Free
+		status = 1;	//We'll consider that the initial status is Available
 		gatewayId = gateway;
-		allocatedFeatures = new ArrayList<String>();
+		allocatedPushFeatures = new HashMap<String, Integer>();
+		allocatedPullFeatures = new ArrayList<String> ();
+		
 	}
 	
 	public String getResourceId ()
@@ -77,7 +83,9 @@ public class Resource
 	
 	public ArrayList<String> getAllocatedFeatures()
 	{
-		return allocatedFeatures;
+		ArrayList<String> result = new ArrayList<String>(allocatedPushFeatures.keySet());
+		result.addAll(allocatedPullFeatures);
+		return result;
 	}
 	
 	public void setStatus (int newStatus)
@@ -85,14 +93,80 @@ public class Resource
 		status = newStatus;
 	}
 	
-	public void addFeature (String idFeature)
+	public void addFeature (String idFeature, int period)
 	{
-		allocatedFeatures.add(idFeature);
+		allocatedPushFeatures.put(idFeature, new Integer (period));
 	}
 	
 	public void removeFeature (String idFeature)
 	{
-		allocatedFeatures.remove(idFeature);
+		if (allocatedPushFeatures.containsKey(idFeature))
+		{
+			allocatedPushFeatures.remove(idFeature);
+		}
+		else
+		{
+			allocatedPullFeatures.remove(idFeature);
+		}
+		
 	}
 	
+	public void addFeature (String idFeature)
+	{
+		allocatedPullFeatures.add(idFeature);
+	}
+	
+	public int getPeriod (String idFeature)
+	{
+		return allocatedPushFeatures.get(idFeature);
+	}
+	
+	public int getCommonPeriod ()
+	{
+		ArrayList<Integer> periods = new ArrayList<Integer>(allocatedPushFeatures.values());
+		//logger.debug("Number of registered periods: " + periods.size());
+		System.out.println("Number of registered periods: " + periods.size());
+		
+	    long result = (long) Math.ceil(periods.get(0).longValue());
+	    for(int i = 1; i < periods.size(); i++)
+	    {
+	    	result = gcd(result, (long) Math.ceil(periods.get(i).longValue()));
+	    }
+	    return (int)result;		
+	}
+	
+	private static long gcd(long a, long b)
+	{
+	    while (b > 0)
+	    {
+	        long temp = b;
+	        b = a % b; // % is remainder
+	        a = temp;
+	    }
+	    return a;
+	}
+
+	private static long lcm(long a, long b)
+	{
+	    return a * (b / gcd(a, b));
+	}
+
+	/*
+	public static void main(String[] args) 
+	{
+		Resource myRes = new Resource ("javiThingService", "javiThing", Resource.THINGSERVICE, "localhost");
+		
+		myRes.addFeature("javiFet1", 10);
+		
+		System.out.println("Common Period: " + myRes.getCommonPeriod());
+		
+		myRes.addFeature("javiFet2", 5);
+		
+		System.out.println("Common Period: " + myRes.getCommonPeriod());
+		
+		myRes.addFeature("javiFet3", 2);
+		
+		System.out.println("Common Period: " + myRes.getCommonPeriod());
+	}
+	*/
 }

@@ -35,8 +35,13 @@ import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
 import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
 import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
 import eu.betaas.taas.contextmanager.api.ThingsServiceManager;
+//import eu.betaas.taas.qosmanager.api.QoSManagerInternalIF;
 import eu.betaas.taas.qosmanager.monitoring.api.QoSManagerMonitoring;
-import eu.betaas.taas.qosmanager.monitoring.api.impl.QoSMonitoringMeasure;
+//import eu.betaas.taas.qosmanager.monitoring.api.impl.QoSMonitoringMeasure;
+
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
 {
@@ -49,6 +54,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
   private static Logger LOGTest = Logger.getLogger("betaas.testplan");
   private ArrayList<QoSMonitoringMeasure> oThingServiceQoSMeasure = new ArrayList<QoSMonitoringMeasure>();
   private static QoSManagerMonitoringImpl thing = null;
+//  static private QoSManagerInternalIF qosservice;
   
   private static BundleContext context;
   private boolean enabled=false;
@@ -62,15 +68,17 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
 
 
   
-//  public boolean registerMeasurementSLAMonitoringPull(String sThingServiceName, int sOptimalRequestRate)
+  @Deprecated
   public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate)
   {
-    Timestamp tMaximumTimeStamp;
+    mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.getMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
+    sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.getMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
+    
     boolean bResults = true;
+    try{
+    Timestamp tMaximumTimeStamp;
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
-      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
-      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       if (!(oThingServiceMeasure == null))
       {
         int iRequestRate = oThingServiceMeasure.getRequestRate();
@@ -91,34 +99,42 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());
         monitoringMeasure.setInitialTimeStamp(ts);
-        LOGTest.debug("Monitoring Start");
+        LOGTest.debug("Monitoring Start "+sThingServiceName);
 
         String sMaximumTimeStamp = cmservice.getMaximumResponseTime(sThingServiceName);
 
         if (sMaximumTimeStamp.equals("")){
           tMaximumTimeStamp = new Timestamp (0);
-        }else
-          tMaximumTimeStamp = new Timestamp (Integer.parseInt(sMaximumTimeStamp));
+        }else{
+            tMaximumTimeStamp = new Timestamp (Integer.parseInt(sMaximumTimeStamp));
+        }
         monitoringMeasure.setMaximumTimeStamp(tMaximumTimeStamp);
         
         boolean bExists = cmservice.checkAvailability(sThingServiceName);
         monitoringMeasure.setAvailability(bExists);
 
         oThingServiceQoSMeasure.add(monitoringMeasure);
-        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring function.");
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.getMeasurementSLAMonitoring function.");
         oThingServiceMeasure = null;
       }
+    }
+    catch (Exception e)
+    {
+      mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.getMeasurementSLAMonitoring. It has not been executed correctly. Exception: " + e.getMessage()+".");
+    }
     return bResults;
   }
   
+  @Deprecated
   public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod)
   {
-    Timestamp tMaximumTimeStamp;
+    mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
+    sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
     boolean bResults = true;
+    try{
+    Timestamp tMaximumTimeStamp;
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
-      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
-      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       if (!(oThingServiceMeasure == null))
       {
         int iRequestRate = oThingServiceMeasure.getRequestRate();
@@ -141,14 +157,15 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());
         monitoringMeasure.setInitialTimeStamp(ts);
-        LOGTest.debug("Monitoring Start");
+        LOGTest.debug("Monitoring Start "+sThingServiceName);
 
         String sMaximumTimeStamp = cmservice.getMaximumResponseTime(sThingServiceName);
-
+        
         if (sMaximumTimeStamp.equals("")){
           tMaximumTimeStamp = new Timestamp (0);
-        }else
+        }else{
           tMaximumTimeStamp = new Timestamp (Integer.parseInt(sMaximumTimeStamp));
+        }
         monitoringMeasure.setMaximumTimeStamp(tMaximumTimeStamp);
         
         boolean bExists = cmservice.checkAvailability(sThingServiceName);
@@ -158,14 +175,148 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
         mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPush function.");
         oThingServiceMeasure = null;
       }
+    }
+      catch (Exception e)
+      {
+        mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoring. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      }
+    return bResults;
 
+  }
+
+  
+  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, double dTolerateJitterParam)
+  {
+    boolean bResults = true;
+    try{
+      QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
+      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPull. "+sThingServiceName+" Thing Service. sMilisecondMinInterRequestRate "+sMilisecondMinInterRequestRate+" dTolerateJitterParam"+dTolerateJitterParam+".");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPull. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
+      if (!(oThingServiceMeasure == null))
+      {
+        QoSMonitoringMeasure monitoringMeasurePull = new QoSMonitoringMeasure();
+        Timestamp tsInitial = monitoringMeasurePull.getInitialTimeStamp();
+        
+        DateTime dt_now = new DateTime();
+
+        Interval interval = new Interval(new Instant (tsInitial), new Instant (dt_now));
+        int intervalMillis = interval.toPeriod().getMillis();
+        
+        if (intervalMillis<sMilisecondMinInterRequestRate){
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. MinInterRequestRate violation.");
+          monitoringMeasurePull.setiUnsucess(1);
+        }else{
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. MinInterRequestRate ok.");
+          monitoringMeasurePull.setiUnsucess(0);
+        }
+          
+      }
+      else
+      {
+        QoSMonitoringMeasure monitoringMeasure = new QoSMonitoringMeasure();
+        monitoringMeasure.setThingServiceName(sThingServiceName);
+        
+        monitoringMeasure.setOptimalRequestRate(sMilisecondMinInterRequestRate);
+        
+        monitoringMeasure.setTolerateJitter(dTolerateJitterParam);
+
+        int iRequestRate = 1;
+        monitoringMeasure.setRequestRate(iRequestRate);
+
+        Date date = new Date();
+        Timestamp ts = new Timestamp(date.getTime());
+        monitoringMeasure.setInitialTimeStamp(ts);
+        LOGTest.debug("Monitoring Start "+sThingServiceName);
+
+        String sMaximumTimeStamp = cmservice.getMaximumResponseTime(sThingServiceName);
+        
+        int iMaximumTimeStamp =  Integer.parseInt(sMaximumTimeStamp);
+        monitoringMeasure.setMaximumTimeStamp(new Timestamp (iMaximumTimeStamp));
+        
+        boolean bExists = cmservice.checkAvailability(sThingServiceName);
+        monitoringMeasure.setAvailability(bExists);
+
+        oThingServiceQoSMeasure.add(monitoringMeasure);
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPull function.");
+        oThingServiceMeasure = null;
+      }
+    }
+      catch (Exception e)
+      {
+        mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPull. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      }
+    return bResults;
+
+  }
+  
+  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod, double dTolerateJitterParam)
+  {
+    boolean bResults = true;
+    try{
+      QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
+      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPush. "+sThingServiceName+" Thing Service. sMilisecondMinInterRequestRate "+sMilisecondMinInterRequestRate+" iMilisecondPeriod, "+iMilisecondPeriod+"dTolerateJitterParam"+dTolerateJitterParam+".");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPush. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
+      if (!(oThingServiceMeasure == null))
+      {
+        QoSMonitoringMeasure monitoringMeasure = new QoSMonitoringMeasure();
+        Timestamp tsInitial = monitoringMeasure.getInitialTimeStamp();
+        
+        DateTime dt_now = new DateTime();
+
+        Interval interval = new Interval(new Instant (tsInitial), new Instant (dt_now));
+        int intervalMillis = interval.toPeriod().getMillis();
+        
+        if (intervalMillis<sMilisecondMinInterRequestRate){
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. MinInterRequestRate violation.");
+          monitoringMeasure.setiUnsucess(1);
+        }else{
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. MinInterRequestRate ok.");
+          monitoringMeasure.setiUnsucess(0);
+        }
+          
+      }
+      else
+      {
+        QoSMonitoringMeasure monitoringMeasure = new QoSMonitoringMeasure();
+        monitoringMeasure.setThingServiceName(sThingServiceName);
+        
+        monitoringMeasure.setOptimalRequestRate(sMilisecondMinInterRequestRate);
+
+        monitoringMeasure.setPeriod(iMilisecondPeriod);
+        
+        monitoringMeasure.setTolerateJitter(dTolerateJitterParam);
+
+        int iRequestRate = 1;
+        monitoringMeasure.setRequestRate(iRequestRate);
+
+        Date date = new Date();
+        Timestamp ts = new Timestamp(date.getTime());
+        monitoringMeasure.setInitialTimeStamp(ts);
+        LOGTest.debug("Monitoring Start "+sThingServiceName);
+
+        String sMaximumTimeStamp = cmservice.getMaximumResponseTime(sThingServiceName);
+        
+        int iMaximumTimeStamp =  Integer.parseInt(sMaximumTimeStamp);
+        monitoringMeasure.setMaximumTimeStamp(new Timestamp (iMaximumTimeStamp));
+        
+        boolean bExists = cmservice.checkAvailability(sThingServiceName);
+        monitoringMeasure.setAvailability(bExists);
+
+        oThingServiceQoSMeasure.add(monitoringMeasure);
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPush function.");
+        oThingServiceMeasure = null;
+      }
+    }
+      catch (Exception e)
+      {
+        mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.registerMeasurementSLAMonitoringPush. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      }
     return bResults;
 
   }
 
 
-  private QoSMonitoringMeasure checkThingServiceExists(
-      String sNewThingServiceName)
+  private QoSMonitoringMeasure checkThingServiceExists(String sNewThingServiceName)
   {
     QoSMonitoringMeasure oThingServiceMeasure = null;
     for (int i = 0; i < oThingServiceQoSMeasure.size(); i++)
@@ -181,6 +332,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
   public boolean unregisterMeasurementSLAMonitoring(String sThingServiceName)
   {
     boolean bResults = false;
+    try{
       mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.");
       sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
@@ -205,7 +357,11 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       }
       else
         mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. "+sThingServiceName+" Thing Service. No existing previously.");
-
+    }
+    catch (Exception e)
+      {
+        mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.unregisterMeasurementSLAMonitoring. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      }
     return bResults;
   }
 
@@ -214,38 +370,52 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
     int iSuccess = 0;
     int iUnsuccess = 0;
     SLACalculation resultSLA = null;
+    String sMaximumTimeStamp = null;
     
     try{
     
       QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
-      mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. "+sThingServiceName+" Thing Service.");
-      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
-      if (!(oThingServiceMeasure == null) && (oThingServiceMeasure.getAvailability()))
+      mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. "+sThingServiceName+" Thing Service.");
+      sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
+      mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. Param AVALILABILITY: "+oThingServiceMeasure.getAvailability()+".");
+
+      boolean bExists = cmservice.checkAvailability(sThingServiceName);
+      
+      if (!(oThingServiceMeasure == null) && (bExists))
       {
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. Availability ok.");
         iSuccess++;
+
+        int initialUnsucess = oThingServiceMeasure.getiUnsucess();
+        if (initialUnsucess==1)
+          iUnsuccess++;
+        else{
+          iSuccess++;
+        }
+
+        LOGTest.debug("Monitoring PULL End");
+          //Constructs a Timestamp object using a seconds time value.
+          sMaximumTimeStamp = cmservice.getMaximumResponseTime(sThingServiceName);
         
-        int iRequestRate = oThingServiceMeasure.getRequestRate();
-        int iOptiomalRequestRate = oThingServiceMeasure.getOptimalRequestRate();
-        if (iRequestRate<iOptiomalRequestRate) iSuccess++;
-        else iUnsuccess++;
-        
-        Timestamp tsMaximum = oThingServiceMeasure.getMaximumTimeStamp();
-        Timestamp tsInitial = oThingServiceMeasure.getInitialTimeStamp();
-        Date date = new Date();
-        Timestamp tsActual = new Timestamp(date.getTime());
-        Timestamp ts = diff(tsInitial, tsActual);
-        LOGTest.debug("Monitoring End");
-        
-        if (tsMaximum.equals("")) iUnsuccess++;
-        else
-          //Constructs a Timestamp object using a milliseconds time value.
-          if (ts.getTime() < tsMaximum.getTime()){ 
+          
+          Timestamp tsMaximum = oThingServiceMeasure.getMaximumTimeStamp();
+          DateTime dt_now = new DateTime();
+
+          Interval interval = new Interval(new Instant (tsMaximum), new Instant (dt_now));
+          int intervalMillis = interval.toPeriod().getMillis();
+
+          
+          if ((intervalMillis-oThingServiceMeasure.getTolerateJitter()) > Integer.parseInt(sMaximumTimeStamp)){ 
+            mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. Max Response Time violation.");
             iUnsuccess++;
           }
           else{
+            mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. Max Response Time ok.");
             iSuccess++;
           }
+        
       }else{
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPull. Availability violation.");
         iUnsuccess=3;
       }
       
@@ -254,50 +424,13 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       resultSLA.setQoSparamsFulfill(iSuccess);
       resultSLA.setQoSparamsNoFulfill(iUnsuccess);
       
-      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. "+sThingServiceName+" Thing Service. CalculateSLA, "+sThingServiceName +" ThingService: iSuccess_" + iSuccess+", iUnsuccess_" + iUnsuccess);
+      mLogger.info("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. "+sThingServiceName+" Thing Service. CalculateSLA, "+sThingServiceName +" ThingService: iSuccess_" + iSuccess+", iUnsuccess_" + iUnsuccess);
     }
     catch (Exception e)
     {
-      mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. It has not been executed correctly. Exception: " + e.getMessage()+".");
     }
     return resultSLA;
-  }
-
-  public static Timestamp diff (java.util.Date t1, java.util.Date t2)
-  {
-      // Make sure the result is always > 0
-      if (t1.compareTo (t2) < 0)
-      {
-          java.util.Date tmp = t1;
-          t1 = t2;
-          t2 = tmp;
-      }
-
-      // Timestamps mix milli and nanoseconds in the API, so we have to separate the two
-      long diffSeconds = (t1.getTime () / 1000) - (t2.getTime () / 1000);
-      // For normals dates, we have millisecond precision
-      int nano1 = ((int) t1.getTime () % 1000) * 1000000;
-      // If the parameter is a Timestamp, we have additional precision in nanoseconds
-      if (t1 instanceof Timestamp)
-          nano1 = ((Timestamp)t1).getNanos ();
-      int nano2 = ((int) t2.getTime () % 1000) * 1000000;
-      if (t2 instanceof Timestamp)
-          nano2 = ((Timestamp)t2).getNanos ();
-
-      int diffNanos = nano1 - nano2;
-      if (diffNanos < 0)
-      {
-          // Borrow one second
-          diffSeconds --;
-          diffNanos += 1000000000;
-      }
-
-      // mix nanos and millis again
-      Timestamp result = new Timestamp ((diffSeconds * 1000) + (diffNanos / 1000000));
-      // setNanos() with a value of in the millisecond range doesn't affect the value of the time field
-      // while milliseconds in the time field will modify nanos! Damn, this API is a *mess*
-      result.setNanos (diffNanos);
-      return result;
   }
 
   
@@ -372,7 +505,7 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
     }
     catch (Exception e)
     {
-      mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLA. It has not been executed correctly. Exception: " + e.getMessage()+".");
+      mLogger.error("Component QoS Monitoring perform operation QoSManagerMonitoring.failureSLA. It has not been executed correctly. Exception: " + e.getMessage()+".");
     }
     return resultSLA;
   }
@@ -384,40 +517,49 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
       int iSuccess = 0;
       int iUnsuccess = 0;
       SLACalculation resultSLA = null;
+      String sMaximumTimeStamp = null;
       
-//      iTaaSRequestRate is in seconds, we must convert it to miliseconds
-//      int imlsgTaaSRequestRate = iTaaSRequestRate * 1000;
-      
-//      String dateAsText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(iRequestRate * 1000L));
       try{
       
         QoSMonitoringMeasure oThingServiceMeasure = checkThingServiceExists(sThingServiceName);
         mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. "+sThingServiceName+" Thing Service.");
         sendData("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. "+sThingServiceName+" Thing Service.", "info", "TaaSQoSMonitoring");
-        if (!(oThingServiceMeasure == null) && (oThingServiceMeasure.getAvailability()))
+        mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Param AVALILABILITY: "+oThingServiceMeasure.getAvailability()+".");
+
+        boolean bExists = cmservice.checkAvailability(sThingServiceName);
+        
+        if (!(oThingServiceMeasure == null) && (bExists))
         {
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Availability ok.");
           iSuccess++;
-          
-          int iRequestRate = oThingServiceMeasure.getRequestRate();
-          int iOptiomalRequestRate = oThingServiceMeasure.getOptimalRequestRate();
-          if (iRequestRate<iOptiomalRequestRate) iSuccess++;
-          else iUnsuccess++;
-          
-//          Timestamp tsMaximum = oThingServiceMeasure.getMaximumTimeStamp();
-//          int iMaximum = Integer.parseInt(tsMaximum.toString());
-          int isgMaxRequestRate = oThingServiceMeasure.getPeriod();
+
+          int initialUnsucess = oThingServiceMeasure.getiUnsucess();
+          if (initialUnsucess==1)
+            iUnsuccess++;
+          else{
+            iSuccess++;
+          }
+
+          int iMilisecondPeriod = oThingServiceMeasure.getPeriod(); //isgMaxRequestRate
           LOGTest.debug("Monitoring PUSH End");
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Param TIMESTAMP: iMilisecondTaaSRequestRate :"+iMilisecondTaaSRequestRate +", isgMaxRequestRate:"+iMilisecondPeriod+".");
+          if (iMilisecondPeriod==0){ 
+            mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Max Response Time violation.");
+            iUnsuccess++;
+          }
+          else{
           
-          if (isgMaxRequestRate==0) iUnsuccess++;
-          else
-            //Constructs a Timestamp object using a seconds time value.
-            if (iMilisecondTaaSRequestRate < isgMaxRequestRate){ 
+            if ((iMilisecondTaaSRequestRate-oThingServiceMeasure.getTolerateJitter()) > iMilisecondPeriod){ 
+              mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Max Response Time violation.");
               iUnsuccess++;
             }
             else{
+              mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Max Response Time ok.");
               iSuccess++;
             }
+          }
         }else{
+          mLogger.debug("Component QoS Monitoring perform operation QoSManagerMonitoring.calculateSLAPush. Availability violation.");
           iUnsuccess=3;
         }
         
@@ -483,17 +625,6 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
     busMessage(json);
   }
   
-//  public boolean isEnabledbus() {
-//    return enabledbus;
-//  }
-//
-//  public void setEnabledbus(boolean enabledbus) {
-//    this.enabledbus = enabledbus;
-//  }
-//  
-//  public boolean getEnabledbus() {
-//    return enabledbus;
-//  }
   
   public boolean isEnabled() {
     return enabled;
@@ -502,4 +633,6 @@ public class QoSManagerMonitoringImpl implements QoSManagerMonitoring
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
   }
+  
+
 }

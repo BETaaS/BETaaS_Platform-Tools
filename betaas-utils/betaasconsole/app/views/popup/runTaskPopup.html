@@ -1,0 +1,14 @@
+<div>
+     <div class="modal-header">
+         <h3>Request to run the data task </h3>
+    </div>
+    <div class="modal-body">
+        <p>Do you want to run <i>{{currentTask.task}} </i> ?</p>
+        <p><b>{{currentTask.description}}</b></p>
+        <p><b>{{result}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-info" ng-click="runTaskNow(currentTask)">Run It Now</button>
+         <button class="btn btn-info" ng-click="cancel()">Close</button>
+    </div>
+</div>

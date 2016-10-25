@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service</artifactId>
-		<version>2.1-release</version>
+		<version>3.0.2-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-servicemanager</artifactId>
-	<version>2.1-release</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Service Manager</name>
 	<description>Service Manager at service layer</description>
@@ -44,7 +44,7 @@
 	    <dependency>
 		  <groupId>eu.betaas</groupId>
 		  <artifactId>betaas-taas-bigdatamanager-database</artifactId>
-		  <version>2.1-release</version>
+		  <version>3.0.2-SNAPSHOT</version>
 	    </dependency>
 	    <dependency>
 	      <groupId>eu.betaas</groupId>
@@ -91,8 +91,11 @@
 		    <artifactId>gson</artifactId>
 		    <version>2.2.4</version>
 		</dependency>
-		
-	
+		<dependency>
+          <groupId>eu.betaas</groupId>
+          <artifactId>betaas-bus-interface</artifactId>
+          <version>${project.version}</version>
+     	</dependency>	
 	</dependencies>
 
 	<build>
@@ -118,7 +121,7 @@
 						  eu.betaas.taas.bigdatamanager.database.service, 
 						  com.google.gson,
 						  javax.ws.rs.*,
-              org.apache.cxf.*,
+              			  org.apache.cxf.*,
 						  *
 						</Import-Package>
 						<Export-Package>

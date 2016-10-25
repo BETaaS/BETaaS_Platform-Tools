@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-instancemanager</artifactId>
-		<version>2.1-release</version>
+		<version>3.0.2-SNAPSHOT</version>
 	</parent>
 	<groupId>eu.betaas</groupId>
 	<artifactId>betaas-service-instancemanager-server</artifactId>
-	<version>2.1-release</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>BETaaS Instance Manager Server</name>
 	<description>Instance Manager at Service Layer</description>
@@ -52,6 +52,11 @@
 		    <artifactId>gson</artifactId>
 		    <version>2.2.4</version>
 		</dependency>
+		<dependency>
+          <groupId>eu.betaas</groupId>
+          <artifactId>betaas-bus-interface</artifactId>
+          <version>${project.version}</version>
+     	</dependency>
 	</dependencies>
 
 	<build>

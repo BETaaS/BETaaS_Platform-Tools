@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
 
 /**
  * This class represent the Dependability Manager main object
@@ -34,6 +36,8 @@ import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 public class DependabilityManager {
 
 	public final static String LOGGER_NAME = "betaas.service";
+	public final static String MONITORING = "monitoring";
+	public final static String DEPENDABILITY = "dependability";
 	
 	public void setGwId(String id) {
 		mGwId = id;
@@ -106,13 +110,51 @@ public class DependabilityManager {
 		} finally {
 			mChecker = null;
 		}
+		
+		if (mFailChecker == null) return;
+		
+		mFailChecker.setRunning(false);
+		try {
+			mFailChecker.join();
+		} catch (InterruptedException e) {
+		} finally {
+			mFailChecker = null;
+		}
 	}
 	
 	private synchronized void init() throws Exception {
 		stop();
 		mChecker = new VitalityChecker();
 		mChecker.start();
+		
+		mFailChecker = new FailureChecker();
+		mFailChecker.start();
 		mLogger.info("Dependability Manager initialized");
+		
+		
+	}
+	
+public void busMessage(String message){
+		
+		String key = "monitoring.service";
+		if (mContext == null) {
+			mLogger.warn("Cannot get context provider");
+			return;
+		}
+		
+				
+		mLogger.info("Checking queue");
+		//if (!enabledbus)return;
+		mLogger.info("Sending to queue");
+		ServiceReference serviceReference = mContext.getServiceReference(Publisher.class.getName());
+		mLogger.info("Sending to queue");
+		if (serviceReference==null)return;
+		
+		Publisher service = (Publisher) mContext.getService(serviceReference); 
+		mLogger.info("Sending key: " + key + " message: "+message);
+		service.publish(key, message);
+		mLogger.info("Sent");
+		
 	}
 	
 	/** Logger */
@@ -123,6 +165,8 @@ public class DependabilityManager {
 	
 	/** The thread that performs vitality checks */
 	private VitalityChecker mChecker;
+	
+	private FailureChecker mFailChecker = null;
 	
 	private String mGwId;
 	

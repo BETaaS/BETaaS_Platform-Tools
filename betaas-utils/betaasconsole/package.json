@@ -1,0 +1,30 @@
+{
+  "name": "betaas-backend-server",
+  "version": "3.0.0",
+  "dependencies": {
+    "amqplib": "latest",
+    "angular-ui-router": "^0.2.13",
+    "body-parser": "latest",
+    "express": "latest",
+    "ng-dialog": "^0.3.12",
+    "node-ssh": "^0.2.0",
+    "restler": "latest",
+    "sequest": "^0.8.0",
+    "simple-ssh": "^0.8.4",
+    "soap": "latest",
+    "ssh-exec": "latest",
+    "ssh2": "latest",
+    "ssh2-connect": "0.0.6"
+  },
+  "license": "Apache-2.0",
+  "description": "Betaas UI backend",
+  "main": "betaas-server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "BETaaS"
+  ],
+  "author": "BETaaS"
+}

@@ -21,6 +21,8 @@ You may obtain a copy of the License at
 
 package eu.betaas.service.servicemanager.api;
 
+import javax.ws.rs.Path;
+
 //import javax.ws.rs.Consumes;
 //import javax.ws.rs.GET;
 //import javax.ws.rs.HeaderParam;
@@ -54,32 +56,30 @@ public interface ServiceManagerExternalIF {
 	 * @return The ID assigned to the app or an empty string on error
 	 */
 //    @POST
-//    @Path("/installation")	 
+//    @Path("/application")	 
 //    @Consumes("application/xml; charset=UTF-8")
   	public String installApplication(String manifestContent); 
 	
-	
+	//TODO: add credentials to getApplicationServices call
 	/**
 	 * Get the list of services identifiers
 	 * @return a json structure (as a String) containing the list of service ID installed for the app
 	 *         in the same order the service were specified in the manifest
 	 */
 //	@GET
-//  @Path("/installation/{appID}")	
+//  @Path("/application/{appID}")	
 	public String getApplicationServices(/*@PathParam("appID")*/ String appID);
 	
 
-	
+	//TODO: add credentials to uninstallApplication params
 	/** It is used to uninstall a previously installed application
 	 * @param appID the ID returned by SM during the installation process
-	 * @param manifestContent the manifest from which credentials will be taken
 	 * @return true in case of success
 	 */
 //    @DELETE
-//    @Path("/installation/{appID}")	 
+//    @Path("/application/{appID}")	 
 //    @Consumes("application/xml; charset=UTF-8")
-	public boolean uninstallApplication(/*@PathParam("appID")*/ String appID, 
-			                            String manifestContent);
+	public boolean uninstallApplication(/*@PathParam("appID")*/ String appID);
 	
 	/**
 	 * Used by applications to get Thing Services data (pull)
@@ -158,6 +158,8 @@ public interface ServiceManagerExternalIF {
 	public boolean unregister(/*@PathParam("appID")*/ String appID, 
 					          /*@PathParam("serviceID")*/ String serviceID, 
 					          /*@HeaderParam("token")*/ String token);
+	
+	
 
 	/**
 	 * Used by apps to request a BDM task execution data analysis
@@ -170,4 +172,24 @@ public interface ServiceManagerExternalIF {
 	public String getTaskData(/*@PathParam("appID")*/ String appID, 
 			                  /*@PathParam("taskID")*/ String taskID);
 	
+	//@PUT
+	//@Path("/application/stop/{appID}")
+	//@Consumes("application/xml; charset=UTF-8")
+	public boolean stopApplication(/*@PathParam("appID")*/ String appID);
+
+	//@PUT
+	//@Path("/application/start/{appID}")	 
+	//@Consumes("application/xml; charset=UTF-8")
+	public boolean startApplication(/*@PathParam("appID")*/ String appID);
+	
+	/**
+	 * Used by GUI to request the list of installed applications
+	 * @return the list of installed applications in XML format
+	 */
+//	@GET
+//  @Path("/task/{appID}/{taskID}")
+	public String getApplicationList();
+	
 }
+
+

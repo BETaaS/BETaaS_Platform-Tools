@@ -46,6 +46,15 @@ public interface ServiceManagerInternalIF {
 	public boolean notifyServiceInstallation(String serviceID);
 	
 	/**
+	 * It is called by TaaSRM to communicate that the resources for a service requested by an 
+	 * application or an external service that is being installed cannot be allocated.
+	 * @param serviceID the identifier assigned by TaaSRM to the service
+	 * @param errorMessage the error that caused the failure
+	 * @return true in case of success
+	 */
+	public boolean notifyServiceInstallationFailure(String serviceID, String errorMessage);
+	
+	/**
 	 * It is called by TaasRM in order to provide a new measurement.
 	 * It forwards the data to the application or to the extended service associated
 	 * to the service. In case of application, the corresponding notification address is used.

@@ -45,24 +45,12 @@ public class TaaSVMManagerActivator implements BundleActivator {
 	
 	public void start(BundleContext arg0) throws Exception {
 		logger.info("Starting TaaS VM Manager...");
-		//TaaSVMMAnagerConfiguration.loadConfiguration();
 		logger.info("TaaS VM Manager started!");
 	}
 
 	public void stop(BundleContext arg0) throws Exception 
 	{
-		List <String> pendingVMs;
-		VMsAllocatorManager allocatorManager =
-				VMsAllocatorManager.instance(null);
-		
 		logger.info("Shutting down TaaS VM Manager...");
 		logger.info("Deleting all pending VMs...");
-		
-		if ((pendingVMs = allocatorManager.deleteAllVMs()).isEmpty()) {
-			logger.info("All VMs have been deleted");
-		} else {
-			logger.info("There has been errors deleting the following VMs: "
-					+ pendingVMs);
-		}
 	}
 }

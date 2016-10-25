@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-adaptation</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-adaptation-securitymanager</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>BETaaS Adaptation Security Manager</name>
   <description>BETaaS Adaptation Security Manager</description>
 

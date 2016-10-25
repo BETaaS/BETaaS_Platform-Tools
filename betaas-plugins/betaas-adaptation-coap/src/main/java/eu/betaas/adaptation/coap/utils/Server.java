@@ -51,9 +51,9 @@ public class Server {
 	public static final String ALTITUDE	= "altitude";
 	public static final String FLOOR	= "floor";
 	public static final String LOCATIONKEYWORD	= "locationKeyword";
-	public static final String LOCATIONIDENTIFIER = "LocationIdentifier";
-	public static final String COMPUTATIONALCOST = "ComputationalCost";
-	public static final String BATTERYCOST = "BatteryCost";
+	public static final String LOCATIONIDENTIFIER = "locationIdentifier";
+	public static final String COMPUTATIONALCOST = "computationalCost";
+	public static final String BATTERYCOST = "batteryCost";
 	public static final String MEASUREMENT = "measurement";
 	
 	

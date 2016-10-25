@@ -83,14 +83,13 @@ public class TaaSQoSMClient
 		return _instance;
 	}
 	
-	public ArrayList<SLACalculation> retrieveSLACalculations(ArrayList<String> selectedThingServicesList)
+	public SLACalculation retrieveSLACalculations(String thingServiceId)
 	{
 		logger.debug("Retrieving SLA data for Thing Services...");
-		ArrayList<SLACalculation> result = new ArrayList<SLACalculation>();
+		SLACalculation result = null;
 		try
-		{			
-			result = myClient.calculateSLA(selectedThingServicesList);			
-			if (result==null) return new ArrayList<SLACalculation>();
+		{				
+			result = myClient.calculateSLA(thingServiceId);			
 		}
 		catch (Exception ex)
 		{

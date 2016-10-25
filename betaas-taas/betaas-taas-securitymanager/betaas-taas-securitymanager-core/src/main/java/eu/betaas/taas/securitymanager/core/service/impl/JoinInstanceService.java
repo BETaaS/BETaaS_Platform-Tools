@@ -36,6 +36,7 @@ import eu.betaas.taas.securitymanager.common.ec.ECKeyPairGen;
 import eu.betaas.taas.securitymanager.common.model.ArrayOfCertificate;
 //import eu.betaas.taas.securitymanager.core.activator.SecMTaasCoreActivator;
 import eu.betaas.taas.securitymanager.core.service.IJoinInstanceService;
+import eu.betaas.taas.securitymanager.core.utils.CoreBetaasBus;
 
 /**
  * Class implementation of IJoinInstanceService interface
@@ -56,7 +57,18 @@ public class JoinInstanceService implements IJoinInstanceService {
 	
 	/** ServiceTracker of GWStarCertificateExtService... */
 	private ServiceTracker extCertTracker;
+	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private CoreBetaasBus bus;
 		
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		// set the GW ID
+		bus = new CoreBetaasBus(context);
+	}
+	
 	public JoinInstanceService(){}
 	
 	public boolean requestGwCertificate(String countryCode, String state, 
@@ -65,7 +77,8 @@ public class JoinInstanceService implements IJoinInstanceService {
 		
 		boolean ok = false;
 		log.info("Start the request certificate instance...");
-				
+		bus.sendData("Start the request certificate instance", "info", "SecM");
+		
 		ArrayOfCertificate certsArray = null;
 			
 		// initiate a CertificationRequest message
@@ -84,6 +97,8 @@ public class JoinInstanceService implements IJoinInstanceService {
 		PKCS10CertificationRequest gwCertReq = gwCertificateService.
 				buildCertificationRequest(subject, kp, gwId);
 		log.info("Successfully generate PKCS10CertificationRequest!!");
+		bus.sendData("Successfully generate PKCS10CertificationRequest", "info", 
+				"SecM");
 		
 		// get the GW* external cert. service via ServiceTracker
 		IGatewayStarCertificateExtService extServ = null;
@@ -104,7 +119,9 @@ public class JoinInstanceService implements IJoinInstanceService {
 			// check if the gatewayId of remote GW equals gwStar
 			if(((IGatewayStarCertificateExtService) context.getService(ref)).isGWStar()){
 					log.debug("Found the ExtCert service of GW*");
+					bus.sendData("Found the ExtCert service of GW*", "debug", "SecM");
 					extServ = (IGatewayStarCertificateExtService) context.getService(ref);
+					break;
 			}
 		}
 			
@@ -123,11 +140,15 @@ public class JoinInstanceService implements IJoinInstanceService {
 			}
 			
 			log.debug("Start storing the newly created certificate from GW*...");
+			bus.sendData("Start storing the newly created certificate from GW*", 
+					"debug", "SecM");
 			// now store the certificates in a .p12 file
 			gwCertificateService.storeMyCertificate(kp.getPrivate(), certs);
 			ok = true;
 			
 			log.info("Successfully requesting certificate from GW* and store it");
+			bus.sendData("Successfully requesting certificate from GW* and store it", 
+					"info", "SecM");
 			
 			// closing the service tracker
 			extCertTracker.close();

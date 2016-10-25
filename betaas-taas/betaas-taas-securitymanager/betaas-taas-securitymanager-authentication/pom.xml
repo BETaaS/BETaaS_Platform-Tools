@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-securitymanager-authentication</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>BETaaS Taas Security Manager authentication bundle</name>
   <description>Authentication manager bundle in TaaS layer</description>
   <dependencies>
@@ -48,6 +48,11 @@
 			<artifactId>betaas-taas-securitymanager-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.betaas</groupId>
+		  <artifactId>betaas-bus-interface</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
 		<!-- <dependency>
 			<groupId>eu.betaas</groupId>
 			<artifactId>betaas-service-instancemanager-server</artifactId>
@@ -69,7 +74,7 @@
             <!-- <Bundle-Activator>eu.betaas.taas.securitymanager.authentication.activator.ExtAuthenticationActivator</Bundle-Activator> -->
             <Import-Package>
             <!-- eu.betaas.service.instancemanager.api.* -->
-            	eu.betaas.taas.securitymanager.common.*,org.apache.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,eu.betaas.taas.securitymanager.certificate.service.*,
+            	eu.betaas.taas.securitymanager.common.*,eu.betaas.rabbitmq.publisher.*,org.apache.*,javax.crypto.*, java.security.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,eu.betaas.taas.securitymanager.certificate.service.*,
             </Import-Package>
             <Export-Package>
             	eu.betaas.taas.securitymanager.authentication.service;version=${project.version}                       

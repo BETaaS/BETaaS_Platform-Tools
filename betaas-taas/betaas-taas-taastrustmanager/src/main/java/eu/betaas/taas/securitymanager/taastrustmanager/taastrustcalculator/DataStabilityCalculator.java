@@ -76,7 +76,7 @@ public class DataStabilityCalculator
 		Double variance = new Double ("2");
 		if (units!=DataStabilityCalculator.BOOLEAN)
 		{
-			varianceResult = myCalc.calculateNumericVariance(tsData);
+			varianceResult = myCalc.calculateNumericVariance(tsData, 0.05);
 			if (varianceResult) variance = new Double ("1");
 		}	
 		logger.debug("Low variance? " + varianceResult);			
@@ -160,14 +160,24 @@ public class DataStabilityCalculator
 	
 	private double[] getEquivalentsMean ()
 	{		
-		// Contact with the BDM for getting measurements of equivalent thing services
-		if (equivalents.size()==0)
+		logger.debug("Gathering data from equivalent things...");
+		// Check available Thing Services
+		if (equivalents == null || equivalents.size() == 0)
 		{
+			logger.debug("There are no equivalent Thing Services!");
 			return null;
 		}
 		
+		// Contact with the BDM for getting measurements of equivalent thing services
 		ArrayList<ThingTrustData> thingDataList = myBDMClient.getThingData(equivalents.get(0));
-		// Build result		
+		if (thingDataList == null || thingDataList.size() < 2)
+		{
+			logger.debug("There are no enough data about equivalent Thing Services.");
+			return null;
+		}
+		
+		// Build result	
+		logger.debug("Available measurements in eq Thing Services: " + thingDataList.size());
 		double[] eqMean = new double [thingDataList.size()];
 		if (units==DataStabilityCalculator.BOOLEAN)
 		{
@@ -193,7 +203,7 @@ public class DataStabilityCalculator
 			}
 		}
 		
-		
+		logger.debug("Equivalents data retrieval finished!");
 		return eqMean;
 	}
 	

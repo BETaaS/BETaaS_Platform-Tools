@@ -26,6 +26,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import eu.betaas.adaptation.contextmanager.api.SemanticParserAdaptator;
+import eu.betaas.adaptation.thingsadaptor.clients.TaaSBDMClient;
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 
 
@@ -36,12 +37,15 @@ public class ThingConstructor {
 	private volatile ArrayList<ThingsData> thingsList = new ArrayList<ThingsData>();
 	Logger mLogger = Logger.getLogger("betaas.adaptation");
 	private SemanticParserAdaptator adaptationcm;
+	private TaaSBDMClient myBDMClient;
 
 	public ThingConstructor(){
+		myBDMClient = TaaSBDMClient.instance();
 	}
 	
 	public ThingConstructor(SemanticParserAdaptator adaptationcm){
 		this.adaptationcm = adaptationcm;
+		myBDMClient = TaaSBDMClient.instance();
 	}
 
 	public ArrayList<ThingsData> constructSendThings(Vector<HashMap<String, String>> discoveredSensors) {
@@ -86,9 +90,9 @@ public class ThingConstructor {
 				thing.setType(sensorHash.get("type"));
 				thing.setEnvironment(environment);
 				thing.setLocationKeyword(sensorHash.get("locationKeyword"));
-				thing.setLocationIdentifier(sensorHash.get("LocationIdentifier"));
-				thing.setComputationalCost(sensorHash.get("ComputationalCost"));
-				thing.setBatteryCost(sensorHash.get("BatteryCost"));
+				thing.setLocationIdentifier(sensorHash.get("locationIdentifier"));
+				thing.setComputationalCost(sensorHash.get("computationalCost"));
+				thing.setBatteryCost(sensorHash.get("batteryCost"));
 				
 				thing.setThingId(thingId);
 				mLogger.info(thing);
@@ -143,9 +147,9 @@ public class ThingConstructor {
 				thing.setType(sensorHash.get("type"));
 				thing.setEnvironment(environment);
 				thing.setLocationKeyword(sensorHash.get("locationKeyword"));
-				thing.setLocationIdentifier(sensorHash.get("LocationIdentifier"));
-				thing.setComputationalCost(sensorHash.get("ComputationalCost"));
-				thing.setBatteryCost(sensorHash.get("BatteryCost"));
+				thing.setLocationIdentifier(sensorHash.get("locationIdentifier"));
+				thing.setComputationalCost(sensorHash.get("computationalCost"));
+				thing.setBatteryCost(sensorHash.get("batteryCost"));
 				
 				thing.setThingId(thingId);
 				
@@ -168,17 +172,28 @@ public class ThingConstructor {
 			 if (value.get("latitude") != null) existingThing.setLatitude(value.get("latitude"));
 			 if (value.get("longitude") != null) existingThing.setLongitude(value.get("longitude"));
 			 if (value.get("altitude") != null) existingThing.setAltitude(value.get("altitude"));
+			 if (value.get("batteryLevel") != null) existingThing.setBatteryLevel(value.get("batteryLevel"));
+			 if (value.get("memoryStatus") != null) existingThing.setMemoryStatus(value.get("memoryStatus"));
+			 
+			 // Don't keep more than 500 measurements in memory
+			 if (thingsList.size() >= 500)
+			 {
+				 thingsList.remove(0);				 
+			 }			 
+			 thingsList.add(existingThing); 
 			 
 			 ArrayList<ThingsData> tempList = new ArrayList<ThingsData>();
-			 thingsList.add(existingThing);
 			 tempList.add(existingThing);
 			 try {
 				adaptationcm.publishThing(tempList);
-			} catch (Exception e) {
+			 } catch (Exception e) {
 				mLogger.error("Exception while sending notification : "+e.getMessage(),e);
-			}
+			 }
+			 
+			 // Store the current information in the BDM
+			 myBDMClient.saveThingData(existingThing);
 			} else {
-			mLogger.info("No Thing ID provided for notyfication");
+			  mLogger.info("No Thing ID provided for notyfication");
 			}
 		}
 	}

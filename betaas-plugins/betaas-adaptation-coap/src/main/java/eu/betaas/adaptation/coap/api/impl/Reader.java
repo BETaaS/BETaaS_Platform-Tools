@@ -25,7 +25,6 @@ package eu.betaas.adaptation.coap.api.impl;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.californium.core.CoapClient;
@@ -37,15 +36,22 @@ import eu.betaas.adaptation.plugin.api.IAdaptorListener;
 
 public class Reader implements Runnable {
 
+	private static final int NUMBER_OF_ATTEMP = 2;
 	IAdaptorListener listener;
 	Resource res;
+	int milliseconds;
 	Logger mLogger = Logger.getLogger("betaas.thingsadaptor");
 
 
-	public Reader(Resource r, IAdaptorListener listener) {
+
+	public Reader(Resource r, IAdaptorListener listener, int seconds) {
 		super();
 		this.listener = listener;
 		this.res = r;
+		this.milliseconds = seconds * 1000;
+		mLogger.info("Milliseconds:" + this.milliseconds);
+		if(this.milliseconds <= 0)
+			this.milliseconds = 5000;
 	}
 
 
@@ -55,7 +61,7 @@ public class Reader implements Runnable {
 			while (true) {
 				HashMap<String, String> hash = Server.getParam(res);
 				String type = "";
-				if(hash.get(Server.TYPE)!=null){
+				if(hash.containsKey(Server.TYPE) && hash.get(Server.TYPE) != null){
 					type = hash.get(Server.TYPE);
 				}
 				Server s = res.getServer();
@@ -68,26 +74,44 @@ public class Reader implements Runnable {
 					mLogger.error("Exception on URI: " + e.getMessage());
 					throw new InterruptedException();
 				} 
-
+		    	CoapResponse response = null;
+		    	int attempt = 0;
+		    	while(response == null && attempt <= NUMBER_OF_ATTEMP)
+		    	{
+		    		attempt++;
+			    	try{
+			    		CoapClient client = new CoapClient(uri);
+			    		response = client.get();
+			    	}catch (Exception e)
+			    	{
+			    	}
+			    	
+					if (response!=null) {
+						hash.put(Server.MEASUREMENT, response.getResponseText());
+					} else {
+						mLogger.error("No response received by " + res.getDeviceID());
+						Thread.sleep(1000);
+					}
+		    	}
+		    	if(response == null)
+		    		throw new InterruptedException();
 		    	
-		    	CoapClient client = new CoapClient(uri);
-
-				CoapResponse response = client.get();
-				if (response!=null) {
-					hash.put(Server.MEASUREMENT, response.getResponseText());
-				} else {
-					mLogger.error("No response received.");
-				}
 				listener.notify(type, res.getDeviceID(), hash);	
-				Thread.sleep(10000);
+				mLogger.info(res.getDeviceID() +" Sleep:" + this.milliseconds);
+				Thread.sleep(milliseconds);
+				mLogger.info(res.getDeviceID() +" EndSleep:" + this.milliseconds);
 			}			
 			
 		} catch (InterruptedException e) {
-			mLogger.debug("Thread interrupted");
+			mLogger.debug("Thread interrupted - Remove Thing " + res.getDeviceID());
 			listener.removeThing(res.getDeviceID());
 			
 		}
-		
+		catch (Exception e)
+		{
+			mLogger.error("Problem with Running the Reader!!");
+			e.printStackTrace();
+		}
 
 	}
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint default-activation="eager" 
+            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+	
+	<cm:property-placeholder persistent-id="betaas.gateway" >
+		 <cm:default-properties>
+		  <cm:property name="gwId" value="-1"/>
+		 </cm:default-properties>
+		</cm:property-placeholder>
+	
+	<cm:property-placeholder persistent-id="betaas.endpoints" placeholder-prefix="$(" placeholder-suffix=")">
+		<cm:default-properties>
+			<cm:property name="encryptTestTaasAddress" value="http://localhost:18900/encrypttaas"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+	
+	<bean id="stringTestBean" 
+		class="eu.betaas.taas.securitymanager.encrypttest.api.impl.AddStringService">
+		<!-- <property name="context" ref="blueprintBundleContext"/> -->
+		<!-- <property name="gwId" value="${gwId}"/> -->
+		<property name="secCommCoreService" ref="secCommCoreService"/>
+	</bean>
+	
+	<service ref="stringTestBean" interface="eu.betaas.taas.securitymanager.encrypttest.api.IAddStringService">
+		<service-properties>
+			<entry key="service.exported.interfaces" value="*" />
+	    <entry key="service.exported.configs" value="org.apache.cxf.ws" />
+	    <entry key="org.apache.cxf.ws.address" value="$(encryptTestTaasAddress)" />
+	    <entry key="gwId" value="${gwId}" />
+		</service-properties>
+	</service>
+	
+	<reference id="secCommCoreService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.core.service.ISecGWCommService" />
+</blueprint>

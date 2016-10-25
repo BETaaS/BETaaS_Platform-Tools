@@ -118,7 +118,7 @@ public interface ThingsAdaptor {
 	 *subscribe updates from a given Thing when available
 	 * * @return true if all the subscriptions for all the things have been successful
 	 */
-	public boolean subscribe(String thingId);
+	/*public boolean subscribe(String thingId);*/
 	
 	/**
 	 * unsubscribe updates from things

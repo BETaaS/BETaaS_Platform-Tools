@@ -30,10 +30,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.client.OpenNebulaClient;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Compute;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.ComputeCollection;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceTypeCollection;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Link;
 import eu.betaas.taas.taasvmmanager.occi.datamodel.Network;

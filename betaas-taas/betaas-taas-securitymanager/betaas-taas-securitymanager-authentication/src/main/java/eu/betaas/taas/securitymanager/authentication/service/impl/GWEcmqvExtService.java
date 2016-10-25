@@ -32,10 +32,12 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
+import org.osgi.framework.BundleContext;
 
 import eu.betaas.taas.securitymanager.authentication.catalog.ExpireKeyGwCatalog;
 import eu.betaas.taas.securitymanager.authentication.catalog.KeyGwCatalog;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService;
+import eu.betaas.taas.securitymanager.authentication.utils.AuthBetaasBus;
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
 import eu.betaas.taas.securitymanager.common.ec.ECKeyPairGen;
@@ -77,6 +79,20 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 	private String myUFN;
 	/** other GW's UFN, derived from the submitted certificate */
 	private String ufn;
+	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private AuthBetaasBus bus;
+	
+	/** Reference to Blueprint BundleContext */
+	private BundleContext context;
+	
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		// set the GW ID
+		bus = new AuthBetaasBus(context);
+	}
 	
 	/** Empty Constructor */
 	public GWEcmqvExtService(){}
@@ -130,9 +146,12 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		for(byte b : mac3)
 			mac3Str = mac3Str + Integer.toHexString(0xFF & b);
 		
-		if(!mac3Str.equals(calcMac3Str))
+		if(!mac3Str.equals(calcMac3Str)){
+			bus.sendData("MAC3 fails the verification", "warning", "SecM");
 			return false;
+		}
 		
+		bus.sendData("MAC3 is verified", "debug", "SecM");
 		return true;
 	}
 	
@@ -143,6 +162,8 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 			cert = new X509CertificateHolder(certByte);
 		} catch (IOException e1) {
 			log.error("Error in decoding the submitted certificate!!");
+			bus.sendData("Error in decoding the submitted certificate!!", "error", 
+					"SecM");
 			e1.printStackTrace();
 		} 
 				
@@ -153,14 +174,18 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 			isCertValid = validateCert(cert);
 		} catch (Exception e) {
 			log.error("Error in verifying the submitted certificate: "+e.getMessage());
+			bus.sendData("Error in verifying the submitted certificate!!", "error", 
+					"SecM");
 			e.printStackTrace();
 		}
 		
 		if(!isCertValid){
 			log.error("The submitted certificate is not valid!!");
+			bus.sendData("The submitted certificate is not valid!!", "error", "SecM");
 			return null;
 		}
 		log.debug("Passed the certificate validation!!");
+		bus.sendData("Passed the certificate validation!!", "debug", "SecM");
 		
 		// decode the ephemeral public key
 		try {
@@ -169,6 +194,8 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		} catch (Exception e) {
 			log.error("Error in decoding the submitted ephemeral public key: "
 					+e.getMessage());
+			bus.sendData("Error in decoding the submitted ephemeral public key", 
+					"error", "SecM");
 			e.printStackTrace();
 		}
 		
@@ -176,9 +203,13 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 		boolean pubValid = ECMQVUtils.validateEmbedPubKey(ephPub);
 		if(!pubValid){
 			log.error("The submitted ephemeral public key is not valid!!");
+			bus.sendData("The submitted ephemeral public key is not valid!!", "error", 
+					"SecM");
 			return null;
 		}
-		log.debug("Passed the embedded ephemeral public key validation!!");		
+		log.debug("Passed the embedded ephemeral public key validation!!");
+		bus.sendData("Passed the embedded ephemeral public key validation", "debug", 
+				"SecM");
 		
 		// generates its own ephemeral key pairs, we assume that in this stage the 
 		// ephemeral key pairs were not generated
@@ -202,9 +233,9 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 					implSig);
 		} catch (IOException e) {
 			log.error("Error in calculating the shared key K: "+e.getMessage());
+			bus.sendData("Error in calculating the shared key K", "error", "SecM");
 			e.printStackTrace();
-		}
-		 
+		}		 
 		
 		// derive 2 symmetric keys from the shared key K
 		byte[] Kx = K.normalize().getXCoord().toBigInteger().toByteArray();
@@ -260,6 +291,7 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 			eMsg.setMyCertificate(myCert.getEncoded());
 		} catch (IOException e) {
 			log.error("Error in encoding the certificate: "+e.getMessage());
+			bus.sendData("Error in encoding the certificate", "error", "SecM");
 			e.printStackTrace();
 		}
 		
@@ -301,5 +333,14 @@ public class GWEcmqvExtService implements IGatewayEcmqvExtService {
 			IGatewayCertificateService gwCertificateService) {
 		this.gwCertificateService = gwCertificateService;
 		log.debug("Got IGatewayCertificateService from blueprint...");
+	}
+	
+	/**
+	 * Blueprint set reference to BundleContext
+	 * @param context BundleContext
+	 */
+	public void setContext(BundleContext context) {
+		this.context = context;
+		log.debug("Got BundleContext from the blueprint...");
 	}
 }

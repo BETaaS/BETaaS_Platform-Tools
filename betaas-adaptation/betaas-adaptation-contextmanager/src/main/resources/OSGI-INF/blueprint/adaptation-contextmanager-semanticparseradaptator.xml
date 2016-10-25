@@ -18,11 +18,17 @@
   xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
-  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
-
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
+  xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+  xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+  xmlns:cxf="http://cxf.apache.org/blueprint/core"
+  >
+  
+  <!-- The properties file -->
   <cm:property-placeholder persistent-id="betaas.gateway">
     <cm:default-properties>
       <cm:property name="gwId" value="-1"/>
+      <cm:property name="delimiter" value="_"/>
       <cm:property name="busenabled" value="false"/>
     </cm:default-properties>
   </cm:property-placeholder>
@@ -37,6 +43,7 @@
     <property name="cmservice" ref="taasContextManager" />
     <property name="qosservice" ref="QosService" />
     <property name="gwId" value="${gwId}"/>
+    <property name="delimiter" value="${delimiter}"/>
     <property name="enabledbus" value="${busenabled}"></property> 
     <property name="context" ref="blueprintBundleContext"/>
   </bean>
@@ -81,6 +88,24 @@
     scope="singleton" />
   <service ref="adaptationContextManagerBean1"
     interface="eu.betaas.adaptation.contextmanager.api.SemanticParserAdaptator" />
+
+  <!-- REST functionalities -->  
+  <cxf:bus id="esAdaptServiceBus">
+  </cxf:bus>
+  
+  <jaxrs:server address="/adapt" id="esAdaptService">
+    <jaxrs:serviceBeans>
+      <ref component-id="esAdaptBean" />
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+ 
+  <bean id="esAdaptBean" 
+    class="eu.betaas.adaptation.contextmanager.web.rest.AdaptationCMRestResource"
+    init-method="startService" 
+    destroy-method="closeService">
+        <property name="context" ref="blueprintBundleContext"/>
+  </bean>
+
 
 </blueprint>
 

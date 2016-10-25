@@ -28,10 +28,13 @@ limitations under the License.
 	 </cm:default-properties>
 	</cm:property-placeholder>
 	
-	<bean id = "serviceAuth" class = "eu.betaas.service.securitymanager.service.impl.AuthorizationService">
+	<bean id = "serviceAuth" class = "eu.betaas.service.securitymanager.service.impl.AuthorizationService"
+		scope="singleton" init-method="setup">
+		<property name="context" ref="blueprintBundleContext"/>
 		<property name="certServ" ref="certificateService"/>
 		<property name="certificatePath" value="${certificatePath}"/>
 		<property name="conditionPath" value="${conditionPath}"/>
+		<property name="delimiter" value="${delimiter}"/>
 	</bean>
 	
 	<service ref = "serviceAuth" interface = "eu.betaas.service.securitymanager.service.IAuthorizationService" />

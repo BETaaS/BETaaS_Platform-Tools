@@ -1,0 +1,12 @@
+<div>	 
+    <h3>Data Tasks</h3>       
+    <p style="text-align: center">
+        <button ng-click="getList()" class="btn btn-info">Reload Task List</button>	  				
+    </p>
+    <table class="table table-striped">	  
+      <tr ng-repeat="task in tasks"  ng-click="runTask(task)" ng-class="rowForTask(task)">
+        <td >{{ task.task }}</td>
+        <td >{{ task.description }}</td>
+      </tr>
+    </table>  
+</div>

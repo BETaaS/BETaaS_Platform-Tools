@@ -3,11 +3,11 @@
    <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service-bigdatamanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-bigdatamanager-sqoop</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>BETaaS Sqoop Connector</name>
    <packaging>bundle</packaging>
   <repositories>

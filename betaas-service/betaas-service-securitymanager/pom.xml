@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-securitymanager</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BETaaS Service Security Manager</name>
   <description>BETaaS Service Security Manager</description>
@@ -63,6 +63,11 @@
   		<artifactId>betaas-taas-securitymanager-certificate</artifactId>
   		<version>${project.version}</version>
   	</dependency>
+  	<dependency>
+			<groupId>eu.betaas</groupId>
+		  <artifactId>betaas-bus-interface</artifactId>
+		  <version>${project.version}</version>
+		</dependency>  	
   </dependencies>
   
   <build>
@@ -78,7 +83,7 @@
             <Bundle-Version>${project.version}</Bundle-Version>
             <!-- <Bundle-Activator>eu.betaas.service.securitymanager.activator.SecurityManagerActivator</Bundle-Activator> -->
             <!-- org.apache.commons.codec.*, -->
-            <Import-Package>org.w3c.*,javax.xml.*,de.odysseus.staxon.*,eu.betaas.taas.securitymanager.common.*,eu.betaas.taas.securitymanager.certificate.service.*,org.apache.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,com.google.gson.*,org.jboss.security.xacml.*,org.bouncycastle.*</Import-Package>
+            <Import-Package>org.w3c.*,javax.xml.*,de.odysseus.staxon.*,eu.betaas.rabbitmq.publisher.*,eu.betaas.taas.securitymanager.common.*,eu.betaas.taas.securitymanager.certificate.service.*,org.apache.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,com.google.gson.*,org.jboss.security.xacml.*,org.bouncycastle.*</Import-Package>
             <Export-Package>
             	eu.betaas.service.securitymanager.service;version=${project.version}                         
             </Export-Package>

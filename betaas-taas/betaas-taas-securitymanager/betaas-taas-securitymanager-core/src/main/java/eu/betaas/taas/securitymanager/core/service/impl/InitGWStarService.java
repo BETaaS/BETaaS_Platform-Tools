@@ -20,11 +20,13 @@ import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.osgi.framework.BundleContext;
 //import org.osgi.util.tracker.ServiceTracker;
 
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayStarCertificateIntService;
 //import eu.betaas.taas.securitymanager.core.activator.SecMTaasCoreActivator;
 import eu.betaas.taas.securitymanager.core.service.IInitGWStarService;
+import eu.betaas.taas.securitymanager.core.utils.CoreBetaasBus;
 
 /**
  * Class implementation of IInitGWStarService interface
@@ -38,6 +40,20 @@ public class InitGWStarService implements IInitGWStarService {
 	
 	/** Reference to GWStarCertificateIntService */
 	private IGatewayStarCertificateIntService gwStarCertIntService;
+	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private CoreBetaasBus bus;
+	
+	/** Reference to Blueprint BundleContext */
+	private BundleContext context;
+	
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		// set the GW ID
+		bus = new CoreBetaasBus(context);
+	}
 	
 	public InitGWStarService(){}
 	
@@ -73,6 +89,7 @@ public class InitGWStarService implements IInitGWStarService {
 			X500Name subjEnd = subjEndBld.build();
 			
 			log.info("Start initiating GW* certificate now!!");
+			bus.sendData("Start initiating GW* certificate now!!", "info", "SecM");
 			gwStarCertIntService.createGwStarCredentials(
 					subjRoot, subjInter, subjEnd, gwId);
 	}
@@ -85,5 +102,14 @@ public class InitGWStarService implements IInitGWStarService {
 			IGatewayStarCertificateIntService gwStarCertIntService) {
 		this.gwStarCertIntService = gwStarCertIntService;
 		log.debug("Got the GWStarCertificateIntService...");
+	}
+	
+	/**
+	 * Blueprint set reference to BundleContext
+	 * @param context BundleContext
+	 */
+	public void setContext(BundleContext context) {
+		this.context = context;
+		log.debug("Got BundleContext from the blueprint...");
 	}
 }

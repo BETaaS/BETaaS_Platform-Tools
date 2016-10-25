@@ -29,7 +29,9 @@
 			<cm:property name="bdm_db_pwd" value="sa"/>
 			<cm:property name="bdm_db_name" value="servicedb"/>
 			<cm:property name="bdm_db_DBSetup" value="create"/>
-			<cm:property name="bdm_db_mode" value="test"/>
+			<cm:property name="bdm_db_mode" value="off"/>
+			<cm:property name="bdm_db_enabled" value="false"/>
+			<cm:property name="gwId" value="1"/>
 			<cm:property name="busenabled" value="false"/>
 		</cm:default-properties>
 	</cm:property-placeholder>
@@ -40,7 +42,7 @@
 		</cm:default-properties>
 	</cm:property-placeholder>
 	
-    <bean id="servicedatabaseBetaasBean" class="eu.betaas.service.bigdatamanager.dataservice.database.services.impl.DatabaseBDMService" init-method="setupService">
+    <bean id="databaseManagerBean" class="eu.betaas.service.bigdatamanager.dataservice.database.services.impl.DBMDatabaseServiceManager" init-method="activateService">
    		<property name="jdbc" value="${bdm_url}"/>
    		<property name="drivers" value="${bdm_jdbc_driver}"/>
 		<property name="user" value="${bdm_db_user}"></property>
@@ -49,15 +51,11 @@
 		<property name="DBSetup" value="${bdm_db_DBSetup}"></property> 
 		<property name="mode" value="${bdm_db_mode}"></property> 
 		<property name="enabledbus" value="${busenabled}"></property> 
+		<property name="enabled" value="${bdm_db_enabled}"></property> 
 		<property name="context" ref="blueprintBundleContext"/>
+		<property name="address" value="$(serviceDatabaseBDMAddress)"/>
+		<property name="gateway" value="${gwId}"></property> 
     </bean>
  
-    <service ref="servicedatabaseBetaasBean" interface="eu.betaas.service.bigdatamanager.dataservice.IDatasourceBDMInterface" >
-	    <service-properties>
-	    	 <entry key="service.exported.interfaces" value="*" />
-	    	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
-	    	 <entry key="org.apache.cxf.ws.address" value="$(serviceDatabaseBDMAddress)" />
-	    </service-properties>    
-	 </service>
 
 </blueprint>

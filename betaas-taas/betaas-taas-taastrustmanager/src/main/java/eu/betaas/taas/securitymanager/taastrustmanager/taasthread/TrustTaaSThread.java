@@ -42,7 +42,7 @@ public class TrustTaaSThread
 	private final ScheduledExecutorService scheduler;
 	private static TrustTaaSThread _instance = null;
 	//private long interval = 300;
-	private long interval = 240;
+	private long interval = 200;
 	private long initialDelay = 30;
 	//final TaaSMonitoringThread myTask;
 	private volatile TaaSMonitoringThread myTask;

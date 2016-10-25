@@ -63,7 +63,7 @@ class HeuristicAssured implements Callable<QoSRankList>{
 		this.all = all;
 		
 		this.allocation_schema = new QoSRankList(true);
-		setEquivalents(m_equivalents);
+		setEquivalents(m_thingservices, m_equivalents);
 		setAssignments(m_assignments);
 		setRequests(m_requests);
 		setAssuredrequests(m_assuredrequests);
@@ -248,6 +248,8 @@ class HeuristicAssured implements Callable<QoSRankList>{
 				LOGTest.debug("Heuristic Start - call popolate_P:1");
 				QoSMThingServiceStar ts = thingservices.get(eq.getId().getThingServiceId());
 				LOGTest.debug("Heuristic End - call popolate_P:1");
+				if(!ts.getReachable())
+					continue;
 				LOGTest.debug("DB Start - popolate_P:1");
 				QoSMThingStar t = things.get(ts.getDeviceId());
 				LOGTest.debug("DB End - popolate_P:1");
@@ -482,8 +484,13 @@ class HeuristicAssured implements Callable<QoSRankList>{
 		return equivalents;
 	}
 
-	public void setEquivalents(Map<String, QoSMEquivalentThingServiceStar> equivalents) {
-		this.equivalents = equivalents;
+	public void setEquivalents(Map<String, QoSMThingServiceStar> thingservices, Map<String, QoSMEquivalentThingServiceStar> equivalents) {
+		this.equivalents = new HashMap<String, QoSMEquivalentThingServiceStar>();
+		for(Entry<String, QoSMEquivalentThingServiceStar> item : equivalents.entrySet()){
+			QoSMThingServiceStar ts = thingservices.get(item.getValue().getId().getThingServiceId());
+			if(ts.getReachable())
+				this.equivalents.put(item.getKey(), item.getValue());
+		}
 	}
 
 	public Map<String, QoSMAssignmentStar> getAssignments() {
@@ -499,7 +506,11 @@ class HeuristicAssured implements Callable<QoSRankList>{
 	}
 
 	public void setThingservices(Map<String, QoSMThingServiceStar> thingservices) {
-		this.thingservices = thingservices;
+		this.thingservices = new HashMap<String, QoSMThingServiceStar>();
+		for(Entry<String, QoSMThingServiceStar> item : thingservices.entrySet()){
+			if(item.getValue().getReachable())
+				this.thingservices.put(item.getKey(), item.getValue());
+		}
 	}
 
 	public Map<String, QoSMAssuredRequestStar> getAssuredrequests() {

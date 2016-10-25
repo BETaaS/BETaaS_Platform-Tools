@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-service-bigdatamanager</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+  </parent>
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-service-bigdatamanager-stream</artifactId>
+  <version>3.0.2-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>BETaaS BDM Data Stream</name>
+  <description>BETaaS TaaS to Service data stream</description>
+  <dependencies>
+
+<!-- 	<dependency> -->
+<!--       <groupId>org.osgi</groupId> -->
+<!--       <artifactId>org.osgi.compendium</artifactId> -->
+<!--       <version>4.0.1</version> -->
+<!--     </dependency> -->
+	
+	<dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>	
+<!-- 	<dependency> -->
+<!--       <groupId>org.osgi</groupId> -->
+<!--       <artifactId>org.osgi.compendium</artifactId> -->
+<!--       <version>4.0.1</version> -->
+<!--     </dependency> -->
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	</dependency> 
+	<dependency>
+		<groupId>org.apache.flume</groupId>
+		<artifactId>flume-ng-sdk</artifactId>
+		<version>1.2.0</version>
+	</dependency>
+	<dependency>
+		<groupId>io.netty</groupId>
+		<artifactId>netty</artifactId>
+		<version>3.4.0.Final</version>
+	</dependency>
+	<dependency>
+		<groupId>org.mortbay.jetty</groupId>
+		<artifactId>servlet-api</artifactId>
+		<version>2.5-20081211</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.avro</groupId>
+		<artifactId>avro</artifactId>
+		<version>1.7.3</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.avro</groupId>
+		<artifactId>avro-ipc</artifactId>
+		<version>1.7.3</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.codehaus.jackson</groupId>
+		<artifactId>jackson-core-asl</artifactId>
+		<version>1.8.8</version>
+	</dependency>
+		<dependency>
+		<groupId>org.codehaus.jackson</groupId>
+		<artifactId>jackson-mapper-asl</artifactId>
+		<version>1.8.8</version>
+	</dependency>
+    <dependency>
+		<groupId>org.mortbay.jetty</groupId>
+		<artifactId>jetty</artifactId>
+		<version>6.1.7</version>
+	</dependency>
+  <dependency>
+		<groupId>org.mortbay.jetty</groupId>
+		<artifactId>jetty-util</artifactId>
+		<version>6.1.7</version>
+	</dependency>
+	  <dependency>
+		<groupId>org.mortbay.jetty</groupId>
+		<artifactId>servlet-api-2.5</artifactId>
+		<version>6.1.7</version>
+	</dependency>
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.2.4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.xerial.snappy</groupId>
+		<artifactId>snappy-java</artifactId>
+		<version>1.0.5</version>
+	</dependency>	        
+    <dependency>
+	  <groupId>com.rabbitmq</groupId>
+	  <artifactId>amqp-client</artifactId>
+	  <version>3.3.3</version>
+	</dependency>
+
+
+  </dependencies>
+   <build>
+     <plugins>
+         <plugin>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>2.3.7</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+            	     <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                     <Bundle-Version>${project.version}</Bundle-Version>
+                     <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                     <Import-Package>java.util,org.apache.log4j,*;resolution:=optional</Import-Package>
+                     <Export-Package>eu.betaas.service.bigdatamanager.stream</Export-Package>
+                     <Embed-Transitive>false</Embed-Transitive>
+                 </instructions>
+             </configuration>
+         </plugin>
+     </plugins>
+ </build>  
+</project>

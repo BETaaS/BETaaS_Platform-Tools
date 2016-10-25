@@ -5,11 +5,15 @@
 		<title>BETaaS Gateway Administration
 		</title>	
 		<link href="css/site-theme/jquery-ui-1.10.3.custom.css" rel="stylesheet">	
-		<link href="css/gateway-admin.css" rel="stylesheet">	
-<script src="js/jquery-1.9.1.js"></script>	
-<script src="js/jquery-ui-1.10.3.custom.js"></script>	
-<script type="text/javascript" src="js/instanceManager.js"></script>	
-<script>
+		<link href="css/gateway-admin.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>	
+		<script src="js/jquery-1.9.1.js"></script>
+
+		<script src="js/jquery-ui-1.10.3.custom.js"></script>	
+		<script type="text/javascript" src="js/instanceManager.js"></script>	
+		
+		<script>
 	$(function() {
 		
 		$( "#accordion" ).accordion({ active: 1 });
@@ -53,11 +57,12 @@
 	</script>
 	</head>
 	<body onload="requestInstanceInfo();">     
-		<div class="body-wrap">    
+		<div class="body-wrap"  ng-app="betaasApp">    
 			<table class="body-header">	
 				<tr>	  
 				  <td>
 					 <h1>Gateway Administration</h1>
+					  <h2>BETaaS Backend <span style="color: rgb(241,145,75)" id="backend">Off</span></h2>
 					 <h2>GW ID: <span style="color: rgb(241,145,75)" id="subtitle">N/A</span></h2>
 					</td>	  
 					<td id="header-logo">            
@@ -66,22 +71,7 @@
 						</p>	  </td>	
 				</tr>    
 			</table>    
-			<div id="accordion">	<h3>How-to</h3>        
-				<div>          
-					<p>	    This is the administration page of the BETaaS gateway. 	  
-					</p>          
-					<p class="inline">	     
-						<span class="inline">In case the gateway joined an instance, the 
-						gateways of the instance are shown and a link is available to access their administration
-						pages. In that case it is also possible to disjoin from the instance.
-						</span>	     
-					</p>          
-					<p class="inline">	     
-						<span class="inline">In the Visible Instances section all the visible instances&nbsp;</span>	     
-						<span class="inline"> are shown and it is possible to request to join to their GW</span>
-						<span style="background-image: url(css/ui-icons-orange.png)" class="inline ui-icon ui-icon-star"></span> 	  
-					</p>	
-				</div>    <h3>Administer the GW</h3>    
+			<div id="accordion">	    <h3>Administer the GW</h3>    
 				<div>		 		
 					<p style="text-align: center">		  
 						<img src="img/gw.png" width=50px/>		
@@ -114,13 +104,118 @@
 					<table id="gwlist" width="100%" style="padding: 50px 25px 20px 25px; border-spacing: 25px">	  
 					  <tr style="height:250px; background-color: red"></tr>
 					</table>	  
-				</div>	<h3>Visible Instances</h3>        
+				</div><h3>Things</h3>        
+				<div>	  
+					<p id="applicationheading" style="text-align: center">Manage Things: 
+						<span style="color: #f1cc4b; font-weight: bold">-</span>	  
+					</p>	  
+					<p style="text-align: center">	   
+						<button id="getthinglist" class="button-thinglist ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Get Thing List
+						</button>	  
+					</p>
+					<p style="text-align: center">	   
+						<button id="simulatething" class="button-thingsim ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Add Simulated Things
+						</button>	  
+					</p>						
+					</table>	
+					<p style="text-align: center">	   
+						<button id="removething" class="button-thingsim ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Remove Simulated Things
+						</button>	  
+					</p>	  
+					<table id="gwlist" width="100%" style="padding: 50px 25px 20px 25px; border-spacing: 25px">	  
+					  <tr style="height:250px; background-color: red"></tr>
+					</table>	  
+				</div> 	<h3>Monitoring</h3>        
+				<div ng-controller="MonitoringManager">	  
+					<p id="monitoringheading" style="text-align: center">This monitoring information is coming from the instance: 
+						<span style="color: #f1cc4b; font-weight: bold">-</span>	  
+					</p>	  
+					<p style="text-align: center">	   
+						<button id="startmonitoring"  ng-click="loadMessages()" class="button-monitoring ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Start Monitoring
+						</button>	  
+					</p>	  
+			 
+					<table id="monitorinml" width="100%" style="padding: 50px 25px 20px 25px;" >	  
+					  <tr class="ui-state-active" style="height:25px; background-color: white" ng-repeat="message in messages" ng-class="rowForMessage(message)">
+					  	<td>{{ message.message }}</td>
+					  </tr>
+					</table>	  
+				</div><h3>Applications</h3>        
+				<div>	  
+					<p id="applicationheading" style="text-align: center">Manage Applications: 
+						<span style="color: #f1cc4b; font-weight: bold">-</span>	  
+					</p>	  
+					<p style="text-align: center">	   
+						<button id="startapplication" class="button-application ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Deploy Service
+						</button>
+						<button id="stopapplication" class="button-application ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Remove Service
+						</button>	  
+					</p>	  
+					</table>	  
+					<table id="gwlist" width="100%" style="padding: 50px 25px 20px 25px; border-spacing: 25px">	  
+					  <tr style="height:250px; background-color: red"></tr>
+					</table>	  
+				</div><h3>Data Tasks</h3>        
+				<div ng-controller="ManageBDM">	  
+					<p style="text-align: center">	   
+						<button id="gettasklist" ng-click="getList()" class="button-getdatatask ui-state-default ui-corner-all" style="color: black; background: #f1cc4b;">Get Task List
+						</button>	  
+					</p>						
+					<table id="tasklist" width="100%" style="padding: 50px 25px 20px 25px;" >	  
+					  <tr class="ui-state-active" style="height:25px; background-color: white" ng-repeat="task in tasks"  ng-click="runTask(task)" ng-class="rowForTask(task)">
+					  	<td style="cursor : pointer; height:25px; background-color: white; color:black">{{ task.task }}</td>
+					  	<td style="cursor : pointer; height:25px; background-color: white; color:black">{{ task.description }}</td>
+					  </tr>
+					</table>  
+				</div>
+				<h3>Visible Instances</h3>        
 				<div>	  
 					<p id="visibleinstancesheading"></p>	    
 					<table id="gwstartable">	     
 					</table>	   
 					<p id="visibleinstancesfooter" style="text-align: center; font-weight: bold"></p>	
-				</div>    
+				</div><h3> Settings </h3>        
+				<div>          
+					<p id="applicationsettings" style="text-align: center"> Settings
+ 
+					</p>	  
+					<div ng-controller="FormSettingsController">
+					  <form novalidate class="pure-form pure-form-aligned">
+					   <label for="imurl" class="pure-checkbox"> Instance Manager URL: </label>
+					    <input if="imurl" type="text" ng-model="settings.im" />
+					    <label for="amqpid" class="pure-checkbox"> Monitoring AMQP URL: </label>
+					    <input id="ampqid" type="text" ng-model="settings.amqp" />
+					    <label for="microserverid" class="pure-checkbox"> Microserver URL: </label>
+					    <input id="microserverid" type="text" ng-model="settings.microserver" />
+					    <label for="queueid" class="pure-checkbox"> AMPQ Topic: </label>
+					    <input id="queueid" type="text" ng-model="settings.queue" />
+					    <br/>
+					    <label class="pure-checkbox"> Monitoring Active: </label>
+					  
+					    	<input type="radio" ng-model="settings.active" value="on" />On
+					    	<input type="radio" ng-model="settings.active" value="off" />Off
+					     <div class="pure-controls">
+					    	<input class="pure-control-group pure-button pure-button-primary"  style="color: black; background: #f1cc4b;" type="button" ng-click="reset()" value="Reset" />
+					    	<input class="pure-control-group pure-button pure-button-primary"  style="color: black; background: #f1cc4b;" type="submit" ng-click="update(settings)" value="Update" />
+					    </div>
+					  </form>
+					</div>	
+				</div>   <h3>How-to</h3>        
+				<div>          
+					<p>	    This is the administration page of the BETaaS gateway. 	  
+					</p>          
+					<p class="inline">	     
+						<span class="inline">In case the gateway joined an instance, the 
+						gateways of the instance are shown and a link is available to access their administration
+						pages. In that case it is also possible to disjoin from the instance.
+						</span>	     
+					</p>          
+					<p class="inline">	     
+						<span class="inline">In the Visible Instances section all the visible instances&nbsp;</span>	     
+						<span class="inline"> are shown and it is possible to request to join to their GW</span>
+						<span style="background-image: url(css/ui-icons-orange.png)" class="inline ui-icon ui-icon-star"></span> 	  
+					</p>	
+				</div>
 			</div>  
 		</div>  
 		<!-- ui-dialog -->  

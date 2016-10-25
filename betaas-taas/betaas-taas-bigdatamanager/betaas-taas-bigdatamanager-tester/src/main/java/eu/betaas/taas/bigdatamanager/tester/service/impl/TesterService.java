@@ -54,8 +54,13 @@ public class TesterService  {
 		this.setLogger("betaas.taas");
 		logger.info("Ready to get available tasks");
 		String result;
+		long ts1 = System.currentTimeMillis();
+		logger.info("TEST 6.1.X Task list requesting");
 		List<TaskInfo> list = service.getTaskList("");
-		logger.info("Got a list of "+list.size());
+		long ts2 = System.currentTimeMillis();
+		logger.info("TEST 6.1.X Task list processed in "+(ts2-ts1));
+		
+		logger.debug("Got a list of "+list.size());
 		
 		for (int i=0;i<list.size();i++){
 			logger.info("Got task for "+list.get(i).getTaskname());
@@ -66,12 +71,22 @@ public class TesterService  {
 		result = service.taskData("");
 		logger.info("Returned a result "+result);
 		logger.info("Trying to run the database task");
+		logger.info("TEST 6.1.X Requesting DB Task");
+		ts1 = System.currentTimeMillis();
 		result = service.taskData("DatabaseRecentdataTask",null);
-		logger.info("Returned a result "+result);
+		ts2 = System.currentTimeMillis();
+		logger.info("TEST 6.1.X Task over SQL db processed in in "+(ts2-ts1));
+
 		logger.info("################################### Trying to run the traffic data task");
 		//result = service.taskData("PrestoQueryTask",null);
+		ts1 = System.currentTimeMillis();
 		result = service.taskData("TrafficQueryTask",null);
-		logger.info("################################### Returned a result "+result);
+		ts2 = System.currentTimeMillis();
+		logger.info("TEST 6.1.X Task over Analytic db processed in in "+(ts2-ts1)+result);
+		ts1 = System.currentTimeMillis();
+		result = service.taskData("PrestoQueryTask",null);
+		ts2 = System.currentTimeMillis();
+		logger.info("TEST 6.1.X Task over Presto Analytic db processed in in "+(ts2-ts1)+result);
 	}
 	
 	

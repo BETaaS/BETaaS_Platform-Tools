@@ -78,7 +78,7 @@ public class HiveConnector implements HiveServiceInterface{
 		log.info("BETaaS Hive Jdbc Service Starting");
 	    try {
 	    	log.debug("Hive Jdbc Driver Loading");
-	    	
+	    	log.info("TEST 6.1.X Hive Component ");
 	        Class.forName(driverName);
 	        log.debug("Driver loaded");
 	        setConnection();
@@ -91,6 +91,7 @@ public class HiveConnector implements HiveServiceInterface{
 	public void setConnection() {
 
 		try {
+			log.info("TEST 6.1.X Hive Connecting ");
 			log.debug("Connecting..." + dbconnection);
 			con = DriverManager.getConnection(dbconnection, user, pwd);
 			log.debug("Connecting...Success");
@@ -151,12 +152,15 @@ public class HiveConnector implements HiveServiceInterface{
 //			
 //			hdfs.getContentSummary("hdfs://betaashadoop:9000/tmp/output/");
 //			
-
+			log.info("TEST 6.1.X Hive Loading data ");
 			stmt = con.createStatement();
 			log.debug("Running load operation: ");
+			long ts1 = System.currentTimeMillis();
 	        stmt.execute(LOAD_DATA);
+	        long ts2 = System.currentTimeMillis();
 	        log.debug("Loaded!");
-	        String sql = "select count(*) from " + tableName;
+	        log.info("TEST 6.1.X Hive Data Loaded in "+(ts2-ts1));
+	        //String sql = "select count(*) from " + tableName;
 	        log.debug("Running count operation: ");
 	        stmt.close();
 		} catch (SQLException e) {

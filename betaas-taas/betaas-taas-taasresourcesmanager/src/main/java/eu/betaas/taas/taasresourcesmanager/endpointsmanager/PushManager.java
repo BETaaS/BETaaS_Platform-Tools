@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 import eu.betaas.taas.qosmanager.monitoring.api.impl.SLACalculation;
+import eu.betaas.taas.taasresourcesmanager.catalogs.Resource;
 import eu.betaas.taas.taasresourcesmanager.catalogs.ResourcesCatalog;
 import eu.betaas.taas.taasresourcesmanager.taasrmclient.AdaptTAClient;
 import eu.betaas.taas.taasresourcesmanager.taasrmclient.ServiceSMClient;
@@ -125,7 +126,7 @@ public class PushManager
 			logger.info("Real time subscription added in the PushManager for: " + newSubscription.getThingServiceId());
 			
 			//Activate SLA monitoring
-			myQoSClient.activateSLAPushMonitoring(newSubscription.getThingServiceId(), (int)newSubscription.getPeriod());
+			myQoSClient.activateSLAPushMonitoring(newSubscription.getThingServiceId(), (int)newSubscription.getPeriod(), newSubscription.getFeatureId());
 			logger.info("SLA activated for thing service: " + newSubscription.getThingServiceId());
 		}
 		else
@@ -144,9 +145,9 @@ public class PushManager
 		}
 		
 		//Manage the active feature
-		ActiveFeature theFeature = activeFeatures.get(newSubscription.getApplicationId());
+		ActiveFeature theFeature = activeFeatures.get(newSubscription.getFeatureId());
 		theFeature.addSubscription(newSubscription.getThingServiceId());
-		activeFeatures.put(newSubscription.getApplicationId(), theFeature);
+		activeFeatures.put(newSubscription.getFeatureId(), theFeature);
 		logger.info("Active features list updated!");
 	}
 	
@@ -163,50 +164,54 @@ public class PushManager
 		}
 	}
 	
-	public boolean removeSubscription (String idFeature)
+	public void removeFeature (String idFeature)
+	{
+		// Create the new active feature only if it doesn't exist
+		if (!activeFeatures.containsKey(idFeature))
+		{
+			activeFeatures.remove(idFeature);
+		}
+	}
+	
+	public boolean removeSubscription (String idThingService, String idFeature)
 	{
 		if (activeFeatures.containsKey(idFeature))
 		{
 			//Retrieve thing services to unsubscribe from the Active Feature
 			ActiveFeature myFeature = activeFeatures.get(idFeature);
-			ArrayList<String> listToRemove = myFeature.getThingServicesList();
+			ArrayList<String> currentSubscriptions = myFeature.getThingServicesList();
 			
 			//Look for each thing service subscription, in order to remove it
-			logger.info("Removing subscriptions for feature: " + idFeature);
-			for (int i=0; i<listToRemove.size(); i++)
-			{
-				String currentThingServiceId = listToRemove.get(i);
-				ArrayList<Subscription> subsList = rtSubsList.get(currentThingServiceId);
-				int position = 0;
-				
-				//Retrieve all subscriptions for one thing service 
-				Iterator<Subscription> myIter = subsList.iterator();
-				while (myIter.hasNext())
-				{
-					//Check if the current subscription corresponds to our feature
-					if (myIter.next().getApplicationId().equalsIgnoreCase(idFeature))
-					{
-						//Remove and stop the iteration
-						logger.debug("Subscription to " + currentThingServiceId + " removed!");
-						subsList.remove(position);
-						break;
-					}
-					position++;
-				}
-				
-				//If all subscriptions for a thing service were removed, remove the TS from the maps and TA subs
-				if (subsList.size()==0)
-				{
-					logger.info("Thing Service " + currentThingServiceId + " has no more active subscriptions -> Removing all data!");
-					rtSubsList.remove(currentThingServiceId);
-					AdaptTAClient taClient = AdaptTAClient.instance();
-					String idThing = ResourcesCatalog.instance().getResource(currentThingServiceId).getPhysicalResourceId();
-					taClient.unSubscribeToThing(idThing);
-				}
-			}
+			logger.info("Removing " + idThingService + " subscription for feature: " + idFeature);
 			
-			//Once subscriptions are removed, remove ActiveFeature
-			activeFeatures.remove(idFeature);
+			ArrayList<Subscription> subsList = rtSubsList.get(idThingService);
+				
+			//Retrieve all subscriptions for the thing service 
+			Iterator<Subscription> myIter = subsList.iterator();
+			int position = 0;
+			while (myIter.hasNext())
+			{
+				//Check if the current subscription corresponds to our feature
+				if (myIter.next().getFeatureId().equalsIgnoreCase(idFeature))
+				{
+					//Remove and stop the iteration
+					logger.debug("Subscription to " + idThingService + " removed!");
+					subsList.remove(position);
+					break;
+				}
+				position++;
+			}
+				
+			// Remove known subscription from the Resource Catalog and recalculate period
+			Resource theResource = ResourcesCatalog.instance().getResource(idThingService);
+			theResource.removeFeature(idFeature);
+								
+			//Once subscriptions are removed, remove ActiveFeature if no more subscriptions are available
+			myFeature.removeSubscription(idThingService);
+			if (currentSubscriptions.size()<2)
+			{
+				activeFeatures.remove(idFeature);
+			}			
 			
 			//Finalize operation
 			logger.info("Operation completed!");
@@ -216,6 +221,27 @@ public class PushManager
 		// If the feature is not active, the operation can't be done
 		logger.error("No active subscriptions were found for feature " + idFeature);
 		return false;
+	}
+	
+	public void determineSubscriptionsRemoval (String idThingService)
+	{
+		//If all subscriptions for a thing service were removed, remove the TS from the maps and TA subs
+		ArrayList<Subscription> subsList = rtSubsList.get(idThingService);
+		AdaptTAClient taClient = AdaptTAClient.instance();
+		String idThing = ResourcesCatalog.instance().getResource(idThingService).getPhysicalResourceId();
+		if (subsList.size()==0)
+		{
+			logger.info("Thing Service " + idThingService + " has no more active subscriptions -> Removing all data!");
+			rtSubsList.remove(idThingService);					
+			taClient.unSubscribeToThing(idThing);
+		}
+		else
+		{
+			// Update the subscription period to the re-calculated one
+			int period = ResourcesCatalog.instance().getResource(idThingService).getCommonPeriod();	
+			logger.info("Thing Service " + idThingService + " has yet active subscriptions -> Updating period!");
+			taClient.subscribeToThing(idThing, period);
+		}
 	}
 	
 	private boolean receiveMeasurement (String thingServiceID, ThingsData data, HashMap<String, ArrayList<Subscription>> subscriptionList) {
@@ -266,10 +292,10 @@ public class PushManager
 		{
 			Subscription currentNotif = myIter.next();
 			//Check application location
-			if (currentNotif.getApplicationLocation().equalsIgnoreCase("localhost"))
+			if (currentNotif.getFeatureLocation().equalsIgnoreCase("localhost"))
 			{
 				//Get the corresponding ActiveFeature
-				ActiveFeature currentActFeature = activeFeatures.get(currentNotif.getApplicationId());
+				ActiveFeature currentActFeature = activeFeatures.get(currentNotif.getFeatureId());
 				currentActFeature.notifyReceived(thingServiceID, data);
 				
 				//Send local notification (to the SM)
@@ -291,7 +317,7 @@ public class PushManager
 			{
 				//Send remote notification to another gateway (to a remote TaaSRM)
 				TaaSRMClient myRMCli = TaaSRMClient.instance(localGateway, "PushManager");					
-				done = done & myRMCli.remoteDataNotification(data, currentNotif.getApplicationId(), thingServiceID, currentNotif.getApplicationLocation());
+				done = done & myRMCli.remoteDataNotification(data, currentNotif.getFeatureId(), thingServiceID, currentNotif.getFeatureLocation());
 				logger.info("Remote notification sent");
 			}
 		}

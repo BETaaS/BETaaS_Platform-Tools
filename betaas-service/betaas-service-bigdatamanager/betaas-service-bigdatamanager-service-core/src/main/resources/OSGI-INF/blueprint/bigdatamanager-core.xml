@@ -17,6 +17,7 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
            xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
            xmlns:cxf="http://cxf.apache.org/blueprint/core"
            xsi:schemaLocation="
@@ -25,10 +26,20 @@
              http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
              ">
  
-
+  	<cm:property-placeholder persistent-id="betaas.gateway"  >
+		<cm:default-properties>
+			<cm:property name="bdm_frequency" value="5000"/>
+			<cm:property name="gwId" value="1"/>
+			<cm:property name="busenabled" value="false"/>	
+		</cm:default-properties>
+	</cm:property-placeholder>
+	
     <bean id="serviceBDCoreBean" class="eu.betaas.service.bigdatamanager.core.services.impl.BDDistributedCoreServiceImpl" init-method="startService" destroy-method="closeService">
     	<property name="service" ref="betaasTaasCoreService"/>
     	<property name="context" ref="blueprintBundleContext"/>
+    	<property name="busenabled" value="${busenabled}"/>
+   		<property name="gateway" value="${gwId}"/>
+       	<property name="frequencyDelivery" value="${bdm_frequency}"></property>   
     </bean>
 
     <service ref="serviceBDCoreBean" interface="eu.betaas.service.bigdatamanager.core.services.IBigDataDistributedCoreService"/> 

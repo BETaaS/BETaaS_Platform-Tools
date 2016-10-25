@@ -39,11 +39,6 @@
     </bean>
 
     <service ref="serviceTaskBean" interface="eu.betaas.service.bigdatamanager.service.datatask.AnalyticTask">
-        	 <service-properties>
-	    	 <entry key="service.exported.interfaces" value="*" />
-	    	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
-	    	 <entry key="org.apache.cxf.ws.address" value="${databaseTaskAddress}" />
-	    </service-properties>    
     </service> 
       
 

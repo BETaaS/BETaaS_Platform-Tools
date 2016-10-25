@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-securitymanager</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS Taas Security Manager</name>
   <description>BETaaS TaaS security manager</description>
@@ -19,6 +19,7 @@
   <!--  <module>betaas-taas-securitymanager-certificate-impl</module>	-->
   <module>betaas-taas-security-gwcomm-initiator</module>
   <module>betaas-taas-securitymanager-common</module>
+  <module>betaas-taas-security-encrypttest</module>
   
   <!-- <module>betaas-taas-securitymanager-requirements</module> -->
   </modules>

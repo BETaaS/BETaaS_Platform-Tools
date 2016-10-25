@@ -24,6 +24,10 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 
 @Entity
 @Table(name = "T_THING_DATA")
@@ -52,50 +56,31 @@ public class ThingData {
 	private String location;
 	
 	private String altitude;
-	
-    public String getAltitude() {
-		return altitude;
-	}
-
-
-	public void setAltitude(String altitude) {
-		this.altitude = altitude;
-	}
-
 
 	private String measurement;
-    // new
-   
     
     private String memory_status;
      
     private String battery_cost;
     
+    private String battery_level;
+    
     private String location_keyword;
     
     private String location_identifier;
     
-    
-
-
-
-
+       
 	public String getMemory_status() {
 		return memory_status;
 	}
-
 
 	public void setMemory_status(String memory_status) {
 		this.memory_status = memory_status;
 	}
 
-
-
-
 	public String getBattery_cost() {
 		return battery_cost;
 	}
-
 
 	public void setBattery_cost(String battery_cost) {
 		this.battery_cost = battery_cost;
@@ -105,7 +90,6 @@ public class ThingData {
 	public String getLocation_keyword() {
 		return location_keyword;
 	}
-
 
 	public void setLocation_keyword(String location_keyword) {
 		this.location_keyword = location_keyword;
@@ -126,7 +110,6 @@ public class ThingData {
 		return environment;
 	}
 
-
 	public void setEnvironment(String environment) {
 		this.environment = environment;
 	}
@@ -146,11 +129,9 @@ public class ThingData {
 		return floor;
 	}
 
-
 	public void setFloor(String floor) {
 		this.floor = floor;
 	}
-
 
 	public String getCity_name() {
 		return city_name;
@@ -220,6 +201,25 @@ public class ThingData {
 	public void setMeasurement(String measurement) {
 		this.measurement = measurement;
 	}	
+	
+    public String getAltitude() {
+		return altitude;
+	}
+
+
+	public void setAltitude(String altitude) {
+		this.altitude = altitude;
+	}
+
+	public String getBattery_level() {
+		return battery_level;
+	}
+
+	public void setBattery_level(String battery_level) {
+		this.battery_level = battery_level;
+	}
+	
+	
 	
 }
 

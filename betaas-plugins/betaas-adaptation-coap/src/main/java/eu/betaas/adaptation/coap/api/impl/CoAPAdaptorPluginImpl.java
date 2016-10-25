@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.coap.Request;
 
 import eu.betaas.adaptation.coap.utils.Resource;
 import eu.betaas.adaptation.coap.utils.Server;
@@ -49,12 +50,12 @@ import eu.betaas.adaptation.plugin.api.IAdaptorListener;
 import eu.betaas.adaptation.plugin.api.IAdaptorPlugin;
 
 public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
-
+	
+	private static final int NUMBER_OF_ATTEMP = 2;
 	private IAdaptorListener listener;
 	private LinkedHashMap<String,Thread> listOfThreads = new LinkedHashMap<String,Thread>();
 	protected Vector<HashMap<String, String>> sensors = new Vector<HashMap<String, String>>();
 	private String serversConfig;
-	private LinkedHashMap<String, Integer> counters = new LinkedHashMap<String,Integer>();
 	Logger mLogger = Logger.getLogger("betaas.thingsadaptor");
 	List<Server> serverList = null;
 	
@@ -64,12 +65,30 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 
 	public synchronized Vector<HashMap<String, String>> discover() {
 		mLogger.info("CoAPAdaptorPluginImpl - discover");
+		Vector<HashMap<String, String>> sensorsList = discoverRemote();
+		for(HashMap<String, String> sensorMap : sensors){
+			if(!contains(sensorMap.get(Server.DEVICEID), sensorsList))
+				listener.removeThing(sensorMap.get(Server.DEVICEID));
+		}
+		sensors = sensorsList;
+		return sensors;
+	}
+
+	private boolean contains(String deviceId,
+			Vector<HashMap<String, String>> sensorsList) {
+		for(HashMap<String, String> sensor : sensorsList){
+			if(sensor.get(Server.DEVICEID).equals(deviceId)) return true;
+		}
+		return false;
+	}
+
+	private Vector<HashMap<String, String>> discoverRemote() {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		
 		String context = null;
 		
 		Server currServer = null;
-	    sensors = new Vector<HashMap<String, String>>();
+		Vector<HashMap<String, String>> sensorsList = new Vector<HashMap<String, String>>();
 	    try {
 	    	FileReader file = new FileReader(serversConfig);
 			XMLStreamReader reader = factory.createXMLStreamReader(file);
@@ -82,9 +101,9 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 				    	if ("server".equals(reader.getLocalName())){
 				    		currServer = new Server();
 				    	}
-				    	if("servers".equals(reader.getLocalName())){
-				            serverList = new ArrayList<Server>();
-				        }
+				    	if ("servers".equals(reader.getLocalName())){
+				    		serverList = new ArrayList<Server>();
+				    	}
 				        break;
 
 			        case XMLStreamConstants.CHARACTERS:
@@ -136,45 +155,59 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 				mLogger.error("Exception on URI: " + e.getMessage());
 				continue;
 			} 
-	    	
-	    	CoapClient client = new CoapClient(uri);
-
-			CoapResponse response = client.get();
-			
-			if (response!=null || s.getContext() != null) {
+	    	CoapResponse response=null;
+	    	int attempt = 0;
+			while(response==null && attempt <= NUMBER_OF_ATTEMP)
+	    	{
+				attempt++;
+		    	CoapClient client = new CoapClient(uri);
+	
+				response = client.get();
 				
-				// Some very constrained devices implementing CoAP can not provide context directly using CoRE Link format during discovery
-				// For those, the context can be specified directly in the XML file in the tag <context>, hence the payload in the response is ignored
-				// For the others we parse the description in the response
-				if( s.getContext() == null ){
-					context = response.getResponseText();
-					s.setContext(context);
+				if (response!=null || s.getContext() != null) {
+					
+					// Some very constrained devices implementing CoAP can not provide context directly using CoRE Link format during discovery
+					// For those, the context can be specified directly in the XML file in the tag <context>, hence the payload in the response is ignored
+					// For the others we parse the description in the response
+					if( s.getContext() == null ){
+						context = response.getResponseText();
+						s.setContext(context);
+					} else {
+						context = s.getContext();
+					}
+					
+					mLogger.debug("Context retrieved: " + context);
+									
+					List<Resource> ResourceList = s.parseCoreLinkFormat(context);
+					s.setResources(ResourceList);
+					
+					
+					List<HashMap<String, String>> params = s.getParameters();
+					mLogger.debug("PARAMS: "+ params);
+					for(HashMap<String, String> hash : params){
+						sensorsList.add(hash);
+					}
+					
 				} else {
-					context = s.getContext();
+					mLogger.error("No response received from " + s.getIp() + ":" + s.getPort());
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				
-				mLogger.debug("Context retrieved: " + context);
-								
-				List<Resource> ResourceList = s.parseCoreLinkFormat(context);
-				s.setResources(ResourceList);
-				
-				
-				List<HashMap<String, String>> params = s.getParameters();
-				mLogger.debug("PARAMS: "+ params);
-				for(HashMap<String, String> hash : params){
-					this.sensors.add(hash);
-				}
-				
-			} else {
-				mLogger.error("No response received.");
+	    	}
+			if(attempt > NUMBER_OF_ATTEMP){
+				mLogger.error("Give up on " + s.getIp() + ":" + s.getPort());
 			}
 			
 	    }
-		return this.sensors;
+		return sensorsList;
 	}
 
-	public boolean register(String sensorID) {
-		mLogger.info("CoAPAdaptorPluginImpl - Register called with sensorId : " + sensorID);
+	public boolean register(String sensorID, int seconds) {
+		mLogger.info("CoAPAdaptorPluginImpl - Register called with sensorId : " + sensorID + " seconds: " + seconds);
 		boolean found = false;
 		Resource r= null;
 		if(this.listener == null){
@@ -195,10 +228,10 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 				break;
 		}
 		if(!found){
-			mLogger.error("deviceId not found");
+			mLogger.error(sensorID + " not found");
 			return false;
 		}
-		Reader reader= new Reader(r, this.listener);
+		Reader reader= new Reader(r, this.listener, seconds);
 		mLogger.debug("new Reader");
 		Thread readerThread = new Thread(reader);
 		if(listOfThreads.containsKey(sensorID)){
@@ -229,7 +262,7 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 				break;
 		}
 		if(!found){
-			mLogger.error("deviceId not found");
+			mLogger.error( sensorID + " not found");
 			return output;
 		}
 		
@@ -243,14 +276,30 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 			mLogger.error("Exception on URI: " + e.getMessage());
 			return output;
 		} 
-    	CoapClient client = new CoapClient(uri);
-
-		CoapResponse response = client.get();
-		if (response!=null) {
-			output = response.getResponseText();
-			mLogger.debug("Data is:"+output);
-		} else {
-			mLogger.error("No response received.");
+    	CoapResponse response = null;
+    	int attempt=0;
+		while(response == null && attempt <= NUMBER_OF_ATTEMP)
+		{
+			attempt++;
+	    	CoapClient client = new CoapClient(uri);
+	
+			response = client.get();
+			if (response!=null) {
+				output = response.getResponseText();
+				mLogger.debug("Data is:"+output);
+			} else {
+				mLogger.error("No response received from "+ s.getIp() + ":" + s.getPort());
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		if(attempt > NUMBER_OF_ATTEMP){
+			mLogger.error("Give up on " + s.getIp() + ":" + s.getPort());
+			listener.removeThing(sensorID);
 		}
 		return output;				
 
@@ -259,9 +308,7 @@ public class CoAPAdaptorPluginImpl implements IAdaptorPlugin {
 	public boolean unregister(String sensorID) {
 		mLogger.info("CoAPAdaptorPluginImpl - Unregister called with sensorId : " + sensorID);
 		if(listOfThreads.containsKey(sensorID)){
-//			mLogger.info("ETSIPluginImpl sensor already registered :" + sensorID);
-			listOfThreads.get(sensorID).interrupt();	
-//			mLogger.info("ETSIPluginImpl sensor thread killed :" + sensorID);	
+			listOfThreads.get(sensorID).interrupt();		
 			return true;
 		}
 		return false;

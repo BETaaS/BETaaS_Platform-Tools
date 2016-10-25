@@ -50,4 +50,9 @@ public class TaaSVMMAnagerConfigurationTest {
 			assertEquals(clouds.get(url)[2], "password"+ i++);
 		}
 	}
+	
+	@Test
+	public void getCpuInfo() {
+		System.out.println(System.getProperty("os.arch"));
+	}
 }

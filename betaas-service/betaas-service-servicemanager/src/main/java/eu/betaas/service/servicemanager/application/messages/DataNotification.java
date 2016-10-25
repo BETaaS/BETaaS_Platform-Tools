@@ -39,6 +39,16 @@ public class DataNotification {
 	public void setData(String data) {
 		this.data = data;
 	}
+	
+	public String toString() {
+		String result =
+		 "<DataNotification>"+
+			 "<serviceID>" + getServiceID() + "</serviceID>"+
+			 "<data>" + getData() + "</data>" +
+		 "</DataNotification>";
+		
+		return result;
+	}
 
 	/** The ID of the service whose data is being notified */
 	private String serviceID;

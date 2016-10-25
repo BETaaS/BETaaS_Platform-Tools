@@ -27,6 +27,7 @@
     <cm:property-placeholder persistent-id="betaas.gateway" >
 		<cm:default-properties>
 			<cm:property name="gwId" value="-1"/>
+			<cm:property name="delimiter" value="_"/>
 		</cm:default-properties>
 	</cm:property-placeholder>
     
@@ -37,13 +38,19 @@
  	</cm:property-placeholder>
     
     
-	<bean id="taasResourcesManagerExtBean" class="eu.betaas.taas.taasresourcesmanager.api.impl.TaaSResourceManagerExtImpl" init-method="setupService">
+    <bean id="messageManagerBean" class="eu.betaas.taas.taasresourcesmanager.messaging.MessageManager" init-method="setupService">
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
+    
+	<bean id="taasResourcesManagerExtBean" class="eu.betaas.taas.taasresourcesmanager.api.impl.TaaSResourceManagerExtImpl" init-method="setupService" depends-on="messageManagerBean">
 		<property name="gwId" value="${gwId}"></property>
+		<property name="delimiter" value="${delimiter}"/>
 	</bean>
     
     <bean id="taasResourcesManagerBean" class="eu.betaas.taas.taasresourcesmanager.api.impl.TaaSResourceManagerImpl" init-method="setupService" depends-on="taasResourcesManagerExtBean">
     	<property name="gwId" value="${gwId}"></property>
     	<property name="context" ref="blueprintBundleContext"/>
+    	<property name="delimiter" value="${delimiter}"/>
     </bean>
 	
     <service ref="taasResourcesManagerBean" interface="eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager"/>

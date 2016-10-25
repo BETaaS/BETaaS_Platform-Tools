@@ -32,6 +32,9 @@ public interface SemanticParserAdaptator{
   public boolean addWordnetConceptTerm(String sTerm, String sSynsetID, String sDefinition);
   public boolean removeThing(List<String> sThingServiceList);
   public boolean removeThingUnreachable (String sThingName);
+  public List<String> getsThingServiceDeleteList();
+  public void delThingServiceDeleteList(String sThingServiceName);
+  public boolean searchThingServiceDeleteList(String sThingServiceName);
   
   public boolean subscribe(String sThingServiceName);
   public boolean unsubscribe(String sThingServiceName);

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ 
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+  </parent>
+
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-contextmanager-linkeddata</artifactId>
+  <version>3.0.2-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>BETaaS Linked Data Connector</name>
+  <description>Linked Data Connector for the TaaS layer</description>
+
+  <properties>
+  <cxf.version>2.7.7</cxf.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+	  <groupId>eu.betaas</groupId>
+	  <artifactId>betaas-taas-bigdatamanager-database</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
+    <dependency>
+	  <groupId>eu.betaas</groupId>
+	  <artifactId>betaas-taas-contextmanager</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
+    <dependency>
+	  <groupId>eu.betaas</groupId>
+	  <artifactId>betaas-taas-taasresourcesmanager</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>eu.betaas</groupId>
+    	<artifactId>betaas-bus-interface</artifactId>
+    	<version>${project.version}</version>
+	</dependency>
+	
+  	<dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>			
+	</dependency>
+	
+	<dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>1.1.1</version>
+      <exclusions>    
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>junit</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+           	<Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+	        <Bundle-Name>${project.name}</Bundle-Name> 
+			<Import-Package>
+          		org.osgi.framework.*, 
+				org.osgi.util.tracker.*, 
+          		org.apache.log4j,
+                org.osgi.service.blueprint,
+                eu.betaas.taas.bigdatamanager.*,
+                javax.ws.rs.*;version="[1.1,3)",
+				org.apache.cxf.*;version="[2,4)",
+				*
+            </Import-Package>
+	    	<Export-Package>
+	    		eu.betaas.taas.contextmanager.linkeddata.api
+	    		eu.betaas.taas.contextmanager.linkeddata.api.impl
+            </Export-Package>           
+<!--             <Bundle-Activator>eu.betaas.taas.taasvmmanager.TaaSVMManagerActivator</Bundle-Activator> -->
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

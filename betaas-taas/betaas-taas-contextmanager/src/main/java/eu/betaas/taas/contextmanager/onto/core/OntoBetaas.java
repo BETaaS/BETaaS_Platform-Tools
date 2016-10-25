@@ -33,7 +33,7 @@ public class OntoBetaas
   // PRIVATE SECTION
   private static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private static final String PREFIX_ONTOLOGY_TO_EXPORT = "betaasOnt_export.owl";
-  private JenaSdbEx m_oJenaEx = null; ///TODO ¿?
+  private JenaSdbEx m_oJenaEx = null; 
 
   public boolean connectToRepository() throws Exception
   {
@@ -93,7 +93,7 @@ public class OntoBetaas
       
       if (m_oJenaEx != null)
       {
-        bCorrectJena = m_oJenaEx.close();
+//        bCorrectJena = m_oJenaEx.close();
         m_oJenaEx = null;
       }
       

@@ -73,7 +73,6 @@ public class BatteryCalculator
 			if (rechargeForecast>600)
 			{
 				// If re-charge isn't done before 10 minutes, then this is very problematic
-				logger.debug ("Battery evaluation is very low!");
 				return 0.01f;
 			}
 			else

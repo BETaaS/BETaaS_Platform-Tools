@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-taas-qosmanager</artifactId>
-		<version>2.1-release</version>
+		<version>3.0.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eu.betaas.net.sf.wsag4j</groupId>
 	<artifactId>wsag4j-types</artifactId>
-	<version>2.1-release</version>
+	<version>3.0.2-SNAPSHOT</version>
 
 	<name>WSAG4J: XML-Types</name>
 	<description>WSAG4J XML-Types Collection</description>

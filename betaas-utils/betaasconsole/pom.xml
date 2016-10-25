@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.betaas</groupId>
+  <artifactId>BETaaBackend</artifactId>
+  <version>3.0.2-SNAPSHOT</version>
+  <name>BETaaSUI Nodejs Backend</name>
+  <repositories>
+  	<repository>
+	  <id>mulesoft-releases</id>
+	  <name>MuleSoft Repository</name>
+	  <url>https://repository.mulesoft.org/releases/</url> 
+	</repository>
+  </repositories>
+  <build>
+    <finalName>BETaaBackend</finalName>
+<!--     <pluginManagement> -->
+<!--     <plugin> -->
+<!-- 	    <groupId>org.mule.tools.javascript</groupId> -->
+<!-- 	    <artifactId>npm-maven-plugin</artifactId> -->
+<!-- 	    <version>1.0</version> -->
+<!-- 	    <executions> -->
+<!-- 	        <execution> -->
+<!-- 	            <phase>generate-sources</phase> -->
+<!-- 	            <goals> -->
+<!-- 	                <goal>fetch-modules</goal> -->
+<!-- 	            </goals> -->
+<!-- 	            <configuration> -->
+<!-- 	                <packages> -->
+<!-- 	                    <package>colors:0.5.1</package> -->
+<!-- 	                    <package>jshint:0.8.1</package> -->
+<!-- 	                </packages> -->
+<!-- 	            </configuration> -->
+<!-- 	        </execution> -->
+<!-- 	    </executions> -->
+<!-- 	</plugin> -->
+<!--     </pluginManagement> -->
+  </build>
+</project>

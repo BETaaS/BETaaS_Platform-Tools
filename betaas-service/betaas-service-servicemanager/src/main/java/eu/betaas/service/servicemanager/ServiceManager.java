@@ -27,12 +27,18 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import eu.betaas.service.securitymanager.service.IAuthorizationService;
 import eu.betaas.service.servicemanager.application.messages.DataNotification;
@@ -46,6 +52,9 @@ import eu.betaas.service.servicemanager.extended.registry.ExtendedRegistry;
 import eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService;
 import eu.betaas.taas.qosmanager.api.QoSManagerInternalIF;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager;
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
 
 /**
  * This class represent the Service Manager and implements its inner functionalities
@@ -105,6 +114,14 @@ public class ServiceManager {
 		return mGWId;
 	}
 	
+	public void setGcmKey(String gcmKey) {
+		mGcmKey = gcmKey;
+	}
+	
+	public String getGcmKey() {
+		return mGcmKey;
+	}
+	
 	/**
 	 * @return the application registry of this SM
 	 */
@@ -122,15 +139,19 @@ public class ServiceManager {
 	/**
 	 * Notifies to the application that it has been installed and it has been assigned an ID
 	 * @param appID the assigned application identifier
+	 * @param isInstalled if installation succeeded
+	 * @param errorMessage the error that caused installation failure
+	 * @param appName Application that failed to be installed
 	 * @throws Exception
 	 */
-	public void notifyAssignedAppID(String appID) throws Exception {
+	public void notifyAssignedAppID(String appID, boolean isInstalled, String errorMessage, String serviceDescription) throws Exception {
 		
 		mLogger.info("Notifying the assigned ID (" + appID + ") to the application");
 		
 		// Get the install information
-		AppRegistryRow regRow = mApplicationReg.getApp(appID, true);
+		AppRegistryRow regRow = mApplicationReg.getApp(appID, isInstalled);
 		if (regRow == null) throw new Exception("Application not found in the registry (notifyAssignedAppID)");
+		
 		if ((regRow.mNotificationAddress == null) || (regRow.mNotificationAddress.isEmpty())) {
 			mLogger.warn("Notification address not specified, notification will not be sent");
 			return;
@@ -138,27 +159,49 @@ public class ServiceManager {
 		
 		// Create the install notification
 		InstallNotification notification = new InstallNotification();
-		notification.setInstallSuccess(1);
-		notification.setAppID(regRow.mAppID);
-		notification.setMessage("Application successfully installed");
-		
-		ArrayList<ServiceInstallation> list = new ArrayList<ServiceInstallation>();
-		for (AppService serv : regRow.mServiceList) {
-			ServiceInstallation servInst = new ServiceInstallation();
-			
-			// NOTE: the service ID is composed by TaaSRM starting with the Application ID that
-			//       starts with the GW ID.
-			servInst.setServiceID(serv.mServiceID);
-			servInst.setToken(serv.mRequirements.mCredentials);
-			
-			list.add(servInst);
+		if(isInstalled){
+			notification.setInstallSuccess(1);
+			notification.setMessage("Application successfully installed");
+			ArrayList<ServiceInstallation> list = new ArrayList<ServiceInstallation>();
+			for (AppService serv : regRow.mServiceList) {
+				ServiceInstallation servInst = new ServiceInstallation();
+				
+				// NOTE: the service ID is composed by TaaSRM starting with the Application ID that
+				//       starts with the GW ID.
+				servInst.setServiceID(serv.mServiceID);
+				servInst.setToken(serv.mRequirements.mCredentials);
+				
+				list.add(servInst);
+			}
+			notification.setServiceList(list);
+		}else{
+			notification.setInstallSuccess(0);
+			notification.setMessage("Application installation failed. Service Description: " + serviceDescription + " Error Message = " + errorMessage);
 		}
-		notification.setServiceList(list);
-	
-		sendRESTNotification(notification, regRow.mNotificationAddress, ServiceManager.NotificationType.INSTALLATION);
+			
+		notification.setAppID(regRow.mAppID);
+		
+		
+		
+			
+		if ((regRow.mNotificationAddress != null) && (!regRow.mNotificationAddress.isEmpty())) {
+			
+			String dest;
+			if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_GCM)) {
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_GCM.length());
+				sendGCMNotification(notification.toString(), dest);
+			} else if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_REST)){
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_REST.length());
+				sendRESTNotification(notification, dest);
+			} else {
+				mLogger.warn("Unexpected notification address: " + regRow.mNotificationAddress);
+			}
+		}
 		
 		mLogger.info("Application ID notified");
 	}
+	
+
 	
 	/**
 	 * Notifies a SLA violation on a service to the application that installed it
@@ -176,8 +219,19 @@ public class ServiceManager {
 		SLAViolationNotification notification = new SLAViolationNotification();
 		notification.setServiceID(serviceID);
 			
-		//TODO: Based on the notification address, use REST or other mechanisms like Google Cloud Messaging
-		sendRESTNotification(notification, regRow.mNotificationAddress, ServiceManager.NotificationType.SLA_VIOLATION);		
+		if ((regRow.mNotificationAddress != null) && (!regRow.mNotificationAddress.isEmpty())) {
+			
+			String dest;
+			if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_GCM)) {
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_GCM.length());
+				sendGCMNotification(notification.toString(), dest);
+			} else if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_REST)){
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_REST.length());
+				sendRESTNotification(notification, dest);
+			} else {
+				mLogger.warn("Unexpected notification address: " + regRow.mNotificationAddress);
+			}
+		}	
 	}
 	
 	
@@ -202,9 +256,20 @@ public class ServiceManager {
 		notification.setServiceID(serviceID);
 		if (data == null) notification.setData(null);
 		else notification.setData(data.toString());
-	
-		//TODO: Based on the notification address, use REST or other mechanisms like Google Cloud Messaging
-		sendRESTNotification(notification, regRow.mNotificationAddress, ServiceManager.NotificationType.DATA);		
+
+		if ((regRow.mNotificationAddress != null) && (!regRow.mNotificationAddress.isEmpty())) {
+			
+			String dest;
+			if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_GCM)) {
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_GCM.length());
+				sendGCMNotification(notification.toString(), dest);
+			} else if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_REST)){
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_REST.length());
+				sendRESTNotification(notification, dest);
+			} else {
+				mLogger.warn("Unexpected notification address: " + regRow.mNotificationAddress);
+			}
+		}
 	}
 	
 	
@@ -231,7 +296,19 @@ public class ServiceManager {
 		notification.setAppID("-");
 		notification.setMessage("Error installing " + appName + ": " + msg);
 		
-		sendRESTNotification(notification, regRow.mNotificationAddress, NotificationType.INSTALLATION);
+		if ((regRow.mNotificationAddress != null) && (!regRow.mNotificationAddress.isEmpty())) {
+			
+			String dest;
+			if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_GCM)) {
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_GCM.length());
+				sendGCMNotification(notification.toString(), dest);
+			} else if (regRow.mNotificationAddress.startsWith(ApplicationRegistry.NOTIFICATION_TYPE_REST)){
+				dest = regRow.mNotificationAddress.substring(ApplicationRegistry.NOTIFICATION_TYPE_REST.length());
+				sendRESTNotification(notification, dest);
+			} else {
+				mLogger.warn("Unexpected notification address: " + regRow.mNotificationAddress);
+			}
+		}
 		
 		mLogger.info("Install error notification sent");
 	}
@@ -343,42 +420,22 @@ public class ServiceManager {
 	}
 
 	
-	private void sendRESTNotification(InstallNotification msg, String address, NotificationType type) throws Exception {
-		String content = "<InstallNotification>"+
-							 "<message>" + msg.getMessage() + "</message>"+
-							 "<installSuccess>" + msg.getInstallSuccess() + "</installSuccess>"+
-							 "<appID>" + msg.getAppID() + "</appID>";
-//+ "<serviceList>";
-		if (msg.getServiceList() != null) {
-			for (int i=0; i < msg.getServiceList().size(); i++) {
-				content += "<ServiceInstallation>";
-				  content += "<serviceID>" + msg.getServiceList().get(i).getServiceID() + "</serviceID>";
-				  content += "<token>" + msg.getServiceList().get(i).getToken() + "</token>";
-				content += "</ServiceInstallation>";
-			}
-		}
-							  
-//content += "</serviceList>";
-		content += "</InstallNotification>";
+	private void sendRESTNotification(InstallNotification msg, String address) throws Exception {
 		mLogger.debug("The notification to send is:");
+		String content = msg.toString();
 		mLogger.debug(content);
-		sendRESTNotification(content, address, type);
+		sendRESTNotification(content, address, ServiceManager.NotificationType.INSTALLATION);
 	}
 	
 	
-	private void sendRESTNotification(DataNotification msg, String address, NotificationType type) throws Exception {
-		String content = "<DataNotification>"+
-							 "<serviceID>" + msg.getServiceID() + "</serviceID>"+
-							 "<data>" + msg.getData() + "</data>" +
-						 "</DataNotification>";
-		sendRESTNotification(content, address, type);
+	private void sendRESTNotification(DataNotification msg, String address) throws Exception {
+		String content = msg.toString();
+		sendRESTNotification(content, address, ServiceManager.NotificationType.DATA);
 	}
 	
-	private void sendRESTNotification(SLAViolationNotification msg, String address, NotificationType type) throws Exception {
-		String content = "<SLAViolationNotification>"+
-							 "<serviceID>" + msg.getServiceID() + "</serviceID>"+
-						 "</SLAViolationNotification>";
-		sendRESTNotification(content, address, type);
+	private void sendRESTNotification(SLAViolationNotification msg, String address) throws Exception {
+		String content = msg.toString();
+		sendRESTNotification(content, address, ServiceManager.NotificationType.SLA_VIOLATION);
 	}
 	
 	
@@ -435,7 +492,18 @@ public class ServiceManager {
 			if (out != null) out.close();
 			if (br != null) br.close();
 		}
-	}	
+	}
+	
+	
+	/**
+	 * Send a message through the Google Cloud Messaging
+	 * @param notification the message content
+	 * @param GCMId the registration ID specified by the application that sent the manifest
+	 */
+	private void sendGCMNotification(String notification, String GCMId) {
+		GCMNotifier gcm = new GCMNotifier(notification, GCMId);
+		gcm.start();
+	}
 
 	/** This class singleton */
 	private static ServiceManager mServiceManager;
@@ -470,6 +538,39 @@ public class ServiceManager {
 		}
 	}
 	
+	public static void busMessage(String message, String level, String type){
+		
+		String key = type + ".service";
+				
+		mLogger.info("Checking queue");
+		mLogger.info("Sending to queue");
+		ServiceReference serviceReference = mContext.getServiceReference(Publisher.class.getName());
+		mLogger.info("Sending to queue");
+		if (serviceReference==null)return;
+		
+		Publisher service = (Publisher) mContext.getService(serviceReference); 
+
+		Message infoMessage = new Message();
+		
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date now = calendar.getTime();
+
+		
+		infoMessage.setTimestamp(now.getTime());
+		infoMessage.setLayer(Message.Layer.SERVICE);
+		infoMessage.setLevel(level);
+		infoMessage.setOrigin("service-manager");
+		infoMessage.setDescritpion(message);
+		
+		MessageBuilder newMessage = new MessageBuilder();
+		
+		
+		mLogger.info("Sending key: " + key + " message: "+ newMessage.getJsonEquivalent(infoMessage));
+		service.publish(key, newMessage.getJsonEquivalent(infoMessage));
+		mLogger.info("Message sent to queue");
+		
+	}
+	
 	/** Logger */
 	private static Logger mLogger = Logger.getLogger(ServiceManager.LOGGER_NAME);
 
@@ -485,4 +586,10 @@ public class ServiceManager {
 	/** The GW identifier */
 	private String mGWId;
 	
+	/** The Google Cloud Messaging key used by SM to authenticate to GCM services */
+	private String mGcmKey;
+	
+	public final static String MONITORING = "monitoring";
+	public final static String DEPENDABILITY = "dependability";
+
 }

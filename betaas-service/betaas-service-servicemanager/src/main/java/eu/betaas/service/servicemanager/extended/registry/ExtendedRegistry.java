@@ -423,6 +423,17 @@ public class ExtendedRegistry {
 		return mLastExtID;
 	}
 	
+	/**
+	 * @param position 
+	 * @return the registry row corresponding to the specified position in the vector
+	 */
+	public ExtServiceRegistryRow getAppAt(int position) {
+		if(position >= mExtendedRegistry.size())
+			return null;
+		else
+				return mExtendedRegistry.get(position);
+	}
+	
 	/** This is the Extended Service Registry */
 	private Vector<ExtServiceRegistryRow> mExtendedRegistry; 
 

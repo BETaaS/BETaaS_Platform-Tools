@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>2.1-release</version>
+    <version>${project.version}</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-securitymanager-requirements</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${project.version}</version>
   <packaging>bundle</packaging>
   <name>BETaaS TaaS security requirements</name>
   <description>Bundle that evaluates the security requirements of the thing services</description>

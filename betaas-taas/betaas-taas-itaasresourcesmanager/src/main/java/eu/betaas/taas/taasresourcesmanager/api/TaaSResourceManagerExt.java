@@ -17,7 +17,7 @@ limitations under the License.
 Authors :
 Francisco Javier Nieto. Atos Research and Innovation, Atos SPAIN SA
 @email francisco.nieto@atos.net 
-Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
+Sergio Garcï¿½a Villalonga. Atos Research and Innovation, Atos SPAIN SA
 @email sergio.garciavillalonga@atos.net
 **/
 
@@ -71,6 +71,14 @@ public interface TaaSResourceManagerExt
 	 * @return
 	 */	
 	public boolean remoteSubscription (String idThingService, String idApplication, int period, boolean realTime, String gateway);
+	
+	/**
+	 * Removes an existing subscription from a remote gateway
+	 * 
+	 * @param idApplication	 
+	 * @return
+	 */	
+	public boolean remoteUnsubscription (String idThingService, String idFeature, boolean realTime);
 	
 	/**
 	 * Sends remotely the corresponding data to the corresponding gateway and application (for PUSH modes)

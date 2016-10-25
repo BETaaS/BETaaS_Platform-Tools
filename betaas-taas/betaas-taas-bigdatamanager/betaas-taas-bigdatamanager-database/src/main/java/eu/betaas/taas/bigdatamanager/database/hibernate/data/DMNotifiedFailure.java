@@ -41,6 +41,8 @@ public class DMNotifiedFailure implements Serializable {
 	
 	private String description;
 	
+	private String identity_number;
+	
 	
 	public Integer getId() {
 		return id;
@@ -96,6 +98,14 @@ public class DMNotifiedFailure implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getIdentity_number() {
+		return identity_number;
+	}
+
+	public void setIdentity_number(String identity_number) {
+		this.identity_number = identity_number;
 	}
 
 	

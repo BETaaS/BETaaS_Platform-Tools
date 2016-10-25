@@ -34,11 +34,7 @@ public interface IExtern {
 	 */
 	public String getVitalityReport();
 	
-	/**
-	 * @param maxRecords maximum length of result
-	 * @return a report with the failures notified by components
-	 */
-	public String getFailureReport(int maxRecords);
+
 	
 	/**
 	 * Used by DM* to check if DMs retrieved with DOSGi are actually healthy

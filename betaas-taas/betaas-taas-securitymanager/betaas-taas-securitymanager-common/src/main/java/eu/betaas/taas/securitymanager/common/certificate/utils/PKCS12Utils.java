@@ -201,6 +201,7 @@ public class PKCS12Utils {
       		PKCSObjectIdentifiers.pbeWithSHAAnd128BitRC2_CBC, 
       		new CBCBlockCipher(new RC2Engine())).build(keyPasswd), 
       		new PKCS12SafeBag[]{eeCertBagBuilder.build(), caCertBagBuilder.build()});
+    	log.info("Certificates added for Common GW");
     }
     
 //    PKCS12PfxPdu pfx = builder.build(new BcPKCS12MacCalculatorBuilder(

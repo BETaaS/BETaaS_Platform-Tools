@@ -34,7 +34,7 @@ The Adaptation Context Manager is in changer of managing the subscriptions/unsub
 
 ### Adaptation Context Manager Software Components
 
-The BETaaS Adaptation Context Manger is configured by the following properties inside the file [*betaas.gateway.cfg*] (/betaas-configuration/configuration/betaas.gateway.cfg) :
+The BETaaS Adaptation Context Manager is configured by the following properties inside the file [*betaas.gateway.cfg*] (/betaas-configuration/configuration/betaas.gateway.cfg) :
   
     gwId
     

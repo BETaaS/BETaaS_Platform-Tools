@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-bigdatamanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-bigdatamanager-core</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BETaaS TaaS Big Data Manager Core</name>
   <description>BETaaS BigData Manager TaaS Core</description>
@@ -73,6 +73,12 @@
 	  <version>2.6.0</version>
 	  <scope>test</scope>
 	</dependency>
+	
+	<dependency>
+	 	<groupId>eu.betaas</groupId>
+		<artifactId>betaas-bus-interface</artifactId>
+ 		<version>${project.version}</version>
+	</dependency>
       
   </dependencies>
   
@@ -89,7 +95,8 @@
                      <Bundle-Version>${project.version}</Bundle-Version>
                       <Import-Package>org.osgi.framework,org.osgi.util.tracker,
                             org.apache.log4j,org.osgi.service.blueprint,eu.betaas.taas.bigdatamanager.database.hibernate.data,
-                            com.google.gson, eu.betaas.taas.bigdatamanager.database.service.impl,eu.betaas.taas.bigdatamanager.database.service
+                            com.google.gson, eu.betaas.taas.bigdatamanager.database.service.impl,eu.betaas.taas.bigdatamanager.database.service,
+                            eu.betaas.rabbitmq.publisher.interfaces,eu.betaas.rabbitmq.publisher.interfaces.utils;resolution:=optional                            
                      </Import-Package>
                      <Export-Package>
                          eu.betaas.taas.bigdatamanager.core.services,

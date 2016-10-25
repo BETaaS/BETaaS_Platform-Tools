@@ -136,7 +136,9 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 		
 		read_db(m_equivalents, m_assignments, m_requests, m_assuredrequests, m_thingservices, m_things);
 	}
-	
+	public void setAllocation(QoSRankList allocation_schema){
+		this.allocation_schema = allocation_schema;
+	}
 	private synchronized void read_db(
 			Map<String, QoSMEquivalentThingServiceStar> m_equivalents,
 			Map<String, QoSMAssignmentStar> m_assignments,
@@ -220,6 +222,7 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 			QoSManagerInternalIF caller, boolean all) throws WrongArgumentException {
 
 		LOG.info("QoSM* - Create new Agreement");
+		this.qosM.sendData("Create new Agreement", "info", "QoSM*");
 		if(rank== null || rank.isEmpty())
 		{
 			LOG.warn("Empty rank!");
@@ -277,8 +280,8 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 		
 		return new QoSRankList();
 	}
-
-	private synchronized void update_data(QoSRankList allocation_schema)
+	
+	public synchronized void update_data(QoSRankList allocation_schema)
 	{
 		m_equivalents = allocation_schema.getEquivalentsMap();
 		m_assignments = allocation_schema.getAssignmentsMap();
@@ -288,7 +291,7 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 		m_things = allocation_schema.getThingsMap();
 	}
 
-	private void sendNotification() {
+	public void sendNotification() {
 		try{
 			for(String gatewayId : allocation_schema.getNotifyMap().keySet()){
 				try{
@@ -296,6 +299,7 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 					gwQos.putQoSRank(allocation_schema.getNotifyMap().get(gatewayId));
 				}catch(NullPointerException e){
 					LOG.error("QoSManagerInternalIF not found" + e.getMessage());
+					this.qosM.sendData("QoSManagerInternalIF not found.", "error", "QoSM*");
 					LOG.debug("GatewayID: " + gatewayId);
 					LOG.debug("MapGw: " + allocation_schema.getMapGw());
 					LOG.debug("notifyMap: " + allocation_schema.getNotifyMap());
@@ -303,10 +307,11 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 			}
 		} catch(NullPointerException e){
 			LOG.error("Notification is unfeasible.");
+			this.qosM.sendData("Notification is unfeasible.", "error", "QoSM*");
 		}
 	}
 
-	private void mergeSchemas(QoSRankList assured_allocation) {
+	public void mergeSchemas(QoSRankList assured_allocation) {
 		try{
 			if(allocation_schema != null){
 				//merge allocation schemas
@@ -382,9 +387,11 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 			QoSManagerInternalIF caller, boolean all) throws WrongArgumentException {
 
 		LOG.info("QoSM* - Create new Agreement");
+		this.qosM.sendData("Create new Agreement", "info", "QoSM*");
 		if(rank == null || rank.isEmpty())
 		{
 			LOG.error("Empty rank!");
+			this.qosM.sendData("Empty rank.", "error", "QoSM*");
 			throw new WrongArgumentException("Empty Rank");
 		}
 		try {
@@ -422,10 +429,27 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 		}
 		return new QoSRankList();
 	}
-
+	public synchronized void unregisterServiceQoS(String serviceId)
+	{
+		LOG.info("ExternalAPIImpl - unregisterServiceQoS");
+		List<String> todelete = new ArrayList<String>();
+		for(String key : m_requests.keySet()){
+			if(key.startsWith(serviceId)) todelete.add(key);
+		}
+		for(String key : m_assuredrequests.keySet()){
+			if(key.startsWith(serviceId)) todelete.add(key);
+		}
+		for(String key : todelete){
+			if(m_requests.containsKey(key))
+				m_requests.remove(key);
+			if(m_assuredrequests.containsKey(key))
+				m_assuredrequests.remove(key);
+		}
+	}
 	public synchronized boolean writeThingsServicesQoS(String deviceId, double battery,
 			HashMap<String, QoSspec> thingServices, String gatewayId) {
 		LOG.info("ExternalAPIImpl - WriteThingsServicesQoS");
+		this.qosM.sendData("New thing connected", "info", "QoSM*");
 		LOG.debug("DeviceID:" + deviceId);
 		LOG.debug("GatewayID:" + gatewayId);
 		LOG.debug("thingservices:" + thingServices.keySet());
@@ -456,6 +480,7 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 	public synchronized boolean modifyThingsServicesQoS(ArrayList<String> thingServices, QoSManagerInternalIF caller) {
 		//IBigDataDatabaseService service = qosM.getService();
 		LOG.info("ExternalAPIImpl - modifyThingsServicesQoS");
+		this.qosM.sendData("Remove Thing Service", "info", "QoSM*");
 		LOG.debug("thingservices: " + thingServices);
 		for(String tsid : thingServices){
 			try{
@@ -523,23 +548,6 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 		return lst;
 	}
 
-	public void deleteAlreadyCommittedServices(ArrayList<String> serviceList) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public boolean removeReservations(String serviceID) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public Map<String, Double> registerServiceQoS(String serviceId,
-			ArrayList<String> thingServicesList,
-			ArrayList<ArrayList<String>> equivalentThingServices) {
-		return null;
-
-	}
-
 	public synchronized void updateQoSMEquivalents(
 			String serviceId, ArrayList<ArrayList<String>> equivalentThingServices){
 		IBigDataDatabaseService service = qosM.getService();
@@ -564,16 +572,7 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 
 	}
 
-	public void unregisterServiceQoS(String serviceId,
-			ArrayList<String> selectedThingServicesList) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void unallocate(String serviceId, ArrayList<String> ThingServicesList) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	public boolean synchronizeThingsServicesQoS(
 			HashMap<String, HashMap<String, QoSspec>> thingServices) {
@@ -602,16 +601,27 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 	}
 
 	public QoSRankList assignment(boolean requireResponse, QoSManagerInternalIF caller) {
-		// TODO remove waiting
-		try {
-			this.createAgreement(null, null, null, caller, true);
-		} catch (WrongArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(requireResponse){
+			try {
+				this.createAgreement(null, null, null, caller, true);
+			} catch (WrongArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		if(requireResponse)
-			return allocation_schema;
-		return null;
+		else{
+			Heuristic heur = new Heuristic(m_equivalents, m_assignments, 
+					m_requests, m_assuredrequests, m_thingservices, m_things, this.MapGw, 
+					null, null, null, caller.getGatewayId(), true, this.context);
+			
+			HeuristicAssured heurass = new HeuristicAssured(m_equivalents, m_assignments, 
+					m_requests, m_assuredrequests, m_thingservices, m_things, MapGw, null, null, null, null,
+					true, this.context);
+			
+			HeuristicAsync async = new HeuristicAsync(heur, heuristicScheduler, heurass, this, m_assuredrequests.isEmpty());
+			this.heuristicScheduler.submit(async);
+		}
+		return allocation_schema;
 	}
 
 	public String getGatewayId() {
@@ -627,6 +637,28 @@ public class ExternalAPIImpl implements QoSManagerExternalIF{
 
 	public void setQosM(QoSManager qosM) {
 		this.qosM = qosM;
+	}
+	
+	public synchronized void reachable(String tsid){
+		try{
+			QoSMThingServiceStar ts = m_thingservices.get(tsid);
+			ts.setReachable(true);
+			m_thingservices.put(tsid, ts);
+		} catch(Exception e)
+		{
+			
+		}
+	}
+
+	public synchronized void unreachable(String tsid){
+		try{
+			QoSMThingServiceStar ts = m_thingservices.get(tsid);
+			ts.setReachable(false);
+			m_thingservices.put(tsid, ts);
+		} catch(Exception e)
+		{
+			
+		}
 	}
 
 }

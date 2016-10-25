@@ -50,15 +50,15 @@ public class PrestoQueryTask implements AnalyticTask {
 	//private final String TASK_QUERY_LAST = "SELECT thingID,location,measurement,max(timestamp) from T_THING_DATA GROUP BY thingID,location,measurement ORDER BY thingID";
 	//private final String TASK_QUERY_THING_LOCATION_AGGR = "SELECT location,measurement,max(timestamp) from T_THING_DATA GROUP BY thingID,location,measurement ORDER BY thingID";
 	//private final String TASK_QUERY_THING_TYPE_AGGR = "SELECT thingID,location,measurement,max(timestamp) from T_THING_DATA GROUP BY thingID,location,measurement ORDER BY thingID";
-	private final String TASK_QUERY_AGGREGATE = "SELECT loc,type,max(CAST(replace(value,'''') as DOUBLE)) as max,min(CAST(replace(value,'''') as DOUBLE)) as min,avg(CAST(replace(value,'''') as DOUBLE)) as avg from betaasbd GROUP BY loc,type";
+	private final String TASK_QUERY_AGGREGATE = "SELECT loc,type,max(CAST(replace(value,'''') as DOUBLE)) as max,min(CAST(replace(value,'''') as DOUBLE)) as min,avg(CAST(replace(value,'''') as DOUBLE)) as avg from betaasbd where type like '%TRAFFIC%' GROUP BY loc,type";
 	private final String TASK_A_TRAFFIC =  "SELECT d1.loc,count(d1.value),avg(cast(d1.value as double)),min(d1.value),max(d1.value)," +
-			"(select  max(ET1.dte) from betaasdatastorage ET1 inner join (select loc, Max(value) as valuemax from betaasdatastorage group by loc) ET2 " +
+			"(select  max(ET1.dte) from betaasbd ET1 inner join (select loc, Max(value) as valuemax from betaasbd group by loc) ET2 " +
 			"	on ET1.value = ET2.valuemax and ET1.loc = ET2.loc where ET1.loc = d1.loc group by ET1.loc) as peaktime," +
-			"	(SELECT value from betaasdatastorage as d3 where type='TRAFFIC' and d3.gateway=d1.gateway and d3.thingID=d1.thingID and d3.dte in (SELECT max(dte) " +
-			"		from betaasdatastorage where type='TRAFFIC' GROUP BY loc) GROUP BY loc)  AS lastvalue,max(dte) as lasttime from betaasdatastorage as d1 where type='TRAFFIC'  GROUP BY d1.loc";
+			"	(SELECT value from betaasbd as d3 where type='TRAFFIC' and d3.gateway=d1.gateway and d3.thingID=d1.thingID and d3.dte in (SELECT max(dte) " +
+			"		from betaasbd where type='TRAFFIC' GROUP BY loc) GROUP BY loc)  AS lastvalue,max(dte) as lasttime from betaasbd as d1 where type='TRAFFIC'  GROUP BY d1.loc";
 	
 			
-
+	
 	private TaskData taskdata;
 	private TaskInfo taskInfo;
 	private static String taskDescription="This task run aggregated max min and avg for each type of thing in each location";
@@ -163,7 +163,7 @@ public class PrestoQueryTask implements AnalyticTask {
 	private String getData(){
 		
 	    JsonArray array = new JsonArray();
-
+	    logger.info("TEST 6.1.X Task Analytic run");
 		try {
 			
 			Statement taskDataStmt = conn.createStatement();
@@ -194,7 +194,7 @@ public class PrestoQueryTask implements AnalyticTask {
 			}
 			
 			conn.close();
-			
+			logger.info("TEST 6.1.X Task Analytic completed");
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

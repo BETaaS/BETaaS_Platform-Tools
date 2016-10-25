@@ -49,9 +49,9 @@ public class CoAPServer extends CoapServer {
 	public static final String ALTITUDE	= "altitude";
 	public static final String FLOOR	= "floor";
 	public static final String LOCATIONKEYWORD	= "locationKeyword";
-	public static final String LOCATIONIDENTIFIER = "LocationIdentifier";
-	public static final String COMPUTATIONALCOST = "ComputationalCost";
-	public static final String BATTERYCOST = "BatteryCost";
+	public static final String LOCATIONIDENTIFIER = "locationIdentifier";
+	public static final String COMPUTATIONALCOST = "computationalCost";
+	public static final String BATTERYCOST = "batteryCost";
 	public static final String MEASUREMENT = "measurement";
     /*
      * Application entry point.
@@ -138,7 +138,46 @@ public class CoAPServer extends CoapServer {
 				    		}
 
 				    	}
-					if ("WaterSimulatedResource".equals(reader.getLocalName())){
+				    	if ("ActuatorResource".equals(reader.getLocalName())){
+				    		BasicResource tr = null;
+				    		String deviceId = BasicResource.readDeviceId(reader);
+				    		if(deviceId != null)
+				    		{
+				    			tr = new ActuatorResource(deviceId);
+			    				tr.setId(deviceId);
+			    				tr.readXMLAttributes(reader);
+					    		tr.setAttributes();
+					    		resourcelist.add(tr);
+				    		}
+
+				    	}
+				    	if ("HumidityResource".equals(reader.getLocalName())){
+				    		BasicResource tr = null;
+				    		String deviceId = BasicResource.readDeviceId(reader);
+				    		if(deviceId != null)
+				    		{
+				    			tr = new HumidityResource(deviceId);
+			    				tr.setId(deviceId);
+			    				tr.readXMLAttributes(reader);
+					    		tr.setAttributes();
+					    		resourcelist.add(tr);
+				    		}
+
+				    	}
+				    	if ("TemperatureResource".equals(reader.getLocalName())){
+				    		BasicResource tr = null;
+				    		String deviceId = BasicResource.readDeviceId(reader);
+				    		if(deviceId != null)
+				    		{
+				    			tr = new TemperatureResource(deviceId);
+			    				tr.setId(deviceId);
+			    				tr.readXMLAttributes(reader);
+					    		tr.setAttributes();
+					    		resourcelist.add(tr);
+				    		}
+
+				    	}
+				    	if ("WaterSimulatedResource".equals(reader.getLocalName())){
 				    		BasicResource tr = null;
 				    		String deviceId = BasicResource.readDeviceId(reader);
 				    		if(deviceId != null)

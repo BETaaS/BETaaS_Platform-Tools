@@ -30,7 +30,13 @@ import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
 import eu.betaas.taas.bigdatamanager.database.hibernate.HibernateSupport;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.AgreementEprContainer;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.AppService;
@@ -48,6 +54,7 @@ import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingInternal;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceInternal;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceStar;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingStar;
+import eu.betaas.taas.bigdatamanager.database.hibernate.data.SimulatedThing;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingData;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingInformation;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.TrustManagerService;
@@ -58,15 +65,19 @@ import eu.betaas.taas.bigdatamanager.database.hibernate.data.ExtServService;
 public class BDDatabaseService implements IBigDataDatabaseService {
 
 	private static String JDBCDRIVER="org.h2.Driver";
+	private boolean enabledbus=false;
 	private String jdbcurl;
 	private String user;
 	private String pwd;
+	private String gwid;
 	private String DROP_TABLE_ONTO="DROP TABLE IF EXISTS ";
 	private Statement dropstat;
 	private JdbcConnectionPool connectionPool;
 	private Logger logger;
 	private EntityManager entityManager;
 	private Map<String,Object> config;
+	private BundleContext context;
+	MessageBuilder mb;
 
 	public void setup() throws ClassNotFoundException, SQLException  {
 
@@ -125,7 +136,8 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 		logger.debug("Table quads dropped");
 		logger.debug("Closing drop connection");
 		delConn.close();
-		
+		mb = new MessageBuilder();
+		busMessage("Created empty TaaS Database "+ jdbcurl +" on Gateway "+gwid);
 		logger.debug("Created connection pool");
 		
 		
@@ -139,6 +151,7 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 			return null;
 		}
 		logger.debug("Going to create a cpool for " + jdbcurl + " un "+user + " pwd " + pwd);
+		//busMessage("Requested a new connection from the connection pool: Active Connections:"+connectionPool.getActiveConnections());
 		logger.debug("Active connections " + connectionPool.getActiveConnections());
 		logger.debug("Max conn " + connectionPool.getMaxConnections());
 		logger.debug("Timeout " + connectionPool.getLoginTimeout());
@@ -411,9 +424,7 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 	}
 
 	public  void saveThingData(ThingData thingData) {
-		logger.info("Saving data ");
-		
-		
+	
 		entityManager.getTransaction().begin();
 		entityManager.persist(thingData);
 		entityManager.getTransaction().commit();
@@ -830,6 +841,24 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 		
 	}
 	
+	public void deleteQoSMRequestInternal(String serviceId){
+		entityManager.getTransaction().begin();
+		Query query =  entityManager.createQuery("DELETE FROM QoSMRequestInternal r " +
+				"WHERE r.id.serviceId =:custServiceId");
+		query.setParameter("custServiceId", serviceId);
+		query.executeUpdate();
+		entityManager.getTransaction().commit();
+	}
+	
+	public void deleteQoSMAssuredRequestInternal(String serviceId){
+		entityManager.getTransaction().begin();
+		Query query =  entityManager.createQuery("DELETE FROM QoSMAssuredRequestInternal r " +
+				"WHERE r.id.serviceId =:custServiceId");
+		query.setParameter("custServiceId", serviceId);
+		query.executeUpdate();
+		entityManager.getTransaction().commit();
+	}
+	
 	public void deleteAllQoSMThingServiceStar(){
 		entityManager.getTransaction().begin();
 		Query query =  entityManager.createQuery("DELETE FROM QoSMThingServiceStar");
@@ -874,7 +903,8 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 			entityManager.merge(r);
 			entityManager.getTransaction().commit();
 		}
-		else{
+		else
+		{
 			entityManager.getTransaction().begin();
 			entityManager.persist(r);
 			entityManager.getTransaction().commit();
@@ -895,4 +925,86 @@ public class BDDatabaseService implements IBigDataDatabaseService {
 		Query query = entityManager.createQuery("FROM QoSMThingInternal");
 		return (List<QoSMThingInternal>) query.getResultList();
 	}
+	/* Methods for use by the Rest Services of the Things Simulator*/
+	public List<SimulatedThing> listAllSimulatedThings() {
+		List<SimulatedThing> result = entityManager.createQuery("from SimulatedThing").getResultList();
+		return result;
+	}
+	
+	public  void saveSimulatedThing(SimulatedThing thing) {
+		if(thing != null){
+			SimulatedThing existing = entityManager.find(SimulatedThing.class, thing.getId());
+			if (existing != null){
+				logger.info("Simulated Thing found with id:"+existing.getId());
+				entityManager.getTransaction().begin();
+				entityManager.merge(thing);
+				entityManager.getTransaction().commit();
+			} else {
+				logger.info("Simulated Thing Not found with Device id:"+thing.getDeviceID());
+				entityManager.getTransaction().begin();
+				entityManager.persist(thing);
+				entityManager.getTransaction().commit();	
+			}			
+		}		
+	}
+	
+	public  void deleteSimulatedThing(Integer thingDBId) {
+		SimulatedThing thingToDelete = entityManager.find(SimulatedThing.class, thingDBId);
+		if(thingToDelete != null){
+			entityManager.getTransaction().begin();
+			entityManager.remove(thingToDelete);
+			entityManager.getTransaction().commit();
+		}		
+	}
+
+	public boolean isEnabledbus() {
+		return enabledbus;
+	}
+
+	public void setEnabledbus(boolean enabledbus) {
+		this.enabledbus = enabledbus;
+	}
+	
+	public BundleContext getContext() {
+		return context;
+	}
+
+	public void setContext(BundleContext context) {
+		this.context = context;
+	}
+
+	
+	
+	public String getGwid() {
+		return gwid;
+	}
+
+	public void setGwid(String gwid) {
+		this.gwid = gwid;
+	}
+
+	private void busMessage(String message){
+		logger.debug("Checking queue");
+		if (!enabledbus)return;
+		logger.debug("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		logger.debug("Sending to queue");
+		if (serviceReference==null)return;
+		
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		logger.debug("Sending");
+		Message messageFormat = new Message();
+		messageFormat.setLayer(Layer.TAAS);
+		messageFormat.setLevel("INFO");
+		messageFormat.setOrigin("BD Manager");
+		messageFormat.setDescritpion(message);
+
+
+		
+		service.publish("taas.database",mb.getJsonEquivalent(messageFormat));
+		logger.debug("Sent");
+		
+		
+	}
+	/* END OF Methods for use by the Rest Services of the Things Simulator*/
 }

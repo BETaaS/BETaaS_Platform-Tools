@@ -31,6 +31,14 @@ public class SLAViolationNotification {
 	public void setServiceID(String serviceID) {
 		this.serviceID = serviceID;
 	}
+	
+	public String toString() {
+		String result = 
+			 "<SLAViolationNotification>"+
+				 "<serviceID>" + getServiceID() + "</serviceID>"+
+			 "</SLAViolationNotification>";
+		return result;
+	}
 
 	/** The ID of the service whose data is being notified */
 	private String serviceID;

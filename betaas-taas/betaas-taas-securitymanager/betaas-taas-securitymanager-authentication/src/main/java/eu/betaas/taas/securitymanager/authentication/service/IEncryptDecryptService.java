@@ -32,7 +32,7 @@ public interface IEncryptDecryptService {
 	 * @param inputString
 	 * @return
 	 */
-	public byte[] doEncryption(byte[] keyBytes, String inputString);
+	public String doEncryption(byte[] keyBytes, String inputString);
 	
 	/**
 	 * Method to encrypt a byte array (e.g. from a String) using AES-CBC algorithm 
@@ -41,7 +41,7 @@ public interface IEncryptDecryptService {
 	 * @param inputBytes
 	 * @return
 	 */
-	public byte[] doEncryption(byte[] keyBytes, byte[] inputBytes);
+	public String doEncryption(byte[] keyBytes, byte[] inputBytes);
 	
 	/**
 	 * Method to decrypt an encrypted String using AES-CBC algorithm where the key
@@ -50,5 +50,5 @@ public interface IEncryptDecryptService {
 	 * @param encrypted
 	 * @return
 	 */
-	public String doDecryption(byte[] keyBytes, byte[] encrypted);
+	public String doDecryption(byte[] keyBytes, String encrypted);
 }

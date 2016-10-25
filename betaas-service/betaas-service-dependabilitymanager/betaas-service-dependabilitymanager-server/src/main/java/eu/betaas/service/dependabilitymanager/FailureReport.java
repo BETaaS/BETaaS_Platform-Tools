@@ -26,4 +26,8 @@ public class FailureReport {
 	public String generationDate;
 	public String generator;
 	public ArrayList<FailureReportRow> dataList;
+	
+	public FailureReport(){
+		dataList = new ArrayList<FailureReportRow>();
+	}
 }

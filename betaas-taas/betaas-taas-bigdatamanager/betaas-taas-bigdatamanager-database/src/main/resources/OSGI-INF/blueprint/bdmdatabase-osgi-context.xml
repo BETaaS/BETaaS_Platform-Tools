@@ -26,6 +26,8 @@
 			<cm:property name="taasdb_jdbc" value="jdbc:h2:mem:dbtaas"/>
 			<cm:property name="taasdb_user" value="sa"/>
 			<cm:property name="taasdb_pwd" value="sa"/>
+			<cm:property name="busenabled" value="false"/>
+			<cm:property name="gwid" value="gwId"/>
 		</cm:default-properties>
 	</cm:property-placeholder>
 
@@ -33,6 +35,9 @@
 		<property name="jdbcurl" value="${taasdb_jdbc}"/>
 		<property name="user" value="${taasdb_user}"></property>
 		<property name="pwd" value="${taasdb_pwd}"></property>
+		<property name="enabledbus" value="${busenabled}"/>
+		<property name="context" ref="blueprintBundleContext"/>
+		<property name="gwid" value="${gwid}"/>
     </bean>
 
     <service ref="serviceDatabaseBean1" interface="eu.betaas.taas.bigdatamanager.database.service.IBigDataDatabaseService"/>

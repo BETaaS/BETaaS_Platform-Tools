@@ -33,7 +33,7 @@ import eu.betaas.adaptation.simulator.utils.FileUtils;
 public class AdaptorPluginImpl implements IAdaptorPlugin {
 
 	private IAdaptorListener listener;
-	private LinkedHashMap<String,Thread> listOfThreads = new LinkedHashMap<String,Thread>();
+	protected LinkedHashMap<String,Thread> listOfThreads = new LinkedHashMap<String,Thread>();
 	protected Vector<HashMap<String, String>> sensors = new Vector<HashMap<String, String>>();
 	private String sensorsFolder;
 	private LinkedHashMap<String, Integer> counters = new LinkedHashMap<String,Integer>();
@@ -71,26 +71,30 @@ public class AdaptorPluginImpl implements IAdaptorPlugin {
 	}
 	
 
-	public boolean register(String sensorID) {
+	public boolean register(String sensorID, int seconds) {
 
 		mLogger.info("Register called with sensorId : " + sensorID);
 		if(this.listener == null){
 			mLogger.info("Listener is null");
 			return false;
 		}
-		Reader reader= new Reader(sensorID, this.sensorsFolder, this.listener);
-		mLogger.info("new Reader");
-		Thread readerThread = new Thread(reader);
-		if(listOfThreads.containsKey(sensorID)){
-//			mLogger.info("ETSIPluginImpl sensor already registered :" + sensorID);
-			listOfThreads.get(sensorID).interrupt();	
-//			mLogger.info("ETSIPluginImpl sensor thread killed :" + sensorID);		
+		listOfThreads = new LinkedHashMap<String,Thread>();
+		String sensorFile = this.sensorsFolder + sensorID + ".csv";
+		File f = new File(sensorFile);
+		if(f.exists()){
+			Reader reader= new Reader(sensorID, this.sensorsFolder, this.listener, seconds);
+			mLogger.info("new Reader");
+			Thread readerThread = new Thread(reader);
+			if(this.listOfThreads.containsKey(sensorID)){
+				this.listOfThreads.get(sensorID).interrupt();			
+			}
+			this.listOfThreads.put(sensorID, readerThread);
+			readerThread.start();
+			
+			return true;
+		}else{
+			return false;
 		}
-//		mLogger.info("before put");
-		listOfThreads.put(sensorID, readerThread);
-		readerThread.start();
-		
-		return true;
 
 	}
 	
@@ -105,20 +109,18 @@ public class AdaptorPluginImpl implements IAdaptorPlugin {
 				HashMap<String, String> sensor = sensorsEnum.nextElement();
 				if (sensor.get("ID").equals(sensorID)){
 					output = sensor.get("measurement");
-					mLogger.info("Data is:"+output);
+					mLogger.debug("Data is:"+output);
 				}
 			}
-		}
-		
-		return output;				
-
+		}		
+		return output;
 	}
 
 	public boolean unregister(String sensorID) {
 		
-		if(listOfThreads.containsKey(sensorID)){
+		if(this.listOfThreads.containsKey(sensorID)){
 //			mLogger.info("ETSIPluginImpl sensor already registered :" + sensorID);
-			listOfThreads.get(sensorID).interrupt();	
+			this.listOfThreads.get(sensorID).interrupt();	
 //			mLogger.info("ETSIPluginImpl sensor thread killed :" + sensorID);	
 			return true;
 		}
@@ -131,7 +133,17 @@ public class AdaptorPluginImpl implements IAdaptorPlugin {
 	}
 	
 	public void stop() {
-		
+		//Kill all threads of the Reader...
+		mLogger.info("STOP Simulator Called!!!"+this.listOfThreads.size());
+		for (String key :this.listOfThreads.keySet()){
+			mLogger.info("Found Thread:"+key);
+			try {
+				mLogger.info("Interrupting Thread:"+key);
+				this.listOfThreads.get(key).interrupt();
+			} catch (Exception ex){
+				//do nothing...
+			}
+		}
 	}
 
 	public void setSensorsFolder(String sensorsFolder) {
@@ -153,7 +165,7 @@ public class AdaptorPluginImpl implements IAdaptorPlugin {
 					Integer counter = counters.get(sensor.get("ID"));
 					FileUtils.writeSensorFile(sensor,particularSensor,value,counter);
 					output = sensor.get("Measurement");
-					mLogger.info("Data is:"+output);
+					mLogger.debug("Data is:"+output);
 				}
 			}
 		}

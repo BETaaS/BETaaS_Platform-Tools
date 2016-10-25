@@ -41,6 +41,8 @@ public class QoSMRequestInternal implements java.io.Serializable {
 
 	private Double minInterRequestTime;
 	
+	private int period;
+	
 	QoSMServiceRequest id;
  
 	public QoSMRequestInternal() {
@@ -50,12 +52,14 @@ public class QoSMRequestInternal implements java.io.Serializable {
 		this.id = new QoSMServiceRequest(req.id.getServiceId(), req.id.getRequestId());
 		this.maxResponseTime = req.maxResponseTime;
 		this.minInterRequestTime = req.minInterRequestTime;
+		this.period = req.period;
 	}
 	
 	public QoSMRequestInternal(String serviceId, Integer requestId, Double maxResponseTime, Double minInterRequestTime) {
 		this.id = new QoSMServiceRequest(serviceId, requestId);
 		this.maxResponseTime = maxResponseTime;
 		this.minInterRequestTime = minInterRequestTime;
+		this.period = 0;
 	}
 	
 	@EmbeddedId
@@ -83,8 +87,18 @@ public class QoSMRequestInternal implements java.io.Serializable {
 	public String toString(){
 		String msg = new String();
 		msg = "\t\tServiceId: " + id.getServiceId() + "\n\t\trequestId: " + id.getRequestId();
-		msg += "\n\t\tMaxResponseTime: " + maxResponseTime + "\n\t\tMinInterrequestTime: " + minInterRequestTime;
+		msg += "\n\t\tMaxResponseTime: " + maxResponseTime + 
+		"\n\t\tMinInterrequestTime: " + minInterRequestTime + 
+		"\n\t\tPeriod: " + period;
 		return msg;
+	}
+
+	public void setPeriod(int periodInMillisec) {
+		this.period = periodInMillisec;
+	}
+
+	public int getPeriod() {
+		return period;
 	}
 }
 

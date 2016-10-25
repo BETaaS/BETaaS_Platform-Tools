@@ -51,11 +51,11 @@ public class DatasourceBDMSqoop implements ImportDataManager{
 		log.debug("sq  "+ sqoop);
 
 		
-
+		
 		log.info("BETaaS Analytic Service Data Manager ");
 		tracker = new ServiceTracker( context, IDatasourceBDMInterface.class.getName(),	null ); 
 		tracker.open(); 
-		
+		log.info("TEST 6.1.X Sqoop Scheduler ");
 		log.debug("Starting Analytics Data Service thread");
 
 	
@@ -87,6 +87,7 @@ public class DatasourceBDMSqoop implements ImportDataManager{
 		log.info("sq connection ongoing with: "+ sqoop);
 		//cleanUp();
 		//index++;
+		log.info("TEST 6.1.X Sqoop Component connected to data source ");
 		sqoopconnection.connect(sqoop);
 		
 		long connection = sqoopconnection.createConnection(service.getInfo("").get("url")+service.getInfo("").get("db"), service.getInfo("").get("driver"), service.getInfo("").get("user"),service.getInfo("").get("pwd"));
@@ -95,12 +96,15 @@ public class DatasourceBDMSqoop implements ImportDataManager{
 		long jobid=-1;
 		if (!(service.getLastImportTime()==null)){
 			lastImport = nowTime;
+			log.info("TEST 6.1.X Sqoop Component creating a job incremental " + service.getLastImportTime());
 			jobid = sqoopconnection.createJob(connection, nowTime, service.getInfo("").get("url")+service.getInfo("").get("db"), service.getInfo("").get("driver"), service.getInfo("").get("user"),service.getInfo("").get("pwd"));
+			log.info("TEST 6.1.X data " + service.getLastImportTime()+"");
 			service.reportLastImportTime(nowTime);
 		}else{
 			lastImport = nowTime;
+			log.info("TEST 6.1.X Sqoop Component creating a job");
 			jobid = sqoopconnection.createJob(connection, service.getInfo("").get("url")+service.getInfo("").get("db"), service.getInfo("").get("driver"), service.getInfo("").get("user"),service.getInfo("").get("pwd"));
-			log.debug("First time now: "+lastImport.toString());
+			log.info("First time now: "+lastImport.toString());
 			service.reportLastImportTime(nowTime);
 		}
 		log.debug("Now the time is: "+lastImport.toString());
@@ -109,7 +113,9 @@ public class DatasourceBDMSqoop implements ImportDataManager{
 		}else{
 			service.reportLastImportTime(nowTime);
 			log.debug("Running job " +jobid);
+			log.info("TEST 6.1.X Sqoop Component running a job for importing data");
 			sqoopconnection.runJob(jobid);
+			log.info("TEST 6.1.X Sqoop Component launched a job");
 		}	
 		
 		

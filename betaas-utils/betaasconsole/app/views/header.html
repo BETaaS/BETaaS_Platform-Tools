@@ -1,0 +1,26 @@
+<nav class="navbar navbar-inverse">
+    <div ng-controller="MenuCtrl">
+        <ul class="nav navbar-nav">
+            <li ng-class="menuClass('instance')"><a ng-href="#/instance"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span> Instance</a>
+            </li>
+            <li ng-class="menuClass('thing')"><a ng-href="#/thing"><span class="glyphicon glyphicon glyphicon-indent-right" aria-hidden="true"></span> Things</a>
+            </li>
+            <li ng-class="menuClass('monitoring')"><a ng-href="#/monitoring"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Monitoring</a>
+            </li>
+            <li ng-class="menuClass('application')"><a ng-href="#/application"><span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> Applications</a>
+            </li>
+      <!--      <li ng-class="menuClass('semantic')"><a ng-href="#/semantic"><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span> Semantic Services</a>
+            </li>-->
+            <li ng-class="menuClass('task')"><a ng-href="#/task"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Data Task</a>
+            </li>
+            <li ng-class="menuClass('service')"><a ng-href="#/service"><span class="glyphicon glyphicon-open" aria-hidden="true"></span> Extended Services</a>
+            </li>
+            <li ng-class="menuClass('setting')"><a ng-href="#/setting"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Settings</a>
+            </li>
+            <li ng-class="menuClass('setting')"><a ng-href="#/login"><span class="glyphicon glyphicon-eject" aria-hidden="true"></span> Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<h2><b>BETaaS Instance Admin GUI</b></h2>
+<br></br>

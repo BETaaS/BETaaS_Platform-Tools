@@ -20,6 +20,8 @@
 // Responsible: Tecnalia
 package eu.betaas.taas.contextmanager.api;
 
+import java.util.ArrayList;
+
 import org.osgi.framework.BundleContext;
 import com.google.gson.JsonObject;
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
@@ -37,7 +39,7 @@ public interface ThingsServiceManager
 {
 
   //BETAAS INTERFACE
-  public String getContextThingServices_local(String sParameter, boolean bEnvironment, String sLocationIdentifier, String sLocationKeyword, String sLatitude, String sLongitude, String sAltitude, String sRadius);
+  public ArrayList<String> getContextThingServices_local(String sParameter, boolean bEnvironment, String sLocationIdentifier, String sLocationKeyword, String sLatitude, String sLongitude, String sAltitude, String sRadius);
   public String getContextThingServices(String sParameter, String sLocationIdentifier, String sLocationKeyword, String sFloor);
   public String getContextThingServices(String sParameter, String sLocationIdentifier, String sLocationKeyword, String sLatitude, String sLongitude, String sAltitude, String sRadius);
   public String getContextThingServices();
@@ -72,5 +74,7 @@ public interface ThingsServiceManager
   public BundleContext getContext();
   public void setGwId(String gwId);
   public String getGwId();
+  public String getDelimiter();
+  public void setDelimiter(String delimiter);
   
 }

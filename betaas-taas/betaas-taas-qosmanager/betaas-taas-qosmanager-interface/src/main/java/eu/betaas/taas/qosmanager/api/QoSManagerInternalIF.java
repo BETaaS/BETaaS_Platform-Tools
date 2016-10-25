@@ -69,13 +69,26 @@ public interface QoSManagerInternalIF{
 	 * @return is the list of selected thing services 
 	 */
 	
+	
+	public Map<String, Double> registerServiceQoSPUSH(String serviceId, int periodInMillisec, 
+			ArrayList<ArrayList<String>> equivalentThingServices);
+	
+	@Deprecated
+	public Map<String, Double> registerServiceQoSPUSH(String serviceId, int periodInMillisec, 
+			ArrayList<String> thingServicesList, ArrayList<ArrayList<String>> equivalentThingServices);
+	@Deprecated
 	public Map<String, Double> registerServiceQoSPUSH(String serviceId,
 			ArrayList<String> thingServicesList,
 			ArrayList<ArrayList<String>> equivalentThingServices);
 	
 	public List<String> registerServiceQoSPULL(String serviceId,
-				ArrayList<String> thingServicesList,
-				ArrayList<ArrayList<String>> equivalentThingServices);
+			ArrayList<ArrayList<String>> equivalentThingServices);
+	
+	@Deprecated
+	public List<String> registerServiceQoSPULL(String serviceId,
+			ArrayList<String> thingServicesList,
+			ArrayList<ArrayList<String>> equivalentThingServices);
+	
 	
 	/**
 	 * Unregister service.
@@ -107,22 +120,7 @@ public interface QoSManagerInternalIF{
 	public boolean modifyThingsServicesQoS(ArrayList<String> thingServices);
 	
 	public boolean thingRemoved(String thingServiceId);
-	
-	/**
-	 * Delete already committed services.
-	 *
-	 * @param serviceList the service list
-	 */
-	public void deleteAlreadyCommittedServices(ArrayList<String> serviceList);
-	
-	/**
-	 * Removes the reservations.
-	 *
-	 * @param serviceID the service id
-	 * @return true, if successful
-	 */
-	public boolean removeReservations(String serviceID);
-	
+		
 	/**
 	 * Calculate sla.
 	 *
@@ -133,7 +131,7 @@ public interface QoSManagerInternalIF{
 	public ArrayList<SLACalculation> calculateSLA(ArrayList<String> selectedThingService);
 	
 	public SLACalculation calculateSLA(String selectedThingService);
-	public SLACalculation calculateSLAPush(String sThingServiceName, int isgTaaSRequestRate);
+	public SLACalculation calculateSLAPush(String sThingServiceName, int iMilisecondTaaSRequestRate);
 	public SLACalculation failureSLA(String sThingServiceName);
 	
 	/**
@@ -142,8 +140,9 @@ public interface QoSManagerInternalIF{
 	 * @param selectedThingServicesList the selected thing services list
 	 * @return the measurement sla monitoring
 	 */
-	
-	public boolean getMeasurementSLAMonitoring(String sThingServiceName, int iOptimalRequestRate);
+	public boolean getMeasurementSLAMonitoring(String sThingServiceName, String serviceId);
+	@Deprecated
+	public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate);
 	@Deprecated
 	public boolean getMeasurementSLAMonitoring(ArrayList<String> sThingServiceName);
 
@@ -151,11 +150,12 @@ public interface QoSManagerInternalIF{
 	
 	public void setGatewayId(String gatewayId);
 	
-	public Map<String, Double> notifyAllocation(String serviceId, ArrayList<String> thingServicesList, 
-			ArrayList<ArrayList<String>> eqtsList);
-	
 	public void update_db(QoSRankResults ret);
 	
 	public Map<String, Double> getBatteryLevels();
+	
+	public void reachable(String tsid);
+	
+	public void unreachable(String tsid);
 
 }

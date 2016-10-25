@@ -20,25 +20,26 @@ import org.apache.sqoop.model.MConnection;
 import org.apache.sqoop.model.MConnectionForms;
 import org.apache.sqoop.model.MConnector;
 import org.apache.sqoop.validation.Status;
+import org.junit.Test;
 
 
 
 public class Sqoop2 {
 
-//	 @Test
-//	 public void runSqoop2(){
-//		 
-//		 SqoopClient client = new SqoopClient("http://betaashadoop:12000/sqoop/");
-//		 
-//		MConnection newCon = client.newConnection(1);
-//		//client.createConnection(1);
-//		 MConnectionForms conForms = newCon.getConnectorPart();
-//		 MConnectionForms frameworkForms = newCon.getFrameworkPart();
-//		//Set connection forms the service interface
-//
-//			frameworkForms.getIntegerInput("security.maxConnections").setValue(0);
-//			
-//			Status status  = client.createConnection(newCon);
-//	 }
+	 @Test
+	 public void runSqoop2(){
+		 
+		 SqoopClient client = new SqoopClient("http://betaashadoop:12000/sqoop/");
+		 
+		MConnection newCon = client.newConnection(1);
+		//client.createConnection(1);
+		 MConnectionForms conForms = newCon.getConnectorPart();
+		 MConnectionForms frameworkForms = newCon.getFrameworkPart();
+		//Set connection forms the service interface
+
+			frameworkForms.getIntegerInput("security.maxConnections").setValue(0);
+			
+			Status status  = client.createConnection(newCon);
+	 }
 	
 }

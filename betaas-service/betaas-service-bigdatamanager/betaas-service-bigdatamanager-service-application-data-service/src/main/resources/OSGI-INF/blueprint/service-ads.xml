@@ -22,21 +22,30 @@
             xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
 
  
-	<cm:property-placeholder persistent-id="betaas.endpoints"  >
+	<cm:property-placeholder persistent-id="betaas.endpoints" placeholder-prefix="$(" placeholder-suffix=")" >
 		<cm:default-properties>
 			<cm:property name="serviceADSAddress" value="http://localhost:18002/ads"/>
+		</cm:default-properties>
+	</cm:property-placeholder>
+	
+	<cm:property-placeholder persistent-id="betaas.gateway" >
+		<cm:default-properties>
+			<cm:property name="gwId" value="1"/>
+			<cm:property name="busenabled" value="false"/>
 		</cm:default-properties>
 	</cm:property-placeholder>
 
     <bean id="serviceADSBetaasBean" class="eu.betaas.service.bigdatamanager.applicationdataservice.impl.DataManagerADSImpl" init-method="setupService" destroy-method="close">
     	<property name="context" ref="blueprintBundleContext"/>
+    	<property name="enabledbus" value="${busenabled}"></property> 
+    	<property name="gateway" value="${gwId}"></property>
     </bean>
  
     <service ref="serviceADSBetaasBean" interface="eu.betaas.service.bigdatamanager.applicationdataservice.IDataManagerADService" >
 	    <service-properties>
 	    	 <entry key="service.exported.interfaces" value="*" />
 	    	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
-	    	 <entry key="org.apache.cxf.ws.address" value="${serviceADSAddress}" />
+	    	 <entry key="org.apache.cxf.ws.address" value="$(serviceADSAddress)" />
 	    </service-properties>    
 	 </service>
 

@@ -72,72 +72,72 @@ public class InnerService implements IInner {
 	}
 	
 
-	public void notifyFailure(FAILURE_LAYER layer, 
-			                  FAILURE_CODE code,
-			                  FAILURE_LEVEL level, 
-			                  String originator, 
-			                  String description) {
-
-		mLogger.info("Got failure (LEVEL=" + FAILURE_LEVEL.getID(level) + ") from <" + originator + ">: " + description);
-		
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTime(new Date());
-		String when = format(gc);
-		
-		Connection conn = getConnection();
-		if (conn == null) {
-			mLogger.error("Cannot get DB connection to store failure info");
-			return;
-		}
-		
-		PreparedStatement psInsert = null;
-		
-		try {
-			psInsert = conn.prepareStatement("INSERT INTO T_NOTIFIED_FAILURES " + 
-			                                 "(NOTIFICATION_TIME, LAYER, CODE, LEVEL, ORIGINATOR, DESCRIPTION) " +
-					                         "VALUES (?, ?, ?, ?, ?, ?)");
-			if (psInsert == null) {
-				mLogger.error("Cannot prepare the statement to insert failure info into the DB");
-				return;
-			}
-
-			psInsert.setString(1, when);
-			psInsert.setInt(2, FAILURE_LAYER.getID(layer));
-			psInsert.setInt(3, FAILURE_CODE.getID(code));
-			psInsert.setInt(4, FAILURE_LEVEL.getID(level));
-			psInsert.setString(5, originator);
-			psInsert.setString(6, description);
-			if (psInsert.executeUpdate() != 1) {
-				mLogger.error("Cannot insert failure info into the DB");
-			}
-
-			mLogger.info("Failure info stored");			
-			
-		} catch (Exception e) {
-			
-			// If any error occurs, check if it is necessary to reset the connection
-			mLogger.error("Exception occurred: " + e.getMessage());
-			try {
-				if (!conn.isValid(3)) {
-					mLogger.warn("Connection not valid: resetting");
-					if (!mConnection.isClosed()) {
-						mConnection.close();
-					}
-					mConnection = null;
-				}
-			} catch (SQLException e2) {
-				mLogger.error("SQL Exception occurred: " + e2.getMessage());
-			}
-			
-		} finally {
-			if (psInsert != null) {
-				try {
-					psInsert.close();
-				} catch (SQLException e) {}
-			}
-		}	
-	
-	}
+//	public void notifyFailure(FAILURE_LAYER layer, 
+//			                  FAILURE_CODE code,
+//			                  FAILURE_LEVEL level, 
+//			                  String originator, 
+//			                  String description) {
+//
+//		mLogger.info("Got failure (LEVEL=" + FAILURE_LEVEL.getID(level) + ") from <" + originator + ">: " + description);
+//		
+//		GregorianCalendar gc = new GregorianCalendar();
+//		gc.setTime(new Date());
+//		String when = format(gc);
+//		
+//		Connection conn = getConnection();
+//		if (conn == null) {
+//			mLogger.error("Cannot get DB connection to store failure info");
+//			return;
+//		}
+//		
+//		PreparedStatement psInsert = null;
+//		
+//		try {
+//			psInsert = conn.prepareStatement("INSERT INTO T_NOTIFIED_FAILURES " + 
+//			                                 "(NOTIFICATION_TIME, LAYER, CODE, LEVEL, ORIGINATOR, DESCRIPTION) " +
+//					                         "VALUES (?, ?, ?, ?, ?, ?)");
+//			if (psInsert == null) {
+//				mLogger.error("Cannot prepare the statement to insert failure info into the DB");
+//				return;
+//			}
+//
+//			psInsert.setString(1, when);
+//			psInsert.setInt(2, FAILURE_LAYER.getID(layer));
+//			psInsert.setInt(3, FAILURE_CODE.getID(code));
+//			psInsert.setInt(4, FAILURE_LEVEL.getID(level));
+//			psInsert.setString(5, originator);
+//			psInsert.setString(6, description);
+//			if (psInsert.executeUpdate() != 1) {
+//				mLogger.error("Cannot insert failure info into the DB");
+//			}
+//
+//			mLogger.info("Failure info stored");			
+//			
+//		} catch (Exception e) {
+//			
+//			// If any error occurs, check if it is necessary to reset the connection
+//			mLogger.error("Exception occurred: " + e.getMessage());
+//			try {
+//				if (!conn.isValid(3)) {
+//					mLogger.warn("Connection not valid: resetting");
+//					if (!mConnection.isClosed()) {
+//						mConnection.close();
+//					}
+//					mConnection = null;
+//				}
+//			} catch (SQLException e2) {
+//				mLogger.error("SQL Exception occurred: " + e2.getMessage());
+//			}
+//			
+//		} finally {
+//			if (psInsert != null) {
+//				try {
+//					psInsert.close();
+//				} catch (SQLException e) {}
+//			}
+//		}	
+//	
+//	}
 
 	
 	private Connection getConnection() {		

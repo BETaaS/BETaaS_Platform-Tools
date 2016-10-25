@@ -1,0 +1,20 @@
+<div>
+    <div class="modal-header">
+         <h3>Enter a new Extended Service </h3>
+    </div>
+    <div class="modal-body">
+    <form novalidate>    
+        <div class="form-group">
+            <label for="sname" > Service Name: </label>
+            <input if="sname" type="text" ng-model="newservice.name" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="surl" > Service URL: </label>
+            <input if="surl" type="text" ng-model="newservice.url" class="form-control"/>
+        </div>  
+           <button type="submit" class="btn btn-info" ng-click="ok(newservice)">Add</button>
+           <button class="btn btn-info"  ng-click="cancel()">Close</button>
+        </form>
+    </div>
+</div>
+    

@@ -32,12 +32,14 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
+import org.osgi.framework.BundleContext;
 //import org.osgi.util.tracker.ServiceTracker;
 
 import eu.betaas.taas.securitymanager.authentication.catalog.ExpireKeyGwCatalog;
 import eu.betaas.taas.securitymanager.authentication.catalog.KeyGwCatalog;
 //import eu.betaas.taas.securitymanager.authentication.activator.ExtAuthenticationActivator;
 import eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService;
+import eu.betaas.taas.securitymanager.authentication.utils.AuthBetaasBus;
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
 import eu.betaas.taas.securitymanager.common.ec.ECKeyPairGen;
@@ -80,6 +82,20 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 	/** other GW's UFN, derived from the submitted certificate */
 	private String ufn;
 	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private AuthBetaasBus bus;
+	
+	/** Reference to Blueprint BundleContext */
+	private BundleContext context;
+	
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		// set the GW ID
+		bus = new AuthBetaasBus(context);
+	}
+	
 	public GWEcmqvIntService(){
 //		this.authActivator = activator;
 	}
@@ -96,7 +112,6 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 //				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
 		AsymmetricKeyParameter verKey = PublicKeyFactory.createKey(
 				myCredential.getCertificateChain()[1].getSubjectPublicKeyInfo());
-			
 		// get my own certificate
 		myCert = (X509CertificateHolder)myCredential.getCertificateChain()[0];
 			
@@ -168,17 +183,23 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 			
 		if(!isCertValid){
 			log.error("The submitted certificate is not valid!!");
+			bus.sendData("The submitted certificate is not valid!!", "error", "SecM");
 			return null;
 		}
 		log.debug("Passed the certificate validation!!");
+		bus.sendData("Passed the certificate validation!!", "debug", "SecM");
 			
 		// perform embedded public key validation
 		boolean pubValid = ECMQVUtils.validateEmbedPubKey(ephPub);
 		if(!pubValid){
 			log.error("The submitted ephemeral public key is not valid!!");
+			bus.sendData("The submitted ephemeral public key is not valid!!", "error", 
+					"SecM");
 			return null;
 		}
 		log.debug("Passed the embedded ephemeral public key validation!!");
+		bus.sendData("Passed the embedded ephemeral public key validation", "debug", 
+				"SecM");
 		// set the ephPub with this received ephPub
 		this.ephPub = ephPub;
 		
@@ -243,9 +264,11 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 		// compute the MAC to be sent to the other gateway
 		if(!isMac2Valid){
 			log.error("Fails to verify the received MAC (2)!!");
+			bus.sendData("Fails to verify MAC (2)", "warning", "SecM");
 			return null;
 		}
 		log.debug("Successfully verifies the received MAC (2)!!");
+		bus.sendData("Successfully verifies MAC (2)", "debug", "SecM");
 		
 		byte[] mac3 = ECMQVUtils.computeMAC("3", myUFN, ufn, 
 				myEphPub.getQ().getEncoded(), ephPub.getQ().getEncoded(), k1);
@@ -280,7 +303,17 @@ public class GWEcmqvIntService implements IGatewayEcmqvIntService {
 
 	public byte[] getK2(String gwId) {
 		// TODO Auto-generated method stub
+		log.debug("Retreiving k2 of GW: "+gwId);
 		KeyGwCatalog keyCat = KeyGwCatalog.instance();
 		return keyCat.getKeyGw(gwId);
+	}
+	
+	/**
+	 * Blueprint set reference to BundleContext
+	 * @param context BundleContext
+	 */
+	public void setContext(BundleContext context) {
+		this.context = context;
+		log.debug("Got BundleContext from the blueprint...");
 	}
 }

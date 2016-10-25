@@ -35,12 +35,14 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.IIndexWord;
+import edu.mit.jwi.item.IIndexWordID;
 import edu.mit.jwi.item.ISynset;
 import edu.mit.jwi.item.ISynsetID;
 import edu.mit.jwi.item.IWord;
@@ -63,7 +65,7 @@ public class WordNetUtils
 
   // PRIVATE SECTION
 //  private ThingsServiceManager oThingsServiceManager = new ThingsServiceManager();
-  private static ThingsServiceManager oThingsServiceManager = null;
+//  private static ThingsServiceManager oThingsServiceManager = null;
   
   private static Logger mLogger = Logger.getLogger(ThingsServiceManagerImpl.LOGGER_NAME);
   private static String WORDNET = "";
@@ -73,7 +75,9 @@ public class WordNetUtils
   
   private String sWordnetDirectory = null;
   private URL urlWordnetDirectory = null;
-  private IDictionary iDictionary = null;
+  private static IDictionary iDictionary = null;
+  private Map<String,POS> suffixPosMap;
+  private static Map<Pos,POS> wmap = null;
   
   private static String OS = System.getProperty("os.name").toLowerCase();
   private static String tmpdir1 = System.getProperty("user.home");
@@ -89,6 +93,7 @@ public class WordNetUtils
   private final static String HYPERHYPERNYM = "hyperhypernym";
 
 //  ThingsServiceManager oThingsServiceManager = new ThingsServiceManagerImpl();
+  ThingsServiceManager oThingsServiceManager = ThingsServiceManagerImpl.getInstance();
   
   public boolean init()
   {
@@ -96,7 +101,9 @@ public class WordNetUtils
     boolean bCorrect = true;
     try
     {
-      oThingsServiceManager = new ThingsServiceManagerImpl();
+//      oThingsServiceManager = new ThingsServiceManagerImpl();
+	oThingsServiceManager = ThingsServiceManagerImpl.getInstance();
+
       
       mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. This is a wrapper for the MIT WordNet inteface that simplifies basic operations such as retrieving synonyms for a word.");
       
@@ -187,56 +194,85 @@ public class WordNetUtils
     return bCorrect;
     }
       
-    public ArrayList<String> checkWordnet(String sLemmaToCompare) 
+    public ArrayList<String> checkWordnet(String sLemmaToCompare, Pos pos) 
     {
       ArrayList<String> oListSynonyms = null;
+      oListSynonyms = new ArrayList<String>();
+      IIndexWord idxWord = null;
+      
       try
       {
-        mLogger.debug("Component CM perform operation WordNetUtils.checkWordnet. Wordnet dictionary path directory: " + PREFIX_WORDNET + ".");
-
-        IIndexWord idxWord = iDictionary.getIndexWord(sLemmaToCompare, POS.NOUN);
-        IWordID wordID = idxWord.getWordIDs().get(0);
+        if (pos.toString().equals("VERB")){
+          idxWord = iDictionary.getIndexWord(sLemmaToCompare, POS.VERB);
+        }
+        else{
+          idxWord = iDictionary.getIndexWord(sLemmaToCompare, POS.NOUN);
+        }
+        
+        for (IWordID wordID : idxWord.getWordIDs())
+        {
         IWord word = iDictionary.getWord(wordID);
         
-        String message = "Component CM perform operation WordNetUtils Module, checkWordnet function. Search synonyms for term: "
-                + sLemmaToCompare
-                + ", with the following WordnetID: "
-                + wordID
-                + ".";
-        mLogger.info(message);
-        oThingsServiceManager.sendData(message,"info", "Wordnet");
-        
-        message = "Component CM perform operation WordNetUtils.checkWordnet. The "
-                + sLemmaToCompare
-                + " description is: "
-                + word.getSynset().getGloss() + ".";
+        String message = "SYNONYMS. Searching synonyms for term " + sLemmaToCompare.toUpperCase() + ", with the following WordnetID: " + wordID + ".";
+       
+        message = "SYNONYMS. The " + sLemmaToCompare.toUpperCase() + " description is: " + word.getSynset().getGloss() + ".";
         mLogger.debug(message);
         oThingsServiceManager.sendData(message,"info", "Wordnet");
         
         ISynset synset = word.getSynset();
-        message = "Component CM perform operation WordNetUtils Module, checkWordnet function. Synonyms: " + synset.toString();
-        mLogger.info(message);
+        message = "SYNOMYMS. Synonyms found for the term " + sLemmaToCompare.toUpperCase() + ". Synonyms: " + synset.toString()+ ".";
+        mLogger.debug(message);//TODO
         oThingsServiceManager.sendData(message,"info", "Wordnet");
-        oListSynonyms = new ArrayList<String>();
-
         // iterate over words associated with the synset
-        for (IWord w : synset.getWords()) //TODO podria ser un JSONArray¿?
+        for (IWord w : synset.getWords())
         {
-          message = "Component CM perform operation WordNetUtils.checkWordnet. Synonyms: " + w.getLemma();
-          mLogger.debug(message);
-          oThingsServiceManager.sendData(message,"info", "Wordnet");
           oListSynonyms.add(w.getLemma());
+        }
         }
       }
       catch (Exception e)
       {
-        mLogger.info("Component CM perform operation WordNetUtils.checkWordnet. It has not been executed correctly. Problems with the dictionary. Probably the dictionary is unreachable or the term is nonexistent. Exception: "
-                + e.getMessage() + ".");
+        oListSynonyms.add(sLemmaToCompare);
+        mLogger.info("SYNOMYMS. Synonyms not found for the term "+sLemmaToCompare.toUpperCase()+ ".");
       }
     
     return oListSynonyms;
   }
 
+
+    private List<Pos> getPosFromWordnet(String word) {
+      List<Pos> poslist = new ArrayList<Pos>();
+      for (Pos pos : Pos.values()) {
+        try {
+          IIndexWord indexWord = iDictionary.getIndexWord(word, Pos.toWordnetPos(pos));
+          if (indexWord != null) {
+            poslist.add(pos);
+          }
+        } catch (NullPointerException e) {
+          // JWI throws this if it cannot find the word in its dictionary
+          // so we just dont add anything to the poslist.
+          continue;
+        }
+      }
+      return poslist;
+    }
+  
+    public Pos getPartOfSpeech(String word) {
+      List<Pos> partsOfSpeech = getPosFromWordnet(word);
+      int numPos = partsOfSpeech.size();
+      if (numPos == 0) {
+        // unknown Pos, apply word rules to figure out Pos
+          return Pos.NOUN;
+      } else if (numPos == 1) {
+        // unique Pos, return
+        return partsOfSpeech.get(0);
+      } else {
+        // ambiguous Pos, apply disambiguation rules
+        mLogger.debug("SYNOMYMS. Ambiguous term "+word.toUpperCase()+". User should clarify if it is referring to a verb or to a noun. By default the CM considers a NOUN.");//TODO
+        return partsOfSpeech.get(0);
+      }
+    }
+      
   public static boolean isWindows() {
     return (OS.indexOf("win") >= 0);
   }
@@ -283,24 +319,25 @@ public class WordNetUtils
           jaTempHolonymValue = getHolonyms(iDictionary, iSynset);
           if (jaTempHolonymValue.size()>0)
             joTempResultValue.add(HOLONYM, jaTempHolonymValue);
-          
+
           jaTempHolonymValue = getHoloHolonyms(iDictionary, iSynset);
           if (jaTempHolonymValue.size()>0)
             joTempResultValue.add(HOLOHOLONYM, jaTempHolonymValue);
-          
+
           jaTempHolonymValue = getHyperHolonyms(iDictionary, iSynset);
           if (jaTempHolonymValue.size()>0)
             joTempResultValue.add(HYPERHOLONYM, jaTempHolonymValue);
-          
+
           jaTempHypernymValue = getHypernyms(iDictionary, iSynset);
           if (jaTempHypernymValue.size()>0){
               joTempResultValue.add(HYPERNYM, jaTempHypernymValue);
           }
-          
+
           jaTempHypernymValue = getHyperHypernyms(iDictionary, iSynset);
           if (jaTempHypernymValue.size()>0){
               joTempResultValue.add(HYPERHYPERNYM, jaTempHypernymValue);
           }
+
         }     
       jaTempResultValue.add(joTempResultValue);
       }
@@ -308,7 +345,6 @@ public class WordNetUtils
       mLogger.error("- No synonyms on WordNet.");
 //       mLogger.error("Component CM perform operation WordNetUtils.getSynsets. Exception: " + e.getMessage() + ".");
     }
-
     return jaTempResultValue;
   }
   
@@ -345,7 +381,6 @@ public class WordNetUtils
               }
             }
           }
-          
         return aHolonyms;
       } 
     
@@ -363,7 +398,6 @@ public class WordNetUtils
               }
             }
           }
-          
         return aHolonyms;
       } 
     
@@ -401,21 +435,19 @@ public class WordNetUtils
               }
             }
           }
-          
         return aHypernyms;
       }   
 
     public void loadDictionary() {
       try {
         sWordnetDirectory = tmpdir1 + "/" + WORDNET;
-
+        
         urlWordnetDirectory = new URL("file", null, sWordnetDirectory);
         mLogger.info("Component CM perform operation WordNetUtils.checkWordnet. Wordnet dictionary path directory: " + PREFIX_WORDNET + ".");
         oThingsServiceManager.sendData("Wordnet dictionary path directory: " + PREFIX_WORDNET + ".","info", "Wordnet");
 
         iDictionary = new Dictionary(urlWordnetDirectory);    
         iDictionary.open();
-
 
       } catch (Exception e) {
         mLogger.error("Component CM perform operation WordNetUtils.loadDictionary. Exception: " + e.getMessage() + ".");

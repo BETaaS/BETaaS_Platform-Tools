@@ -17,7 +17,7 @@ limitations under the License.
 Authors :
 Francisco Javier Nieto. Atos Research and Innovation, Atos SPAIN SA
 @email francisco.nieto@atos.net 
-Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
+Sergio Garcï¿½a Villalonga. Atos Research and Innovation, Atos SPAIN SA
 @email sergio.garciavillalonga@atos.net
 **/
 
@@ -112,6 +112,22 @@ public interface TaaSResourceManager
 	 */
 	public boolean removeThingsService(String thingServiceID);
 	
+	/**
+	 * Indicates that a thing service has not been reachable for a period of less than 5 minutes.
+	 *	
+	 * @param thingServiceID	 
+	 * @return
+	 */
+	public boolean unreachableThingService(String thingServiceID);
+	
+	/**
+	 * Indicates that a thing service is reachable again.
+	 *	
+	 * @param thingServiceID	 
+	 * @return
+	 */
+	public boolean reachableThingService(String thingServiceID);
+	
 	// End methods for managing thing services
 	
 	// Methods for receiving notifications
@@ -160,11 +176,30 @@ public interface TaaSResourceManager
 	/**
 	 * Unregisters an existing subscription for a concrete feature service. Notifications won't be sent anymore.
 	 * 	
-	 * @param serviceID	 
+	 * @param serviceID	
+	 * @param token 
 	 * @return
 	 */
 	public boolean unRegisterService(String serviceID, byte[] token);
 		
+	/**
+	 * Activates all existing subscription for a concrete application. Notifications will start for all the features in PUSH mode.
+	 * 	
+	 * @param applicationID	 
+	 * @param token
+	 * @return
+	 */
+	public boolean startFullApplication (String idApplication, byte[] token);
+	
+	/**
+	 * Unregisters all existing subscription for a concrete application. Notifications won't be sent anymore.
+	 * 	
+	 * @param applicationID	 
+	 * @param token
+	 * @return
+	 */
+	public boolean stopFullApplication (String idApplication, byte[] token);
+	
 	/**
 	 * Provides the data for a concrete service.
 	 * 

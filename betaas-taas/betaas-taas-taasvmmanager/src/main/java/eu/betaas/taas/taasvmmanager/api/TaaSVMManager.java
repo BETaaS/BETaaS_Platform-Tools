@@ -26,8 +26,10 @@ package eu.betaas.taas.taasvmmanager.api;
 import java.util.HashMap;
 import java.util.List;
 
-import eu.betaas.taas.taasvmmanager.cloudsclients.VMRequest;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Availability;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor;
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.VMRequest;
 
 /**
  * 
@@ -37,12 +39,19 @@ import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
 public interface TaaSVMManager {
 
 	/**
+	 * Gets the list of available flavors
+	 * 
+	 * @return the list of available flavors
+	 */
+	public List<Flavor> getFlavors();
+	
+	/**
 	 * Creates a virtual machine in the BETaaS instance
 	 *  
 	 * @param request the desired features of the virtual machine
 	 * @return the URL of the created virtual machine
 	 */
-	public String createVM (VMRequest request); ///TODO Modify VMRequest
+	public String createVM (VMRequest request) throws Exception; ///TODO Modify VMRequest
 	
 	/**
 	 * Creates a virtual machine in an external provider
@@ -62,11 +71,19 @@ public interface TaaSVMManager {
 	public boolean deleteVM (String idVM);
 	
 	/**
+	 * Gets the available giving priority to CPU allocation
+	 * 
+	 * @param cpuPreference set to true if it has to prioritiza CPU allocation
+	 * @return
+	 */
+	public List<Availability> getAvailability(boolean cpuPreference);
+	
+	/**
 	 * Gets the available resources for every kind of VM
 	 * 
 	 * @return a map between VM type and the available resources.
 	 */
-	public HashMap<InstanceType, Integer> getAvailability();
+	public List<Availability> getAvailability();
 	
 	/**
 	 * Migrates a VM to other device
@@ -86,6 +103,6 @@ public interface TaaSVMManager {
 	 * @param vmIds list of IDs of the VMs to be migrated
 	 * @return true if the migration has been successful, false otherwise
 	 */
-	public boolean sendVMs(List<String> vmIds);
+	public boolean sendVMs(List<String> vmIds, String targetInfo);
 	//TODO return information about the problem, if any?
 }

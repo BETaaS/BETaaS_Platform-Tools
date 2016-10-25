@@ -256,6 +256,25 @@ public class TaaSRMClient
 		return remoteClient.remoteSubscription(idThingService, idApplication, period, realTime, thisGateway);		
 	}
 	
+	public boolean remoteUnsubscription (String idThingService, String idFeature, String gateway, boolean realTime)
+	{
+		// Try to recover the client from the known list, to save time
+		TaaSResourceManagerExt remoteClient=clientsList.get(gateway);
+		if (remoteClient==null)
+		{
+			// Try to find the client actively
+			remoteClient = findRemoteTaaSRM(gateway);
+			if (remoteClient==null)
+			{
+				logger.error("No TaaSRM was found for the required gateway!");
+				return false;
+			}
+		}		
+		
+		logger.info("Invoking remote unsubscription for Thing Service" + idThingService +  " at " + gateway);
+		return remoteClient.remoteUnsubscription(idThingService, idFeature, realTime);		
+	}
+	
 	public boolean remoteDataNotification (ThingsData data, String idFeature, String idThingService, String remoteGW)
 	{
 		// Try to recover the client from the known list, to save time

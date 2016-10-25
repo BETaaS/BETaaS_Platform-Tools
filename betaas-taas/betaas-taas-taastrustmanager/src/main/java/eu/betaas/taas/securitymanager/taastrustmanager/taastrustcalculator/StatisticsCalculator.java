@@ -24,6 +24,7 @@ package eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator;
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.inference.TTest;
 import org.apache.log4j.Logger;
 
@@ -36,28 +37,34 @@ public class StatisticsCalculator
 		
 	}
 		
-	public boolean calculateNumericVariance (double[] values)
+	public boolean calculateNumericVariance (double[] values, double alpha)
 	{
-		double alpha = 0.05;		
+		// if there is only one record, just return variance is as expected
+		if (values.length < 2) return true;
+		
+		// Start calculations				
 		double mean = StatUtils.mean(values);
 		double variance = StatUtils.variance(values);
-		double expected = Math.pow(mean*0.05, 2);
-		//double expected = 0.01;
-		double degFreedom = values.length-1.0;		
-		
-		double T = (degFreedom * variance) / expected;
+		double stdDeviation = Math.sqrt(variance);		
+		double degFreedom = values.length-1.0;
+				
 		logger.debug ("Mean = " + mean);
-		logger.debug ("Standard Deviation = " + Math.sqrt(variance));
-		logger.debug ("Test Statistic calculated T = " + T);
+		logger.debug ("Current Variance = " + variance);
+		logger.debug ("Standard Deviation = " + stdDeviation);
+		logger.debug ("Expected variation = " + alpha);			
 		
+		// Retrieve Chi Square values from the inverse table
 		ChiSquaredDistribution myDist = new ChiSquaredDistribution(degFreedom);
-		double myTLeft = myDist.inverseCumulativeProbability(alpha/2.0);
-		double myTRight = myDist.inverseCumulativeProbability(1.0 - alpha/2.0);
+		double myXRight = myDist.inverseCumulativeProbability(alpha/2.0);
+		double myXLeft = myDist.inverseCumulativeProbability(1.0 - alpha/2.0);
 		
+		// Calculate boundaries for the variance
+		double myTLeft = (degFreedom * variance) / myXLeft;
+		double myTRight = (degFreedom * variance) / myXRight;						
 		logger.debug ("Boundaries: " + myTLeft + " to " + myTRight);		
 		
-		// Determine if z score is in the region of acceptance
-		if ((myTLeft <= T) && (T <= myTRight))
+		// Determine if the current variance is in the expected limits
+		if ((myTLeft <= variance) && (variance <= myTRight))
 		{
 			// H0 -> Variance of the data is equal to the expected one
 			return true;
@@ -166,6 +173,7 @@ public class StatisticsCalculator
 	
 	public boolean isSimilarProportion (double [] valuesA, double [] valuesB)
 	{
+		logger.debug("Calculating similar proportion...");
 		double alpha = 0.05;	
 		
 		// Change data a bit for avoiding issues with booleans 0/1
@@ -230,6 +238,7 @@ public class StatisticsCalculator
 	
 	public boolean isSimilarMean (double [] valuesA, double [] valuesB)
 	{
+		logger.debug("Calculating similar mean...");
 		TTest studentTest = new TTest();
 		boolean testResult = false;
 		double error = 0;
@@ -257,7 +266,7 @@ public class StatisticsCalculator
 		
 	}
 	
-	/*
+	
 	public static void main(String[] args) 
 	{
 		double [] dataSetA = new double [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -608,8 +617,14 @@ public class StatisticsCalculator
 		StatisticsCalculator myCalc = new StatisticsCalculator();
 		
 		//System.out.println ("Proportion is similar? -> " + myCalc.isSimilarProportion(dataSetA, dataSetB));
-		//System.out.println ("Low variance in data? -> " + myCalc.calculateNumericVariance(dataSet));
+		System.out.println ("Low variance in data? -> " + myCalc.calculateNumericVariance(dataSetTemperature, 0.05));
 		System.out.println ("Is data random? -> " + myCalc.calculateRunsTest(dataSetTemperature));
+		
+		ChiSquaredDistribution myDist = new ChiSquaredDistribution(16, 0.05);
+		//double[] myChiSquare = myDist.sample(100);
+		//double myTLeft = new DescriptiveStatistics(myChiSquare).getPercentile(95);
+		//double myTLeft = myDist.inverseCumulativeProbability(arg0);
+		//System.out.println("Chi cuadrado: " + myTLeft);
 	}
-	*/
+	
 }

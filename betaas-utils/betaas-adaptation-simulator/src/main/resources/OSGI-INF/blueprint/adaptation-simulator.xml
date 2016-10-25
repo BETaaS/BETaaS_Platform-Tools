@@ -9,7 +9,7 @@
 		</cm:default-properties>
 	</cm:property-placeholder>
     
-    <bean id="adaptationPluginBean" class="eu.betaas.adaptation.simulator.api.impl.AdaptorPluginImpl" init-method="start">
+    <bean id="adaptationPluginBean" class="eu.betaas.adaptation.simulator.api.impl.AdaptorPluginImpl" init-method="start" destroy-method="stop">
     		<property name="sensorsFolder" value="${sensors}"></property>
     </bean>
 	

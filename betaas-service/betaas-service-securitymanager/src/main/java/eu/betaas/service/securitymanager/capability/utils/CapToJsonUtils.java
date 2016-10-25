@@ -14,6 +14,8 @@ import javax.xml.stream.XMLStreamWriter;
 import de.odysseus.staxon.json.JsonXMLConfig;
 import de.odysseus.staxon.json.JsonXMLConfigBuilder;
 import de.odysseus.staxon.json.JsonXMLOutputFactory;
+import de.odysseus.staxon.json.stream.JsonStreamFactory;
+import de.odysseus.staxon.json.stream.impl.JsonStreamFactoryImpl;
 import de.odysseus.staxon.json.util.XMLMultipleStreamWriter;
 import eu.betaas.service.securitymanager.capability.elements.AccessRights;
 import eu.betaas.service.securitymanager.capability.elements.IssuerInfo;
@@ -24,6 +26,8 @@ import eu.betaas.service.securitymanager.capability.model.Token;
 
 public class CapToJsonUtils {	
 	private static JsonXMLConfig config = new JsonXMLConfigBuilder().build();
+	
+	private static JsonStreamFactory stream = new JsonStreamFactoryImpl();
 	
 	public static String createTokenJson(Token token){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -17,6 +17,9 @@
 
 package eu.betaas.adaptation.thingsadaptor.clients;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -26,7 +29,7 @@ import eu.betaas.adaptation.plugin.api.IAdaptorPlugin;
 
 public class AdaptorClient {
 	
-	private IAdaptorPlugin apService;
+	private List<IAdaptorPlugin> apService =  new ArrayList<IAdaptorPlugin>();
 	private Logger logger= Logger.getLogger("betaas.adaptation");
 	static private AdaptorClient _instance = null;
 	
@@ -36,7 +39,10 @@ public class AdaptorClient {
 		try {
 			ServiceReference[] ref = context.getServiceReferences(IAdaptorPlugin.class.getName(), null);
 			if ((ref != null) && (ref.length > 0)) {
-				apService = ((IAdaptorPlugin) context.getService(ref[0]));
+				for (int i = 0; i < ref.length; i++) {
+					IAdaptorPlugin service = ((IAdaptorPlugin) context.getService(ref[i]));
+					apService.add(service);
+				}
 			}
 			
 		} catch (java.lang.NoClassDefFoundError e) {
@@ -60,14 +66,14 @@ public class AdaptorClient {
 		return _instance;
 	}
 
-	public IAdaptorPlugin getApService() {
+	public List<IAdaptorPlugin> getApService() {
 		return apService;
 	}
 
-	public void setApService(IAdaptorPlugin apService) {
+	public void setApService(List<IAdaptorPlugin> apService) {
 		this.apService = apService;
 	}
-	
+
 	
 	
 }

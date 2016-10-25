@@ -209,6 +209,7 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 			mLogger.info("Sending the agreement offer to QoSM");
 			qosm.createAgreement(offer);			
 			
+			ServiceManager.busMessage("Installed extended Service: " + service.mName, "info", ServiceManager.MONITORING);
 			// Once the service is installed, TaaSRM will call notifyServiceInstallation(serviceID)
 			
 		} // loop on requested services
@@ -224,7 +225,6 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 	
 	
 	public boolean notifyServiceInstallation(String serviceID, byte[] token) {
-		
 		int i, nServices;
 		AppRegistryRow appRegRow = null;
 		ExtServiceRegistryRow extRegRow = null;
@@ -317,10 +317,12 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 				
 				// notify to the application the assigned Application ID
 				try {
-					ServiceManager.getInstance().notifyAssignedAppID(appRegRow.mAppID);
+					ServiceManager.getInstance().notifyAssignedAppID(appRegRow.mAppID, true, null, null);
+					
 				} catch (Exception e) {
 					mLogger.error("Cannot notify the assigned ID to the installed application: " + e.getMessage());
 				}
+				ServiceManager.busMessage("Application (" + appRegRow.mAppName + ") installed.", "info", ServiceManager.MONITORING);
 			}
 		} else {
 			///////////// EXTENDED SERVICE //////////////
@@ -331,6 +333,8 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 				mLogger.info("Extended service (" + extRegRow.mExtServiceUniqueName + ") installed.");
 				mLogger.info("Notifying the assigned ID to the extended service");
 				
+				ServiceManager.busMessage("Extended service (" + extRegRow.mExtServiceUniqueName + ") installed.", "info", ServiceManager.MONITORING);
+	
 				// notify to the extended service the assigned ID
 				IExtendedService serv = mDiscovery.retrieveExtendedService(extRegRow.mExtServiceUniqueName); //getExtendedServiceIF();
 				if (serv != null) {
@@ -347,12 +351,129 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 							                extRegRow.mExtServiceID, 
 							                serviceList,
 							                tokenList);
+					ServiceManager.busMessage("Extended service (" + extRegRow.mExtServiceUniqueName + ") installed.", "info", ServiceManager.MONITORING);
 				} else {
 					mLogger.warn("Cannot get the extended service interface to notify it the installation result");
 				}
 			}
 		}
+
+		return true;
+	}
+	public boolean notifyServiceInstallationFailure(String serviceID, String errorMessage) {
+		
+		int i, nServices;
+		AppRegistryRow appRegRow = null;
+		ExtServiceRegistryRow extRegRow = null;
+		AppService appServ;
+		ExtServService extSerService;
+		ApplicationRegistry applicationReg = ServiceManager.getInstance().getAppRegistry();
+		ExtendedRegistry extendedReg = ServiceManager.getInstance().getExtendedRegistry();
+		String serviceDescription = null;
+
+		boolean isApp = true;
+		
+		mLogger.info("Received service install failure notification. ServiceID=" + serviceID + ". Error message = "+errorMessage);
+
+		if (serviceID == null) {
+			mLogger.error("The application cannot be installed. Received a null service ID from TaaSRM");
+			return false;
+		}
+
+		// Search the app or the extended service to which the notified service belongs, based on the service ID
+		// The app/ext service must be in the INSTALLING status and the service in the QOS_NEGOTIATION status
+		appRegRow = applicationReg.searchInstallingServiceID(serviceID);
+		if (appRegRow == null) {
+			isApp = false;
+			extRegRow = extendedReg.searchInstallingServiceID(serviceID);
+			if (extRegRow == null) {
+				mLogger.error("Received from TaaSRM a service ID that is not present neither in the Application nor in the Extended Service registry");
+				return false;
+			}
+		}
+		
+		// Change the service status 
+		if (isApp) nServices = appRegRow.mServiceList.size();
+		else nServices = extRegRow.mServiceList.size();
+		
+		if (isApp) mLogger.info("Notified service failure is for an app with " + nServices + " services");
+		else mLogger.info("Notified service failure is for an extended service with " + nServices + " services");
+
+		for (i=0; i < nServices; i++) {
+			
+			if (isApp) {
+				///////////////// APPLICATION ////////////////
+				appServ = appRegRow.mServiceList.get(i);
 				
+				if (appServ.mServiceID.equals(serviceID)) {
+					
+					appServ.mStatus = AppService.ServiceInstallationStatus.ERROR;
+					
+					serviceDescription = appServ.mRequirements.mSemanticDescription;
+					
+					mLogger.info("Service n. " + i + " not installed (service ID=" + serviceID + " Service description = " + serviceDescription +")");
+					
+				}
+			} else {
+				///////////// EXTENDED SERVICE //////////////
+				extSerService = extRegRow.mServiceList.get(i);
+				
+				if (extSerService.mServiceID.equals(serviceID)) {
+						
+					extSerService.mStatus = ExtServService.ServiceInstallationStatus.ERROR;
+					
+					serviceDescription = extSerService.mRequirements.mSemanticDescription;
+
+					mLogger.info("Service n. " + i + " not installed  (service ID=" + serviceID + " Service description = " + serviceDescription + ")");
+						
+				} 
+				
+				
+				
+			}
+			
+		}
+		if(isApp){
+			 
+			appRegRow.mStatus = AppRegistryRow.ApplicationInstallationStatus.ERROR;
+			mLogger.info("Application (" + appRegRow.mAppName + ") is not installed.");
+			
+			// notify to the application the assigned Application ID
+			try {
+				ServiceManager.getInstance().notifyAssignedAppID(appRegRow.mAppID, false, errorMessage, serviceDescription);
+				ServiceManager.busMessage("Service: " + serviceDescription + "cannot be installed", "error", ServiceManager.DEPENDABILITY);
+			} catch (Exception e) {
+				mLogger.error("Cannot notify the assigned ID to the installed application: " + e.getMessage());
+			}
+		}else{
+			extRegRow.mStatus = ExtServiceRegistryRow.ExtServiceInstallationStatus.ERROR;
+			
+			mLogger.info("Extended service (" + extRegRow.mExtServiceUniqueName + ") is not installed.");
+			mLogger.info("Notifying the assigned ID to the extended service");
+			
+			// notify to the extended service the assigned ID
+			IExtendedService serv = mDiscovery.retrieveExtendedService(extRegRow.mExtServiceUniqueName); 
+			if (serv != null) {
+				ArrayList<String> serviceList = new ArrayList<String>();
+				//ArrayList<String> tokenList = new ArrayList<String>();
+				if (extRegRow.mServiceList != null) {
+					for (i=0; i < extRegRow.mServiceList.size(); i++) {
+						serviceList.add(extRegRow.mServiceList.get(i).mServiceID);
+					//	tokenList.add(extRegRow.mServiceList.get(i).mRequirements.mCredentials);
+					}
+				}	
+				String notifyMessage = "Installation failed. Service Description = " + serviceDescription + " Error message = " + errorMessage; 
+				serv.notifyInstallation(false, 
+										notifyMessage, 
+						                extRegRow.mExtServiceID, 
+						                serviceList,
+						                null);
+				ServiceManager.busMessage("Service: " + serviceDescription + "cannot be installed", "error", ServiceManager.DEPENDABILITY);
+			} else {
+				mLogger.warn("Cannot get the extended service interface to notify it the installation result");
+			}
+		}
+		
 		return true;
 	}
 	
@@ -662,4 +783,6 @@ public class InternalAPIImpl implements ServiceManagerInternalIF {
 	
 	/** The discovery utility object */
 	private Discovery mDiscovery = null;
+	
+	
 }

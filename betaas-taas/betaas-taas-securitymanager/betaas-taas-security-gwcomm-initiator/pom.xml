@@ -3,11 +3,12 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-security-consumer</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
+  
   <name>BETaaS TaaS Security Consumer bundle</name>
   <description>A bundle that consumes security services published by betaas-taas-securitymanager-core, i.e. initiating GW*, joining an instance, and initiating shared key</description>
   
@@ -32,6 +33,20 @@
   		</artifactId>
   		<version>${project.version}</version>
   	</dependency>
+  	<dependency>
+  		<groupId>eu.betaas</groupId>
+  		<artifactId>
+  			betaas-taas-securitymanager-certificate
+  		</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.betaas</groupId>
+  		<artifactId>
+  			betaas-taas-security-encrypttest
+  		</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
   </dependencies>
   
   <build>
@@ -45,8 +60,14 @@
                  <instructions>
                      <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                      <Bundle-Version>${project.version}</Bundle-Version>
-                     <Bundle-Activator> eu.betaas.taas.securitymanager.gwcomm.activator.GWSecCommActivator</Bundle-Activator>
-                     <Import-Package>org.apache.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,eu.betaas.taas.securitymanager.core.service.*</Import-Package>                     
+                     <!-- <Bundle-Activator> eu.betaas.taas.securitymanager.gwcomm.activator.GWSecCommActivator</Bundle-Activator> -->
+                     <Import-Package>org.apache.*,
+                     org.osgi.service.*,
+                     org.osgi.framework.*,
+                     org.osgi.util.tracker.*,
+                     eu.betaas.taas.securitymanager.core.service.*,
+                     eu.betaas.taas.securitymanager.certificate.service.*,
+                     eu.betaas.taas.securitymanager.encrypttest.api.*</Import-Package>                     
                  </instructions>
              </configuration>
          </plugin>

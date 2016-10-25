@@ -40,7 +40,7 @@ public class ContextUtils {
 
 			InputStream file =new FileInputStream(sensorFile);
 			BufferedReader in = new BufferedReader(new InputStreamReader(file));
-			mLogger.info("Going to read data from the file...:"+sensorFile.getName());			
+			mLogger.debug("Going to read data from the file...:"+sensorFile.getName());			
 			
 			while ((line = in.readLine()) != null) {
 				String[] attributes = line.split(":");	

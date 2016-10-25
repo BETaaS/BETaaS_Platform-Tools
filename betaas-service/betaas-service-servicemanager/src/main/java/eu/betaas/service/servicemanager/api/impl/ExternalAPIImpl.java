@@ -30,9 +30,13 @@ import eu.betaas.service.servicemanager.api.ServiceManagerExternalIF;
 import eu.betaas.service.servicemanager.application.Installer;
 import eu.betaas.service.servicemanager.application.RequestManager;
 import eu.betaas.service.servicemanager.application.registry.AppRegistryRow;
+import eu.betaas.service.servicemanager.application.registry.AppService;
 import eu.betaas.service.servicemanager.application.registry.ApplicationRegistry;
 import eu.betaas.service.servicemanager.extended.api.IExtendedService;
 import eu.betaas.service.servicemanager.extended.discovery.Discovery;
+import eu.betaas.service.servicemanager.extended.registry.ExtServService;
+import eu.betaas.service.servicemanager.extended.registry.ExtServiceRegistryRow;
+import eu.betaas.service.servicemanager.extended.registry.ExtendedRegistry;
 
 import javax.jws.WebService;
 import javax.ws.rs.Consumes;
@@ -60,6 +64,10 @@ public class ExternalAPIImpl implements ServiceManagerExternalIF {
 	  
 	public void setGwId(String gwId) {
 		ServiceManager.getInstance().setGwId(gwId);
+	}
+	
+	public void setGcmKey(String gcmKey) {
+		ServiceManager.getInstance().setGcmKey(gcmKey);
 	}
 	
 	/**
@@ -129,12 +137,11 @@ public class ExternalAPIImpl implements ServiceManagerExternalIF {
     @DELETE
     @Path("/application/{appID}")	 
     @Consumes("application/xml; charset=UTF-8")
-	public boolean uninstallApplication(@PathParam("appID") String appID, String manifestContent) {
+	public boolean uninstallApplication(@PathParam("appID") String appID) {
 
 		mLogger.info("Called uninstall for application ID: " + appID);
-		mLogger.info("Manifest: " + manifestContent);
 				
-		return mInstaller.uninstall(appID, manifestContent, mDiscovery);
+		return mInstaller.uninstall(appID,  mDiscovery);
 	}
 	
 	
@@ -240,7 +247,14 @@ public class ExternalAPIImpl implements ServiceManagerExternalIF {
 				return false;
 			}
 			
-
+//			// convert the data to a Json structure
+//			try {
+//				JsonElement jelement = new JsonParser().parse(data);
+//		    	jobject = jelement.getAsJsonObject();
+//			} catch (Exception e) {
+//				mLogger.error("Cannot parse json input data: " + data);
+//				return false;
+//			}
 			
 			RequestManager reqMng = new RequestManager();
 			
@@ -447,6 +461,65 @@ public class ExternalAPIImpl implements ServiceManagerExternalIF {
 		return result;
 	}
 	
+	@PUT
+	@Path("/application/stop/{appID}")	 
+    @Consumes("application/xml; charset=UTF-8")
+	public boolean stopApplication(@PathParam("appID") String appID) {
+
+		mLogger.info("Called stop for application ID: " + appID);
+				
+		return mInstaller.stop(appID);
+	}
+	
+	@PUT
+	@Path("/application/start/{appID}")	 
+    @Consumes("application/xml; charset=UTF-8")
+	public boolean startApplication(@PathParam("appID") String appID) {
+
+		mLogger.info("Called start for application ID: " + appID);
+				
+		return mInstaller.start(appID);
+	}
+	
+	/**
+	 * Used by GUI to request the list of installed applications
+	 * @return the list of installed applications in JSON format
+	 */
+	@GET
+	@Path("/application")
+	public String getApplicationList(){
+		ApplicationRegistry applicationReg = ServiceManager.getInstance().getAppRegistry();
+		
+		String returnValue = "<?xml version='1.0'?><InstalledApplications>";
+		int i;
+		//int j;
+		AppRegistryRow res = null;
+		//AppService serv = null;
+		
+		for (i=0; i<applicationReg.getSize(); i++) {
+			res = applicationReg.getAppAt(i);
+			returnValue += "<Application><Name>"+res.mAppName+"</Name><ID>"+ res.mAppID + "</ID><IsExtended>false</IsExtended></Application>";	
+//			for (j=0; j<res.mServiceList.size(); j++) {
+//				serv = res.mServiceList.get(j);
+//				if ((serv.mStatus == AppService.ServiceInstallationStatus.QOS_NEGOTIATION) && 
+//					(serv.mServiceID.equals(serviceID))) {
+//					return res;
+//				}				
+//			}
+		}
+		
+		ExtServService extSerService;
+		ExtendedRegistry extendedReg = ServiceManager.getInstance().getExtendedRegistry();
+		ExtServiceRegistryRow extRegRow = null;
+		for (i=0; i<extendedReg.getSize(); i++) {
+			extRegRow = extendedReg.getAppAt(i);
+			returnValue += "<Application><Name>"+extRegRow.mExtServiceUniqueName+"</Name><ID>"+ extRegRow.mExtServiceID + "</ID><IsExtended>true</IsExtended></Application>";	
+		}
+		
+		
+		returnValue += "</InstalledApplications>";
+		return returnValue;
+	}
 
 	/** Logger */
 	private static Logger mLogger = Logger.getLogger(ServiceManager.LOGGER_NAME);

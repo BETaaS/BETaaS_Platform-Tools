@@ -52,6 +52,7 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
   private QoSManagerInternalIF qosservice;
   private static ConfigBundleOSGiImpl thing = null;
   private String mGWID;
+  private String limiter;
   
   private boolean enabledbus=false;
   private List<String> messageBuffer = new Vector<String>();
@@ -149,15 +150,27 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
     mGWID = gwId;
   }
 
+  public String getDelimiter()
+  {
+    return limiter.toString();
+  }
+  
+  public void setDelimiter(String delimiter)
+  {
+//    String escapeCh = "\\";
+//    byte[] delimiter1 = delimiter.getBytes(StandardCharsets.US_ASCII);
+    limiter = delimiter;
+  }
+
   public String getGwId()
   {
     return mGWID;
   }
   
   public void busMessage(String message){
-    mLogger.debug("Checking queue");
+//    mLogger.debug("Checking queue");
     if (!enabledbus)return;
-    mLogger.debug("Sending to queue");
+//    mLogger.debug("Sending to queue");
     ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
     if (serviceReference==null){
       mLogger.warn("Requested to publish data to queue, but service betaas publisher not found");
@@ -180,11 +193,11 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
       
     }
   
-    mLogger.debug("This is the message built '"+message+"'.");
+//    mLogger.debug("This is the message built '"+message+"'.");
     
-    mLogger.debug("Sending to "); 
+//    mLogger.debug("Sending to "); 
     service.publish(key,message);
-    mLogger.debug("Sent to queue " + key);
+//    mLogger.debug("Sent to queue " + key);
   }
   
   public void sendData(String description, String level, String originator) {

@@ -16,6 +16,8 @@
     <cm:property-placeholder persistent-id="betaas.gateway">
 	 <cm:default-properties>
 	  <cm:property name="gwId" value="-1"/>
+	  <cm:property name="QoSMonitoringJitter" value="0"/>
+	  <cm:property name="delimiter" value="_"/>
 	  </cm:default-properties>
     </cm:property-placeholder>
       
@@ -27,6 +29,8 @@
     	<property name="WSAddress" value="$(qosManagerTaaSAddress)"></property>
     	<property name="WSAddressInternal" value="$(qosManagerTaaSInternalAddress)"></property>
     	<property name="gwId" value="${gwId}"></property>
+    	<property name="delimiter" value="${delimiter}"></property>
+    	<property name="qosMonitoringJitter" value="${QoSMonitoringJitter}"></property>
     	<property name="service" ref="databaseService"/>
     	<property name="qosMonitoring" ref="qosMonitoringService"/>
     	<property name="cmservice" ref="taasContextManager" />

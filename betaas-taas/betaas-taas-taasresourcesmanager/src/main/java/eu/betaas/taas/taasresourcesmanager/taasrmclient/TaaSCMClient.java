@@ -213,4 +213,9 @@ public class TaaSCMClient
 		
 		return true;
 	}
+	
+	public boolean unsubscribeToThing (String idThingService)
+	{
+		return true;
+	}
 }

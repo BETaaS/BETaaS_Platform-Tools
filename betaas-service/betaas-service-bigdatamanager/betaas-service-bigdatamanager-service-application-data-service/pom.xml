@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service-bigdatamanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-bigdatamanager-service-application-data-service</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Betaas Service ADS Bundle</name>
   <description>BDM Application Data Service Bundle</description>
@@ -46,6 +46,13 @@
  		  <artifactId>betaas-service-bigdatamanager-service-datatask</artifactId>
       <version>${project.version}</version>
     </dependency>	
+    
+    <dependency>
+	 	<groupId>eu.betaas</groupId>
+		<artifactId>betaas-bus-interface</artifactId>
+ 		<version>${project.version}</version>
+	</dependency>
+    
 	</dependencies>
    <build>
      <plugins>
@@ -60,7 +67,8 @@
                      <Bundle-Version>${project.version}</Bundle-Version>
                       <Import-Package> 
                      	org.osgi.framework,org.osgi.util.tracker,
-                     	eu.betaas.service.bigdatamanager.service.datatask,*
+                     	eu.betaas.service.bigdatamanager.service.datatask,
+                     	 eu.betaas.rabbitmq.publisher.interfaces,eu.betaas.rabbitmq.publisher.interfaces.utils,*
                      </Import-Package>
                      <Export-Package>
                      	eu.betaas.service.bigdatamanager.applicationdataservice,

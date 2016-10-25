@@ -51,17 +51,19 @@ public class ResourcesAllocator
 	private TaaSQoSMClient myQoSClient;
 	private String localGateway;
 	private Logger logger= Logger.getLogger("betaas.taas");
-	
+	private String idDelimiter;
+			
 	public ResourcesAllocator ()
-	{
+	{		
 		tmClient = TaaSTMClient.instance();				
 		cmClient = TaaSCMClient.instance();
 		appCatalog = ApplicationsCatalog.instance();
 		resCatalog = ResourcesCatalog.instance();	
 		myQoSClient = TaaSQoSMClient.instance();
+		idDelimiter = "_";		
 	}
 	
-	public ResourcesAllocator (String gatewayId)
+	public ResourcesAllocator (String gatewayId, String delimiter)
 	{
 		tmClient = TaaSTMClient.instance();				
 		cmClient = TaaSCMClient.instance();
@@ -69,6 +71,7 @@ public class ResourcesAllocator
 		resCatalog = ResourcesCatalog.instance();	
 		myQoSClient = TaaSQoSMClient.instance();
 		localGateway = gatewayId;
+		idDelimiter = delimiter;
 	}
 	
 	public String allocateResources (Feature appFeature)
@@ -89,7 +92,7 @@ public class ResourcesAllocator
 		{
 			// Check if one of the features is the requested one
 			FeatureService currentFeature = myIter.next();
-			if (currentFeature.getFeature().equalsIgnoreCase(appFeature.getFeature()))
+			if (currentFeature.getFeature().equalsIgnoreCase(appFeature.getFeature()) && currentFeature.getLocation().equals(appFeature.getLocation()))
 			{
 				myFeature = currentFeature;				
 				// If the feature exists and the mapping is completed, then we don't re-allocate
@@ -103,7 +106,7 @@ public class ResourcesAllocator
 		// Create and add the new Feature Service if it was not already in the system
 		if (myFeature == null)
 		{
-			String featServId = appFeature.getAppId() + "_" + appFeature.getFeature() + "_" + appFeature.getLocation().getLocationKeyword();
+			String featServId = appFeature.getAppId() + idDelimiter + appFeature.getFeature() + idDelimiter + appFeature.getLocation().getLocationKeyword();
 			myFeature = new FeatureService (appFeature.getFeature(), appFeature.getLocation(), appFeature.getType(), null, featServId, appFeature.getPeriod());
 			currentApp.addFeature(myFeature);
 			appCatalog.addFeatureService(appFeature.getAppId(), featServId);
@@ -140,6 +143,7 @@ public class ResourcesAllocator
 		
 		// Step 3 -> Return the id and wait for the QoS Manager
 		logger.info("Id generated for the new feature: " + myFeature.getFeatureServiceId());
+		logger.info("Period for the new feature: " + appFeature.getPeriod());
 		return myFeature.getFeatureServiceId();
 	}
 	
@@ -173,8 +177,21 @@ public class ResourcesAllocator
 			FeatureService currentFeature = featuresList.get(i);
 			if (currentFeature.getFeatureServiceId().equalsIgnoreCase(idFeatureService))
 			{
-				logger.info("Feature Service found -> Equivalent Thing Services sent! (serviceId : " + idFeatureService + " - size: " + currentFeature.getEquivalents().size() + ")");
-				return currentFeature.getEquivalents();
+				logger.info("Feature Service found -> Candidate and Equivalent Thing Services sent! (serviceId : " + idFeatureService + " - size: " + currentFeature.getEquivalents().size() + ")");
+				ArrayList<ArrayList<String>> result = currentFeature.getEquivalents();
+				if (result==null)
+				{
+					result = new ArrayList<ArrayList<String>>();
+				}
+				ArrayList<String> candidates = currentFeature.getThingServices();
+				for (int j=0; j<candidates.size(); j++)
+				{
+					result.get(j).add(0, candidates.get(j));
+				}				
+				
+				printThingServicesMatrix (result);
+				
+				return result;
 			}
 		}
 		
@@ -205,18 +222,22 @@ public class ResourcesAllocator
 				// Update list of equivalent thing services
 				logger.info("Updating the list of equivalent thing services for the service " + serviceID + " with " + equivalentThingServicesQoSRank.size() + " more thing services");
 				currentFeature.setEquivalentThingServices(equivalentThingServicesQoSRank);
+				int featureType = currentFeature.getType();
 				
 				// For the thing services list, take the ones in the first position
 				ArrayList<String> finalServices = new ArrayList<String>();
 				for (int j=0; j<equivalentThingServicesQoSRank.size(); j++)
-				{					
+				{
 					// Get the first thing service to be invoked
 					String tsIdentifier = equivalentThingServicesQoSRank.get(j).get(0);
 					finalServices.add(tsIdentifier);
 					
-					// Notify resource allocation
-					resCatalog.getResource(tsIdentifier).addFeature(currentFeature.getFeatureServiceId());
-										
+					// Notify resource allocation (only NRT PULL mode, since it doesn't reallocate continuously)
+					// PUSH modes are notified when the subscription is requested, for efficiency purposes
+					if (featureType==FeatureService.NRTPULL)
+					{
+						resCatalog.getResource(tsIdentifier).addFeature(currentFeature.getFeatureServiceId());
+					}										
 				}
 				currentFeature.setThingServices(finalServices);
 				
@@ -305,7 +326,7 @@ public class ResourcesAllocator
 					
 					//Step 4 -> Re-subscribe if previous subscriptions were active
 					EndpointsManager invokator = new EndpointsManager(localGateway);
-					if (invokator.unsubscribeFeature(idFeatureService))
+					if (invokator.unsubscribeFeatureService(idFeatureService))
 					{
 						invokator.subscribeFeatureService(idFeatureService);
 					}					
@@ -352,4 +373,55 @@ public class ResourcesAllocator
 		
 		logger.error("Feature " + idFeatureService + " could not be found for its removal!");
 	}
+	
+	private void printThingServicesMatrix(ArrayList<ArrayList<String>> input)
+	{
+		input.trimToSize();
+		String content = "[";
+		
+		for (int i=0; i<input.size(); i++)
+		{
+			input.get(i).trimToSize();
+			content = content + "[";
+			for (int j=0; j<input.get(i).size(); j++)
+			{
+				content = content + input.get(i).get(j);
+				if (j<input.get(i).size()-1)
+				{
+					content = content + ", ";
+				}
+			}
+			content = content + "]";
+		}
+		
+		content = content + "]";
+		logger.info("Matrix Sent: " + content);
+		//System.out.println(content);
+	}
+	
+	/*
+	public static void main(String args[]) 
+	{
+		ArrayList<ArrayList<String>> myArray = new ArrayList<ArrayList<String>>();
+		ArrayList<String> array1 = new ArrayList<String>();
+		array1.add("Javi1");
+		array1.add("Javi2");
+		
+		ArrayList<String> array2 = new ArrayList<String>();
+		array2.add("Javi1");
+		array2.add("Javi2");
+		
+		ArrayList<String> array3 = new ArrayList<String>();
+		array3.add("Javi1");
+		array3.add("Javi2");
+		array3.add("Javi3");
+		
+		myArray.add(array1);
+		myArray.add(array2);
+		myArray.add(array3);
+		
+		ResourcesAllocator javi = new ResourcesAllocator();
+		javi.printThingServicesMatrix(myArray);
+	}
+	*/
 }

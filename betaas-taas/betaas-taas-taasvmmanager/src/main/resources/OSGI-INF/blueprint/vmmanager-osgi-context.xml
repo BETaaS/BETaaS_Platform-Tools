@@ -17,30 +17,67 @@
     
     requires that install mvn:com.h2database/h2/1.3.163 is installed
 -->
-<blueprint  default-activation="eager" 
-            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+<blueprint  xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
             xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
-            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
-	
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
+            xmlns:cxf="http://cxf.apache.org/blueprint/core"
+            xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+            xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+            xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             ">
+    
+    <cm:property-placeholder persistent-id="betaas.endpoints" placeholder-prefix="$(" placeholder-suffix=")">
+    <cm:default-properties>
+      <cm:property name="vmManagerAddress" value="http://localhost:17023/vmmanager"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+    
     <cm:property-placeholder persistent-id="betaas.gateway" >
 		<cm:default-properties>
 			<cm:property name="gwId" value="-1"/>
-			<cm:property name="vmImagesPath" value=""/>
-			<cm:property name="openStackHost" value=""/>
-			<cm:property name="openStackUser" value=""/>
-			<cm:property name="openStackPass" value=""/>
+			<cm:property name="vmmPath" value=""/>
+			<cm:property name="keystoneEndpoint" value=""/>
+			<cm:property name="novaEndpoint" value=""/>
+			<cm:property name="cinderEndpoint" value=""/>
+			<cm:property name="neutronEndpoint" value=""/>
+			<cm:property name="openStackTenant" value="admin"/>
+			<cm:property name="openStackUser" value="admin"/>
+			<cm:property name="openStackPass" value="admin"/>
 		</cm:default-properties>
 	</cm:property-placeholder>
     
-    <bean id="taasVMManagerBean" class="eu.betaas.taas.taasvmmanager.api.impl.TaaSVMManagerImpl" scope="singleton"/>
-	
-   <!-- <bean id="TaaSVMMAnagerConfigurationBean" class="eu.betaas.taas.taasvmmanager.configuration.TaaSVMMAnagerConfiguration" scope="singleton">
-       <property name="gwId" value="${gwId}"></property>
-       <property name="vmImagesPath" value="${vmImagesPath}"></property>
-   </bean> -->
+    <bean id="messageManagerBean" class="eu.betaas.taas.taasvmmanager.messaging.MessageManager" init-method="setupService">
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
     
-    <service ref="taasVMManagerBean" interface="eu.betaas.taas.taasvmmanager.api.TaaSVMManager"/>
-
+    <bean id="configurationManagerBean" class="eu.betaas.taas.taasvmmanager.configuration.TaaSVMMAnagerConfiguration" init-method="setupService" scope="singleton" depends-on="messageManagerBean" >
+    	<property name="gwId" value="${gwId}"></property>
+        <property name="vmmPath" value="${vmmPath}"></property>
+        <property name="keystoneEndpoint" value="${keystoneEndpoint}"></property>
+        <property name="novaEndpoint" value="${novaEndpoint}"></property>
+        <property name="cinderEndpoint" value="${cinderEndpoint}"></property>
+        <property name="neutronEndpoint" value="${neutronEndpoint}"></property>
+        <property name="openStackTenant" value="${openStackTenant}"></property>
+        <property name="openStackUser" value="${openStackUser}"></property>
+        <property name="openStackPass" value="${openStackPass}"></property>
+    </bean>
+    
+    <bean id="taasVMManagerBean" class="eu.betaas.taas.taasvmmanager.api.impl.TaaSVMManagerImpl" init-method="setupService" destroy-method="stopService" scope="singleton" depends-on="configurationManagerBean">
+        <property name="context" ref="blueprintBundleContext"/>
+    </bean>
+    
+    <service ref="taasVMManagerBean" interface="eu.betaas.taas.taasvmmanager.api.TaaSVMManager">
+        <service-properties>
+        	<entry key="service.exported.interfaces" value="*" />
+        	<entry key="service.exported.configs" value="org.apache.cxf.ws" />
+        	<entry key="org.apache.cxf.ws.address" value="$(vmManagerAddress)" />
+        	<entry key="gwId" value="${gwId}" />
+     	</service-properties>
+     </service>
+    
 </blueprint>

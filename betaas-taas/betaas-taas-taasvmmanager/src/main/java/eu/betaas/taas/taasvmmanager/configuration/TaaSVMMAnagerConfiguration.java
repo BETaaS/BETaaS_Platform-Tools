@@ -36,13 +36,39 @@ import java.util.HashMap;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+
+import com.sun.jersey.core.osgi.OsgiRegistry;
+
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor.FlavorType;
 
 public class TaaSVMMAnagerConfiguration {
 
+	public static enum SystemArchitecture {INTEL, ARM};
 	private static Logger logger = Logger.getLogger("betaas.taas");
 	
-	private static String systemArchitecture;
-	private static String vmImagesPath;
+	private static String gwId;
+	
+	/******** FlavorParameters ********/
+	//TODO set correct parameters
+	private static final int  CPUTINY      = 1;
+	private static final int  CPUSMALL     = 1;
+	private static final int  CPUSTANDARD  = 2;
+	private static final long MEMTINY      = 384;
+	private static final long MEMSMALL     = 512;
+	private static final long MEMSTANDARD  = 1024;
+	private static final long DISKTINY     = 0;
+	private static final long DISKSMALL    = 0;
+	private static final long DISKSTANDARD = 0;
+	/**********************************/
+	
+	private static SystemArchitecture systemArchitecture;
+	
+	private static String vmmPath;
+	private static String vmmArmPath;
+	private static String customKernelPath;
+	private static String customDtbPath;
 	private static String baseImagesPath;
 	private static String baseAppImagePath;
 	private static String baseGatewayImagePath;
@@ -50,6 +76,14 @@ public class TaaSVMMAnagerConfiguration {
 	private static String baseStorageImagePath;
 	private static String instantiatedImagesPath;
 	private static String baseImagesURL;
+	
+	private static String keystoneEndpoint;
+	private static String novaEndpoint;
+	private static String cinderEndpoint;
+	private static String neutronEndpoint;
+	private static String openStackTenant;
+	private static String openStackUser;
+	private static String openStackPass;
 	
 	/* Structure that contains the information about the clouds.
 	 * The key corresponds to its unique URL and the values are
@@ -60,28 +94,47 @@ public class TaaSVMMAnagerConfiguration {
 	 **/
 	private static HashMap<String, String[]> clouds = null;
 	
-	public static void loadConfiguration () {
-		logger = Logger.getLogger("betaas.taas");
+	public static void setupService () {
+		logger.info("[TaaSVMMAnagerConfiguration] Starting configuration loading...");
+		if (System.getProperty("os.arch").equals("amd64")) {
+			systemArchitecture = SystemArchitecture.INTEL;
+		} else {
+			systemArchitecture = SystemArchitecture.ARM;
+		}
 		
-		logger.info("Starting configuration loading...");
-		systemArchitecture = System.getProperty("os.arch");
+		logger.info("vmImagesPath    = " + vmmPath);
+		logger.info("openStackHost   = " + keystoneEndpoint);
+		logger.info("novaEndpoint    = " + novaEndpoint);
+		logger.info("neutronEndpoint = " + neutronEndpoint);
+		logger.info("openStackHost   = " + keystoneEndpoint);
+		logger.info("openStackUser   = " + openStackUser);
 		
-		loadPaths();
-		loadClouds();
-		downloadBaseImages();
+		createPaths();
+		//loadClouds();
+		//downloadBaseImages();
+		logger.info("[TaaSVMMAnagerConfiguration] Configuration loaded...");
 	}
 	
-	private static void loadPaths() {
-		baseImagesPath = vmImagesPath + "/base";
+	private static void createPaths() {
+		if (systemArchitecture == SystemArchitecture.ARM) {
+			vmmArmPath = vmmPath + "/arm";
+			customKernelPath = vmmArmPath + "/vexpress-zImage";
+			customDtbPath    = vmmArmPath + "/vexpress-v2p-ca15-tc1.dtb";
+		} else {
+			customKernelPath = "";
+			customDtbPath    = "";
+		}
+		
+		baseImagesPath = vmmPath + "/base";
 		baseAppImagePath = baseImagesPath + "/app.img";
 		baseGatewayImagePath = baseImagesPath + "/gateway.img";
 		baseBigDataImagePath = baseImagesPath + "/bigdata.img";
 		baseStorageImagePath = baseImagesPath + "/storage.img";
-		instantiatedImagesPath =  vmImagesPath + "/instantiated";
+		instantiatedImagesPath =  vmmPath + "/instantiated";
 		
 		logger.info("Cheking configuration directory structure.");
 		
-		File f = new File(vmImagesPath);
+		File f = new File(vmmPath);
 		if (!f.isDirectory()) {
 			logger.warn("BETaaS VMManager images directory does not exist. Creating...");			
 			if (f.mkdir()) {
@@ -110,15 +163,35 @@ public class TaaSVMMAnagerConfiguration {
 		} else {
 			logger.info("BETaaS VMManager base image directory exists.");			
 		}
+		
+		if (systemArchitecture == SystemArchitecture.ARM) {
+			f = new File(vmmArmPath);
+			if (!f.isDirectory()) {
+				logger.warn("BETaaS VMManager custom ARM directory does not exist. Creating...");			
+				if (f.mkdir()) {
+					logger.info("BETaaS VMManager custom ARM directory created successfully.");				
+				}
+			} else {
+				logger.info("BETaaS VMManager custom ARM directory exists.");			
+			}
+		}
 	}
 	
-	private static void downloadBaseImages () {
+	private static void downloadBaseImages () throws Exception{
 		URL website;
 		ReadableByteChannel rbc;
 		FileOutputStream fos;
+		String arch = System.getProperty("os.arch");
+		
+		if (!arch.equals("amd64") || !arch.equals("arm") /*TODO check*/ ) {
+			throw new Exception(
+					"System architecture not supported for virtualization");
+		}
+		
+		String finalImagesURL = baseImagesURL + "-" + arch;
 		logger.info("Downloading default VM images.");		
 		try {
-			website = new URL(baseImagesURL);
+			website = new URL(finalImagesURL);
 			rbc = Channels.newChannel(website.openStream());
 			fos = new FileOutputStream(baseImagesPath);
 			logger.info("Downloading base image from " + baseImagesURL);			
@@ -168,8 +241,52 @@ public class TaaSVMMAnagerConfiguration {
 		}
 	}
 	
+	public void setGwId(String gwId) {
+		TaaSVMMAnagerConfiguration.gwId = gwId;
+	}
+
+	public void setVmmPath(String vmImagesPath) {
+		TaaSVMMAnagerConfiguration.vmmPath = vmImagesPath;
+	}
+	
+	public void setKeystoneEndpoint(String keystoneEndpoint) {
+		TaaSVMMAnagerConfiguration.keystoneEndpoint = keystoneEndpoint;
+	}
+
+	public void setNovaEndpoint(String novaEndpoint) {
+		TaaSVMMAnagerConfiguration.novaEndpoint = novaEndpoint;
+	}
+
+	public void setCinderEndpoint(String cinderEndpoint) {
+		TaaSVMMAnagerConfiguration.cinderEndpoint = cinderEndpoint;
+	}
+
+	public void setNeutronEndpoint(String neutronEndpoint) {
+		TaaSVMMAnagerConfiguration.neutronEndpoint = neutronEndpoint;
+	}
+
+	public void setOpenStackTenant(String openStackTenant) {
+		TaaSVMMAnagerConfiguration.openStackTenant = openStackTenant;
+	}
+
+	public void setOpenStackUser(String openStackUser) {
+		TaaSVMMAnagerConfiguration.openStackUser = openStackUser;
+	}
+
+	public void setOpenStackPass(String openStackPass) {
+		TaaSVMMAnagerConfiguration.openStackPass = openStackPass;
+	}
+
+	public static String getGwId() {
+		return TaaSVMMAnagerConfiguration.gwId;
+	}
+
 	public static HashMap<String, String[]> getClouds () {
 		return clouds;
+	}
+
+	public static String getVmmPath() {
+		return TaaSVMMAnagerConfiguration.vmmPath;
 	}
 
 	public static String getBaseImagesPath() {
@@ -198,6 +315,63 @@ public class TaaSVMMAnagerConfiguration {
 
 	public static String getBaseImagesURL() {
 		return baseImagesURL;
+	}
+	
+	public static String getKeystoneEndpoint() {
+		return keystoneEndpoint;
+	}
+
+	public static String getCinderEndpoint() {
+		return cinderEndpoint;
+	}
+
+	public static String getNovaEndpoint() {
+		return novaEndpoint;
+	}
+
+	public static String getNeutronEndpoint() {
+		return neutronEndpoint;
+	}
+
+	public static String getOpenStackTenant() {
+		return openStackTenant;
+	}
+	
+	public static String getOpenStackUser() {
+		return openStackUser;
+	}
+
+	public static String getOpenStackPass() {
+		return openStackPass;
+	}
+
+	public static SystemArchitecture getSystemArchitecture() {
+		return systemArchitecture;
+	}
+
+	public static String getCustomKernelPath() {
+		return customKernelPath;
+	}
+
+	public static String getCustomDtbPath() {
+		return customDtbPath;
+	}
+
+	public static Flavor getFlavor(FlavorType type) {
+		Flavor ret = null;
+		
+		switch (type) {
+		case tiny:
+			ret = new Flavor(type, CPUTINY, MEMTINY, DISKTINY);
+			break;
+		case small:
+			ret = new Flavor(type, CPUSMALL, MEMSMALL, DISKSMALL);
+			break;
+		case standard:
+			ret = new Flavor(type, CPUSTANDARD, MEMSTANDARD, DISKSTANDARD);
+			break;
+		}
+		return ret;
 	}
 	
 	private class DownloadUpdater extends Thread {

@@ -14,6 +14,7 @@
  	<cm:property-placeholder persistent-id="betaas.gateway" >
 	 <cm:default-properties>
 	  <cm:property name="gwId" value="-1"/>
+	  <cm:property name="gcmKey" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
 	 </cm:default-properties>
 	</cm:property-placeholder>
 	
@@ -36,7 +37,8 @@
 	   	 <entry key="service.exported.interfaces" value="*" />
 	   	 <entry key="service.exported.configs" value="org.apache.cxf.ws" />
 	   	 <entry key="org.apache.cxf.ws.address" value="$(serviceManagerAddress)" />
-	   	 <entry key="gwId" value="${gwId}" /> 
+	   	 <entry key="gwId" value="${gwId}" />
+	   	 <entry key="gcmKey" value="${gcmKey}" />
 	  </service-properties>
     </service>    
 

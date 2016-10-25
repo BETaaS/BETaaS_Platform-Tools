@@ -1,0 +1,42 @@
+<blueprint  xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+            xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+            xmlns:cxf="http://cxf.apache.org/blueprint/core"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             ">
+
+	<!-- Webservices properties -->
+	<cxf:bus id="tsServiceBus">
+    </cxf:bus>
+
+	
+	<jaxrs:server address="/ts" id="tsService">
+        <jaxrs:serviceBeans>
+            <ref component-id="simulatorRestImpl" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+	
+	<bean id="simulatorRestImpl" class="eu.betaas.adaptation.inter.api.impl.SimulatorRestImpl" init-method="startService" 
+			destroy-method="closeService">
+    	<property name="service" ref="serviceDB"/>
+    </bean>
+
+<!-- End of Webservices conf -->
+    <bean id="serviceDB" class="eu.betaas.adaptation.inter.db.ServiceDB" init-method="start" destroy-method="stop">
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
+    
+    <bean id="adaptationPluginBean" class="eu.betaas.adaptation.inter.api.impl.AdaptorPluginImpl" init-method="start" destroy-method="stop">
+    		<property name="service" ref="serviceDB"></property>
+    </bean>
+	
+    <service ref="adaptationPluginBean" interface="eu.betaas.adaptation.plugin.api.IAdaptorPlugin"/>
+
+</blueprint>
+
+	

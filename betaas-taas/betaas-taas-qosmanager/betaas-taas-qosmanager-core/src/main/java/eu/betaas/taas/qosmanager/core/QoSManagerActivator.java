@@ -97,8 +97,10 @@ public class QoSManagerActivator{
 	
 	/** Config parameters **/
 	private String gwId;
+	private Double qosMonitoringJitter;
 	private String WSAddress;
 	private String WSAddressInternal;
+	private String delimiter;
 	private static boolean mIsStar;
 	private static IBigDataDatabaseService service;
 	
@@ -109,7 +111,7 @@ public class QoSManagerActivator{
     
 	public void start() throws Exception {
 		
-		qosM = new QoSManager();
+		qosM = new QoSManager(context);
 		qosM.setService(service);
 		mInternalServReg = null;
 		mExternalServReg = null;
@@ -219,7 +221,7 @@ public class QoSManagerActivator{
         
         // Register its own exposed interfaces
         InternalAPIImpl innerService = new InternalAPIImpl(this, qosM, negotiator, taasrm, servicerm, 
- 				qosMonitoring, cmservice, gwId);
+ 				qosMonitoring, cmservice, gwId, qosMonitoringJitter, delimiter);
         
         mInternalServReg = context.registerService(QoSManagerInternalIF.class.getName(), innerService, null);
         
@@ -314,6 +316,22 @@ public class QoSManagerActivator{
 
 	public void setWSAddressInternal(String wSAddressInternal) {
 		this.WSAddressInternal = wSAddressInternal;
+	}
+
+	public Double getQosMonitoringJitter() {
+		return qosMonitoringJitter;
+	}
+
+	public void setQosMonitoringJitter(Double qoSMonitoringJitter) {
+		qosMonitoringJitter = qoSMonitoringJitter;
+	}
+
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 	
 	/*private class QoSServiceTracker implements Runnable {

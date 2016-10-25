@@ -20,6 +20,7 @@
 //Responsible: Tecnalia
 package eu.betaas.taas.contextmanager.onto.classesExt.commonUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
@@ -48,7 +49,7 @@ public class ConfigBundleOSGiImpl implements ConfigBundleOSGi
   }
   
   public static ConfigBundleOSGiImpl getInstance()
-  {
+  { 
     if (thing==null) {
       thing = new ConfigBundleOSGiImpl();
       }

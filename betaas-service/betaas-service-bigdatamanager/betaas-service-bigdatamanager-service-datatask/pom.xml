@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service-bigdatamanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-bigdatamanager-service-datatask</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>BETaaS Data  Task Service</name>
   <description>BETaaS Data  Task Service Interface and basic implementations</description>
    <packaging>bundle</packaging>
@@ -55,7 +55,7 @@
     <dependency>
       	<groupId>eu.betaas</groupId>
   		<artifactId>betaas-service-bigdatamanager-data-connector-interface</artifactId>
-  		<version>2.1-release</version>                
+  		<version>3.0.2-SNAPSHOT</version>                
 	</dependency>
   </dependencies> 
    <build>

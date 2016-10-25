@@ -1,6 +1,6 @@
-﻿/**
+/**
 
-Copyright 2014 ATOS SPAIN S.A.
+Copyright 2015 ATOS SPAIN S.A.
 
 Licensed under the Apache License, Version 2.0 (the License);
 you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
 // Component: TaaSResourceManager
 // Responsible: Atos
 
-
 package eu.betaas.taas.taasresourcesmanager.api.impl;
 
 import java.util.ArrayList;
@@ -41,10 +40,15 @@ import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 import eu.betaas.taas.taasresourcesmanager.api.Feature;
 import eu.betaas.taas.taasresourcesmanager.api.Location;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManager;
+import eu.betaas.taas.taasresourcesmanager.catalogs.Application;
+import eu.betaas.taas.taasresourcesmanager.catalogs.ApplicationsCatalog;
+import eu.betaas.taas.taasresourcesmanager.catalogs.FeatureService;
 import eu.betaas.taas.taasresourcesmanager.catalogs.Resource;
 import eu.betaas.taas.taasresourcesmanager.catalogs.ResourcesCatalog;
 import eu.betaas.taas.taasresourcesmanager.endpointsmanager.EndpointsManager;
 import eu.betaas.taas.taasresourcesmanager.endpointsmanager.PushManager;
+import eu.betaas.taas.taasresourcesmanager.messaging.MessageManager;
+import eu.betaas.taas.taasresourcesmanager.resourcesoptimizer.RecoveryManager;
 import eu.betaas.taas.taasresourcesmanager.resourcesoptimizer.ResourcesAllocator;
 import eu.betaas.taas.taasresourcesmanager.taasrmclient.ServiceSECMClient;
 import eu.betaas.taas.taasresourcesmanager.taasrmclient.TaaSQoSMClient;
@@ -60,12 +64,15 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 	private Logger logger= Logger.getLogger("betaas.taas");
 	private String gwId;
 	private BundleContext mContext;
-	
+	private MessageManager mManager;
+	private String mDelimiter;
 	
 	public void setupService(){
 		logger.debug("[TaaSResourceManagerImpl] Starting the service");
+		mManager = MessageManager.instance();
 		TaaSRMClient.instance(gwId, "TaaSResourceManagerImpl");
 		logger.debug("[TaaSResourceManagerImpl] Service started");
+		mManager.monitoringPublish("[TaaSResourceManagerImpl] Service started");
 	}
 	
 	public void setGwId(String id)
@@ -82,6 +89,11 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		//context.getBundle().getHeaders().put("gwId", id);
 	}
 	
+	public void setDelimiter(String delimiter)
+	{
+		mDelimiter = delimiter;
+	}
+	
 	public String getGwId ()
 	{
 		return gwId;
@@ -91,8 +103,10 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 	{		
 		logger.info ("Allocate resources method (with feature) invoked!");
 		logger.info ("Look for " + appFeature.getFeature() + " in " + appFeature.getLocation().getLocationIdentifier() + "-" + appFeature.getLocation().getLocationKeyword() + " with period " + appFeature.getPeriod());
-		ResourcesAllocator myAllocator = new ResourcesAllocator();		
-		return myAllocator.allocateResources(appFeature);
+		ResourcesAllocator myAllocator = new ResourcesAllocator(gwId, mDelimiter);
+		String result = myAllocator.allocateResources(appFeature);
+		MessageManager.instance().monitoringPublish("Feature " + result + " has started installation process.");
+		return result;
 	}
 
 	public boolean freeLocalResources(String serviceID) 
@@ -116,8 +130,10 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 	
 	public boolean removeThingServices(String idGateway) 
 	{		
-		logger.info ("Remove Thing Services for gateway " + idGateway + " method invoked!");		
-		return ResourcesCatalog.instance().removeResources(idGateway);
+		logger.info ("Remove Thing Services for gateway " + idGateway + " method invoked!");
+		boolean result = ResourcesCatalog.instance().removeResources(idGateway);
+		MessageManager.instance().monitoringPublish("Thing Services at gateway " + idGateway + " removed!");
+		return result;
 	}
 
 	public boolean removeThingServices() 
@@ -130,6 +146,13 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 	public boolean registerThingsServices(String thingID, String thingServiceID) 
 	{		
 		logger.info("Register Thing Services method invoked! -> " + thingID);
+		
+		// Check that the thing is not already registered --> Avoid issues!
+		if (ResourcesCatalog.instance().getResource(thingServiceID)!=null)
+		{
+			logger.error ("Thing Service already available! Not registering...");
+			return false;
+		}
 		Resource newResource = new Resource (thingServiceID, thingID, Resource.THINGSERVICE, "localhost");		
 		ResourcesCatalog.instance().addResource(newResource);
 		
@@ -142,13 +165,18 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		TaaSRMClient myRMCli = TaaSRMClient.instance(gwId, "TaaSResourceManagerImpl");
 		myRMCli.registerThingAllRemote(newResource);
 		
+		MessageManager.instance().monitoringPublish("Thing " + thingID + " registered as " + thingServiceID + ".");
+		
 		return true;
 	}	
 
 	public boolean removeThingsService(String thingServiceID) 
 	{		
 		logger.info ("Remove Thing Services method invoked! -> " + thingServiceID);
-		boolean result = ResourcesCatalog.instance().removeResource(thingServiceID);
+				
+		// Take mitigation actions for allocated features
+		RecoveryManager myRecoManager = RecoveryManager.instance(gwId);
+		boolean result = myRecoManager.removeThingService(thingServiceID);
 		
 		// Notify the QoSM
 		TaaSQoSMClient myQoSClient = TaaSQoSMClient.instance();
@@ -158,9 +186,37 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		TaaSRMClient myRMCli = TaaSRMClient.instance(gwId, "TaaSResourceManagerImpl");
 		result = result & myRMCli.removeThingAllRemote(thingServiceID);
 		
+		// Remove the thing service from the catalog
+		result = result & ResourcesCatalog.instance().removeResource(thingServiceID);
+		
+		MessageManager.instance().monitoringPublish("Thing Service " + thingServiceID + " removed!");
+		
 		return result;
 	}
 	
+	public boolean unreachableThingService(String thingServiceID)
+	{
+		logger.info ("Thing Service not available reported! -> " + thingServiceID);
+		RecoveryManager myRecoManager = RecoveryManager.instance(gwId);
+		boolean result = myRecoManager.unreachableThingService(thingServiceID);
+		
+		MessageManager.instance().monitoringPublish("Thing Service " + thingServiceID + " reported as not reachable! Actions taken.");
+		MessageManager.instance().dependabilityPublish(thingServiceID);
+		
+		return result;
+	}
+	
+	public boolean reachableThingService(String thingServiceID)
+	{
+		logger.info ("Existing Thing Service available again reported! -> " + thingServiceID);
+		RecoveryManager myRecoManager = RecoveryManager.instance(gwId);
+		boolean result = myRecoManager.reachableThingService(thingServiceID);
+		
+		MessageManager.instance().monitoringPublish("Thing Service " + thingServiceID + " reachable again. Subscriptions restored.");
+		
+		return result;
+	}
+			
 	public ArrayList<ArrayList<String>> getSecurityRank (String serviceID)
 	{
 		logger.info ("Get Security Rank method invoked! -> " + serviceID);
@@ -173,6 +229,8 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		// Notify the Service Manager that the installation process was finished
 		ResourcesAllocator myAllocator = new ResourcesAllocator();
 		myAllocator.putQoSRank(serviceID, equivalentThingServicesQoSRank);
+		
+		MessageManager.instance().monitoringPublish("Feature " + serviceID + " has completed the installation!");
 	}
 			
 	public void revokeService(String serviceID) 
@@ -223,7 +281,11 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		}
 		logger.info("Done! Invocation accepted! Processing...");
 		EndpointsManager invokator = new EndpointsManager(gwId);
-		return invokator.invokeServiceThings(featureServiceID);		
+		JsonObject result = invokator.invokeServiceThings(featureServiceID);
+		
+		MessageManager.instance().monitoringPublish("Feature " + featureServiceID + " has performed a get data operation.");
+		
+		return result;
 	}
 	
 	public boolean setData(String featureServiceID, String value, byte[] token) 
@@ -238,7 +300,11 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		}
 		logger.info("Done! Invocation accepted! Processing...");
 		EndpointsManager invokator = new EndpointsManager(gwId);
-		return invokator.setData(featureServiceID, value);			
+		boolean result = invokator.setData(featureServiceID, value);
+		
+		MessageManager.instance().monitoringPublish("Feature " + featureServiceID + " has performed a set data operation.");
+				
+		return result;			
 	}
 	
 	public boolean registerService(String featureServiceID, byte[] token) 
@@ -253,7 +319,11 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		}
 		logger.info("Done! Invocation accepted! Processing...");
 		EndpointsManager invokator = new EndpointsManager(gwId);
-		return invokator.subscribeFeatureService (featureServiceID);
+		boolean result = invokator.subscribeFeatureService (featureServiceID);
+		
+		MessageManager.instance().monitoringPublish("Feature " + featureServiceID + " has activated its subscriptions.");
+		
+		return result;
 		
 	}
 
@@ -269,7 +339,70 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		}
 		logger.info("Done! Invocation accepted! Processing...");
 		EndpointsManager invokator = new EndpointsManager(gwId);
-		return invokator.unsubscribeFeature(featureServiceID);
+		boolean result = invokator.unsubscribeFeatureService(featureServiceID);
+		
+		MessageManager.instance().monitoringPublish("Feature " + featureServiceID + " has stopped its subscriptions.");
+		
+		return result;
+	}
+	
+	public boolean startFullApplication (String idApplication, byte[] token)
+	{
+		logger.info ("Subscription requested for a full application! -> " + idApplication);
+		logger.info("Checking received token...");
+		ServiceSECMClient secCli = ServiceSECMClient.instance();
+		if (token==null || token.length==0 || !secCli.verifyToken(new String (token)))
+		{
+			logger.error("The token was not valid! Operation aborted!");
+			return false;
+		}
+		logger.info("Done! Invocation accepted! Processing...");
+		
+		// Retrieve the application and iterate through all the features
+		EndpointsManager invokator = new EndpointsManager(gwId);
+		Application myApp = ApplicationsCatalog.instance().getApplication(idApplication);
+		ArrayList<FeatureService> featuresList = myApp.getFeatures();
+		for (int i=0; i<featuresList.size(); i++)
+		{
+			FeatureService currentFeature = featuresList.get(i);
+			int featureType = currentFeature.getType();
+			if (featureType==FeatureService.RTPUSH || featureType==FeatureService.NRTPUSH)
+			{
+				invokator.subscribeFeatureService (currentFeature.getFeatureServiceId());
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean stopFullApplication (String idApplication, byte[] token)
+	{
+		logger.info ("Unsubscription requested for a full application! -> " + idApplication);
+		logger.info("Checking received token...");
+		ServiceSECMClient secCli = ServiceSECMClient.instance();
+		if (token==null || token.length==0 || !secCli.verifyToken(new String (token)))
+		{
+			logger.error("The token was not valid! Operation aborted!");
+			return false;
+		}
+		logger.info("Done! Invocation accepted! Processing...");
+		
+		// Retrieve the application and iterate through all the features
+		EndpointsManager invokator = new EndpointsManager(gwId);
+		Application myApp = ApplicationsCatalog.instance().getApplication(idApplication);
+		ArrayList<FeatureService> featuresList = myApp.getFeatures();
+		for (int i=0; i<featuresList.size(); i++)
+		{
+			FeatureService currentFeature = featuresList.get(i);
+			int featureType = currentFeature.getType();
+			if (featureType==FeatureService.RTPUSH || featureType==FeatureService.NRTPUSH)
+			{
+				logger.info("Unsubscribing thing services for feature " + currentFeature.getFeatureServiceId() + "...");
+				invokator.unsubscribeFeatureService (currentFeature.getFeatureServiceId());
+			}
+		}
+		
+		return true;
 	}
 	
 	// GET/SET with dynamic location
@@ -388,5 +521,15 @@ public class TaaSResourceManagerImpl implements TaaSResourceManager
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	/* Added methods for enabling trust calculations
+	 * Service Trust: Provide info about other gateways
+	 * TaaS Trust: Provide info about installed applications
+	 */
+	
+	 public int getGatewayTime (int idGateway)
+	 {
+		 return 0;
+	 }
 	
 }

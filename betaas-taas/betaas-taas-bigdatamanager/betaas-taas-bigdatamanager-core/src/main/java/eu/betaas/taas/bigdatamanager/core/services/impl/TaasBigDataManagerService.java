@@ -21,17 +21,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-
-
-
-
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.Message.Layer;
+import eu.betaas.rabbitmq.publisher.interfaces.utils.MessageBuilder;
 import eu.betaas.taas.bigdatamanager.core.services.ITaasBigDataManager;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingData;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingInformation;
@@ -41,14 +45,33 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 
 	private IBigDataDatabaseService service;
 	private Timestamp lastServiceReport;
+	
 	private Logger log;
 	private PreparedStatement get_thing_info_pstmt;
-	private static final String THING_TABLE_SQL="SELECT i.thingID,i.type,i.location,d.measurement,d.timestamp,i.unit,d.floor,d.room,d.environment,d.city_name,d.latitude,d.longitude,i.protocol,d.location_keyword,d.location_identifier  FROM T_THINGS i, T_THING_DATA d WHERE i.thingID = d.thingID AND d.timestamp >= ? AND d.timestamp <= ? ";
+	private static final String THING_TABLE_SQL="SELECT i.thingID,i.type,i.location,d.measurement,d.timestamp,i.unit,d.floor,d.room,d.environment,d.city_name,d.latitude,d.longitude,i.protocol,d.location_keyword,d.location_identifier  FROM T_THINGS i, T_THING_DATA d WHERE i.thingID = d.thingID AND d.timestamp >= ? ";
+	//private static final String THING_TABLE_SQL="SELECT i.thingID,i.type,i.location,d.measurement,d.timestamp,i.unit,d.floor,d.room,d.environment,d.city_name,d.latitude,d.longitude,i.protocol,d.location_keyword,d.location_identifier  FROM T_THINGS i, T_THING_DATA d WHERE i.thingID = d.thingID AND d.timestamp >= ? AND d.timestamp <= ? ";
+	private int counter = 0;
+	private boolean busenabled;
+	// setup of queue for streaming
+	private boolean streaming=false;
+	private BundleContext context; 
+	//private String mode="direct";
+	private String gateway="GW-ALFA";
+	private String routingKey="";
+	//private String ename="";
+	MessageBuilder mb;
+	private static String SEPARATOR_FIELD = "&#&";
+	private static String SEPARATOR_VALUE = "-#-";
+	//private static String SEPARATOR_FIELD = "";
+	private List<String> messageBuffer = new Vector<String>();
 	
 	public void startBDMCore() {
 		log = Logger.getLogger("betaas.taas");
 		log.info("TAAS BD Core Started");
 		lastServiceReport = new Timestamp(0);
+		mb = new MessageBuilder();
+		busInfoMessage("Initialized TaaS DB Core on "+gateway);		
+		
 	}
 
 	public void setThingsBDM(String thingID, JsonObject data) {
@@ -59,12 +82,13 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 		ThingInformation ti = new ThingInformation();
 		log.debug("Searching for things ");
 		ti.setThingID(thingID);
-
+		byte[] buf = data.toString().getBytes();
+		
 		if (service.searchThingInformation(ti)==null){
 			
-			log.info("New thing found "+ti.getThingID());
+			log.debug("New thing found "+ti.getThingID());
 			ThingInformation newThingInformation = new ThingInformation();
-			
+			busInfoMessage("TaaS DB storibg Thing ID "+ti.getThingID());		
 			newThingInformation.setThingID(thingID);				
 		
 			// check if is location or environment
@@ -80,11 +104,11 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 			if (checkValue(data.get("maximum_response_time")))newThingInformation.setMaximum_response_time(getNormalizedValue(data.get("maximum_response_time")));
 			if (checkValue(data.get("computational_cost")))newThingInformation.setComputational_cost(getNormalizedValue(data.get("computational_cost")));			
 			service.saveThingInformation(newThingInformation);
-			log.info("Thing data Saved ");
+			
 		}
 		
 		//service.saveThingData(thingData);
-		log.info("New data for this thing"+ti.getThingID());
+		log.debug("New data for this thing"+ti.getThingID());
 		ThingData td = new ThingData();
 		td.setThingID(thingID);
 		
@@ -99,19 +123,19 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 		if (checkValue(data.get("altitude")))td.setAltitude(getNormalizedValue(data.get("altitude")));
 		if (checkValue(data.get("memory_status")))td.setMemory_status(getNormalizedValue(data.get("memory_status")));
 		if (checkValue(data.get("battery_cost")))td.setBattery_cost(getNormalizedValue(data.get("battery_cost")));
+		if (checkValue(data.get("battery_level")))td.setBattery_level(getNormalizedValue(data.get("battery_level")));
 		if (checkValue(data.get("location_keyword")))td.setLocation_keyword(getNormalizedValue(data.get("location_keyword")));
 		if (checkValue(data.get("location_identifier")))td.setLocation_identifier(getNormalizedValue(data.get("location_identifier")));
 	
-	 	    
-	 
 		Timestamp ts;
 		Date date = new Date();
 		ts = new Timestamp(date.getTime());
 		td.setTimestamp(ts);
-		log.debug("Save data " + data.get("measurement").getAsString());
 		service.saveThingData(td);
-		log.debug("Saved ");
-
+		// streaming
+		if (streaming){
+			this.streamData(thingID, ts, data);
+		}
 	}
 	
 	private String getNormalizedValue(JsonElement input){
@@ -119,6 +143,7 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 		if (input.isJsonNull())return "null";
 		return input.getAsString();
 	}
+
 	
 	private boolean checkValue(JsonElement input){
 		if (input==null)return false;
@@ -135,18 +160,19 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 		Connection db_conn=null;
 		JsonObject jo=null;
 		ResultSet rs = null;
-		log.debug("Running the data retrieval at "+ts+" from "+ lastServiceReport);
-
+		//log.info("TEST 6.1.25 Running the data retrieval now "+ts+" from "+ lastServiceReport);
+		if (streaming)return null;
 		try {
 			db_conn = service.getConnection();
 			
 			get_thing_info_pstmt = db_conn.prepareStatement(THING_TABLE_SQL);
 			get_thing_info_pstmt.setString(1, lastServiceReport.toString());
-			get_thing_info_pstmt.setString(2, ts.toString());
+			//get_thing_info_pstmt.setString(2, ts.toString());
 			rs = get_thing_info_pstmt.executeQuery();
 			lastServiceReport = ts;
 			log.debug("Processing data returned from database in to a Json response");
 			jo = resultSetToByteJson(rs);
+			//busInfoMessage("TaaS DB provided new data since  "+lastServiceReport.toString());			
 			
 			return jo;
 		} catch (Exception e) {
@@ -214,10 +240,13 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 				thing.addProperty("location_identifier", rs.getString(15));
 
 				response.add(thing);
-				log.debug("Parsed the row " + thing.toString());
+				
 			}
 			jo.add("res", response);
+
 			if (i>0)log.debug("Built json response with data" + jo.toString());
+			counter = counter + response.size();
+
 		} catch (SQLException e) {
 			log.error("Exception while managing sql result set");
 			e.printStackTrace();
@@ -226,6 +255,141 @@ public class TaasBigDataManagerService implements ITaasBigDataManager {
 		log.debug("Built json response");
 		return jo;
 		
+	}
+	
+	private void streamData(String thingID, Timestamp td, JsonObject data){
+		
+		String message="";
+		
+		message = addMessageField("GATEWAY",gateway,message);
+		message = addMessageField("ID",thingID,message);
+		message = addMessageField("TYPE",getNormalizedValue(data.get("type")),message);
+		message = addMessageField("MAKER",getNormalizedValue(data.get("maker")),message);
+		message = addMessageField("ROOM",getNormalizedValue(data.get("room")),message);
+		message = addMessageField("FLOOR",getNormalizedValue(data.get("flooe")),message);
+		message = addMessageField("ENVIRONMENT",getNormalizedValue(data.get("environment")),message);
+		message = addMessageField("CITY",getNormalizedValue(data.get("city_name")),message);
+		message = addMessageField("TIMESTAMP",Long.toString(td.getTime()),message);
+		message = addMessageField("LAT",getNormalizedValue(data.get("latitude")),message);
+		message = addMessageField("LON",getNormalizedValue(data.get("longitude")),message);
+		message = addMessageField("ALT",getNormalizedValue(data.get("altitude")),message);
+		message = addMessageField("LOC",getNormalizedValue(data.get("location")),message);
+		
+		message = addMessageField("LOC_K",getNormalizedValue(data.get("location_keyword")),message);
+		message = addMessageField("LOC_ID",getNormalizedValue(data.get("location_identifier")),message);
+		message = addMessageField("MEASUREMENT",getNormalizedValue(data.get("measurement")),message);
+		log.debug("Built queue message");
+		busMessage(message);
+ 	    
+
+		
+	}
+	
+	private String addMessageField(String name, String value , String message){
+		if (message==""){
+			return name+SEPARATOR_VALUE+value;
+		}else {
+			return message + SEPARATOR_FIELD+name+SEPARATOR_VALUE+value;
+		}
+		
+	}
+	
+	private void busMessage(String message){
+		log.info("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		log.info("Sending to queue");
+		if (serviceReference==null){
+			log.warn("Requested to publish data to queue, but service betaas publisher not found");
+			messageBuffer.add(message);
+			return;
+		}
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		if (service==null){
+			log.warn("Requested to publish data to queue, but service betaas publisher not found");
+			messageBuffer.add(message);
+			return;
+		}
+		if (messageBuffer.size()>0){
+			log.warn("Buffered data available, publishing this data now with key ");
+			for (int i =0 ; i<messageBuffer.size();i++){
+				service.publish(routingKey,messageBuffer.get(i));
+				messageBuffer.remove(i);
+			}
+			
+		}
+	
+		log.debug("this is the message built "+message);
+		
+		
+		log.debug("Sending to "); 
+		service.publish(routingKey,message);
+		log.debug("Sent to queue" + routingKey);
+		
+		
+	}
+	
+	private void busInfoMessage(String message){
+		log.debug("Checking queue");
+		if (!busenabled)return;
+		Message messageFormat = new Message();
+		messageFormat.setLayer(Layer.TAAS);
+		messageFormat.setLevel("INFO");
+		messageFormat.setOrigin("BD Manager");
+		messageFormat.setDescritpion(message);
+		
+		log.debug("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		log.debug("Sending to queue");
+		if (serviceReference==null)return;
+		
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		log.debug("Sending");
+		
+		
+		service.publish("taas.database",mb.getJsonEquivalent(messageFormat) );
+		log.debug("Sent");
+		
+		
+	}
+
+	public boolean isStreaming() {
+		return streaming;
+	}
+
+	public void setStreaming(boolean streaming) {
+		this.streaming = streaming;
+	}
+
+	public BundleContext getContext() {
+		return context;
+	}
+
+	public void setContext(BundleContext context) {
+		this.context = context;
+	}
+
+	public String getGateway() {
+		return gateway;
+	}
+
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
+	}
+
+	public String getRoutingKey() {
+		return routingKey;
+	}
+
+	public void setRoutingKey(String routingKey) {
+		this.routingKey = routingKey;
+	}
+
+	public boolean isBusenabled() {
+		return busenabled;
+	}
+
+	public void setBusenabled(boolean busenabled) {
+		this.busenabled = busenabled;
 	}
 	
 

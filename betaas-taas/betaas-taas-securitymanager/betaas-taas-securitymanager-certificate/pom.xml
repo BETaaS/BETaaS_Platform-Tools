@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-taas-securitymanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas-securitymanager-certificate</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BETaaS Taas Security Manager certificate interface</name>
   <description>BETaaS Taas Security Manager certificate interface to avoid circular dependencies</description>
@@ -45,6 +45,11 @@
 			<artifactId>betaas-taas-securitymanager-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.betaas</groupId>
+		  <artifactId>betaas-bus-interface</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
   </dependencies>
   
   <build>
@@ -61,7 +66,7 @@
             <!-- <Bundle-Activator>eu.betaas.taas.securitymanager.certificate.activator.ExtGWCertificateActivator</Bundle-Activator> -->
             <Import-Package>
             <!-- eu.betaas.service.instancemanager.api.* -->
-            eu.betaas.taas.securitymanager.common.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,org.apache.*
+            eu.betaas.taas.securitymanager.common.*,eu.betaas.rabbitmq.publisher.*,org.osgi.service.*,org.osgi.framework.*,org.osgi.util.tracker.*,org.bouncycastle.*,org.apache.*
             </Import-Package>
             <Export-Package>
             	eu.betaas.taas.securitymanager.certificate.service;version=${project.version}                         

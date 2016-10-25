@@ -39,6 +39,7 @@ import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingInternal;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceInternal;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingServiceStar;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.QoSMThingStar;
+import eu.betaas.taas.bigdatamanager.database.hibernate.data.SimulatedThing;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingData;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingInformation;
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.TrustManagerService;
@@ -231,6 +232,10 @@ public interface IBigDataDatabaseService {
 	public void deleteQoSMEquivalentThingServiceInternal(
 			QoSMEquivalentThingServiceInternal eqts);
 	
+	public void deleteQoSMRequestInternal(String serviceId);
+	
+	public void deleteQoSMAssuredRequestInternal(String serviceId);
+	
 	/////
 	
 	public void saveQoSMThingStar(QoSMThingStar t);
@@ -281,5 +286,14 @@ public interface IBigDataDatabaseService {
 			String thingServiceId);
 
 	/////
+	
+	/* Methods for use by the Rest Services of the Things Simulator*/
+	public List<SimulatedThing> listAllSimulatedThings();
+	
+	public  void saveSimulatedThing(SimulatedThing thing);
+	
+	public  void deleteSimulatedThing(Integer thingDBId);
+	
+	/* END OF Methods for use by the Rest Services of the Things Simulator*/
 
 }

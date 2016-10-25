@@ -20,12 +20,17 @@
   xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
-  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
+  xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+  xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+  xmlns:cxf="http://cxf.apache.org/blueprint/core"
+  >
 
   <!-- The properties file -->
   <cm:property-placeholder persistent-id="betaas.gateway">
     <cm:default-properties>
       <cm:property name="gwId" value="-1"/>
+      <cm:property name="delimiter" value="_"/>
       <cm:property name="busenabled" value="false"/>
     </cm:default-properties>
   </cm:property-placeholder>
@@ -51,6 +56,7 @@
     destroy-method="closeService">
         <property name="service" ref="databaseService"/>
         <property name="gwId" value="${gwId}"/>
+        <property name="delimiter" value="${delimiter}"/>
         <property name="context" ref="blueprintBundleContext"/>
         <property name="enabledbus" value="${busenabled}"></property> 
   </bean>
@@ -64,5 +70,23 @@
          <entry key="gwId" value="${gwId}" />
       </service-properties>
   </service>
+  
+  <!-- REST functionalities -->  
+  <cxf:bus id="esTaasServiceBus">
+  </cxf:bus>
+  
+  <jaxrs:server address="/taas" id="esTaasService">
+    <jaxrs:serviceBeans>
+      <ref component-id="esTaasBean" />
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+ 
+  <bean id="esTaasBean" 
+    class="eu.betaas.taas.contextmanager.web.rest.TaasCMRestResource"
+    init-method="startService" 
+    destroy-method="closeService">
+        <!-- <property name="context" ref="blueprintBundleContext"/> -->
+  </bean>
+  
 
 </blueprint>

@@ -3,13 +3,13 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-superpom</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-taas</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS TaaS</name>
   <description>BETaaS  TaaS</description>
@@ -20,6 +20,7 @@
   <modules>
   	<module>betaas-taas-qosmanager</module>
   	<module>betaas-taas-contextmanager</module>
+  	<module>betaas-taas-contextmanager-linkeddata</module>
   	<module>betaas-taas-itaasresourcesmanager</module>
   	<module>betaas-taas-taasresourcesmanager</module>
 	<module>betaas-taas-bigdatamanager</module>

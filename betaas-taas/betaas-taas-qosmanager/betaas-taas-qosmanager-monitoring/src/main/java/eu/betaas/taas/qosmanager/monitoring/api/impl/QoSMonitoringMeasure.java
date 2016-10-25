@@ -32,7 +32,8 @@ public class QoSMonitoringMeasure
   private int sRequestRate;
   private Timestamp sInitialTimeStamp;
   private boolean sAvailability;
-  
+  private double iTolerateJitter;
+  private int iUnsucess;
   private int iPeriod;
   
   
@@ -91,5 +92,21 @@ public class QoSMonitoringMeasure
   public void setPeriod(int iPeriod)
   {
     this.iPeriod = iPeriod;
+  }
+  public double getTolerateJitter()
+  {
+    return iTolerateJitter;
+  }
+  public void setTolerateJitter(double iTolerateJitter)
+  {
+    this.iTolerateJitter = iTolerateJitter;
+  }
+  public int getiUnsucess()
+  {
+    return iUnsucess;
+  }
+  public void setiUnsucess(int iUnsucess)
+  {
+    this.iUnsucess = iUnsucess;
   }
 }

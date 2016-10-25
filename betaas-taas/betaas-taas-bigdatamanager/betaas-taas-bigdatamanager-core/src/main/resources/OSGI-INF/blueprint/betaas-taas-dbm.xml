@@ -21,8 +21,22 @@
             xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
             xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
 
+	<cm:property-placeholder persistent-id="betaas.gateway" >
+		<cm:default-properties>
+			<cm:property name="streaming" value="false"/>
+			<cm:property name="gwId" value="1"/>
+			<cm:property name="routingKey" value="betaas.datalayer"/>
+			<cm:property name="busenabled" value="false"/>			
+		</cm:default-properties>
+	</cm:property-placeholder>
+
     <bean id="serviceDatabaseBean" class="eu.betaas.taas.bigdatamanager.core.services.impl.TaasBigDataManagerService" scope="singleton" init-method="startBDMCore" >
     	<property name="service" ref="databaseService"/>
+		<property name="context" ref="blueprintBundleContext"/>
+		<property name="streaming" value="${streaming}"/>
+		<property name="busenabled" value="${busenabled}"/>
+   		<property name="gateway" value="${gwId}"/>
+		<property name="routingKey" value="${routingKey}"></property>		
     </bean>
 
 

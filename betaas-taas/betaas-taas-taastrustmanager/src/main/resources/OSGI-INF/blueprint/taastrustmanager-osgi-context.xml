@@ -24,7 +24,11 @@
             xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
             xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
 	
-    <bean id="taasTrustManagerBean" class="eu.betaas.taas.securitymanager.taastrustmanager.api.impl.TaaSTrustManagerImpl" scope="singleton" init-method="start" destroy-method="stop"/>
+    <bean id="messageManagerBean" class="eu.betaas.taas.securitymanager.taastrustmanager.messaging.MessageManager" init-method="setupService">
+    	<property name="context" ref="blueprintBundleContext"/>
+    </bean>
+    
+    <bean id="taasTrustManagerBean" class="eu.betaas.taas.securitymanager.taastrustmanager.api.impl.TaaSTrustManagerImpl" scope="singleton" init-method="start" destroy-method="stop" depends-on="messageManagerBean" />
 	
     <service ref="taasTrustManagerBean" interface="eu.betaas.taas.securitymanager.taastrustmanager.api.TaaSTrustManager"/>
 

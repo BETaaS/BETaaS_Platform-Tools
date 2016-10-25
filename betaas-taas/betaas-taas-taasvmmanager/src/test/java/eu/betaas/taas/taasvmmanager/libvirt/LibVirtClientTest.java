@@ -25,15 +25,19 @@ package eu.betaas.taas.taasvmmanager.libvirt;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import org.junit.Test;
-import org.libvirt.Connect;
+/*import org.libvirt.Connect;
 import org.libvirt.ConnectAuth;
 import org.libvirt.ConnectAuthDefault;
 import org.libvirt.Domain;
 import org.libvirt.LibvirtException;
-import org.libvirt.NodeInfo;
+import org.libvirt.NodeInfo;*/
+
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor.FlavorType;
 
 public class LibVirtClientTest {
 
@@ -56,12 +60,42 @@ public class LibVirtClientTest {
 		assertTrue(true);*/
 	}
 
+	@Test
 	public void getHypervisorInfo () {
-		client = new LibVirtClient();
+		try {
+			//client = new LibVirtClient();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public boolean createVM () {
-		return client.createVM("TestVM", UUID.randomUUID(), 128*1024, 1, pathToImage);
+	@Test
+	public void createVM () {
+		long memory;
+		try 
+		{ 
+		Process p=Runtime.getRuntime().exec("free"); 
+		p.waitFor(); 
+		BufferedReader reader=new BufferedReader(new InputStreamReader(p.getInputStream())); 
+		String line=reader.readLine(); 
+		if (line != null) 
+		{ 
+		line=reader.readLine();
+		
+		if (line != null) {
+			memory = Long.valueOf(line.replaceAll(" *"," ").split(" ")[3]);
+			System.out.println("================");
+			System.out.println(memory);
+		} else {
+			
+		}
+		} else {
+			
+		}
+		} catch (Exception e){
+			
+		}
 	}
 	
 	public boolean removeVM(UUID uuid) {

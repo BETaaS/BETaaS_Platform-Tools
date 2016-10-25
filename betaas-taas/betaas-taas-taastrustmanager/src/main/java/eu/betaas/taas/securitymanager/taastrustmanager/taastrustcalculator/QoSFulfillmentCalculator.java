@@ -44,27 +44,24 @@ public class QoSFulfillmentCalculator
 
 	public float calculateTrustAspect (String thingServiceId)
 	{		
-		// 1 - Retrieve QoS information about the Thing Service		
-		ArrayList<String> myTSs = new ArrayList<String>();
-		myTSs.add(thingServiceId);
-		ArrayList<SLACalculation> myQoS = qosmClient.retrieveSLACalculations(myTSs);
-		logger.debug("SLA Calculations obtained: " + myQoS.size());
-		ArrayList<Integer> tsHistory = new ArrayList<Integer>();
-		if (myQoS.size()<=0)
+		// 1 - Retrieve QoS information about the Thing Service			
+		SLACalculation myQoS = qosmClient.retrieveSLACalculations(thingServiceId);
+		if (myQoS==null)
 		{
 			logger.error("No QoS information was retrieved for " + thingServiceId);
 			return 2.5f;
 		}
-		else
+		logger.debug("SLA Calculations obtained! Fulfilled: " + myQoS.getQoSparamsFulfill());
+		ArrayList<Integer> tsHistory = new ArrayList<Integer>();
+		
+		// Add the new QoS fulfillment to the history we keep			
+		if (slaHistory.containsKey(thingServiceId))
 		{
-			// Add the new QoS fulfillment to the history we keep			
-			if (slaHistory.containsKey(thingServiceId))
-			{
-				tsHistory = slaHistory.get(thingServiceId);
-			}			
-			tsHistory.add(myQoS.get(0).getQoSparamsFulfill());
-			slaHistory.put(thingServiceId, tsHistory);
-		}
+			tsHistory = slaHistory.get(thingServiceId);
+		}			
+		tsHistory.add(myQoS.getQoSparamsFulfill());
+		slaHistory.put(thingServiceId, tsHistory);
+		logger.debug("Number of records gathered: " + tsHistory.size());
 		
 		// 2 - Perform the hypothesis test for the QoS fulfillment variance
 		double[] valuesList = new double[tsHistory.size()];
@@ -73,7 +70,8 @@ public class QoSFulfillmentCalculator
 			valuesList[i] = tsHistory.get(i);
 		}
 		StatisticsCalculator myCalc = new StatisticsCalculator();
-		boolean testResult = myCalc.calculateNumericVariance(valuesList);
+		boolean testResult = myCalc.calculateNumericVariance(valuesList, 0.05);
+		logger.debug("Is the variance of SLA as expected? " + testResult);
 		
 		double uncertainty = 0.05;
 		if (!testResult)
@@ -85,8 +83,8 @@ public class QoSFulfillmentCalculator
 		// 3 - Create and evaluate Opinion Model
 		OpinionModel myOpinion = new OpinionModel();
 		myOpinion.setUncertainties(uncertainty);
-		myOpinion.setNegativeEvidences(myQoS.get(0).getQoSparamsNoFulfill());
-		myOpinion.setPositiveEvidences(myQoS.get(0).getQoSparamsFulfill());
+		myOpinion.setNegativeEvidences(myQoS.getQoSparamsNoFulfill());
+		myOpinion.setPositiveEvidences(myQoS.getQoSparamsFulfill());
 		myOpinion.reCalculateModel();
 		
 		// 4 - Retrieve evaluation of the Expectation

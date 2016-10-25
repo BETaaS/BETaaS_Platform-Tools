@@ -32,6 +32,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
+import eu.betaas.taas.taasresourcesmanager.messaging.MessageManager;
 import eu.betaas.taas.taasresourcesmanager.api.ResourceInfo;
 import eu.betaas.taas.taasresourcesmanager.api.TaaSResourceManagerExt;
 import eu.betaas.taas.taasresourcesmanager.api.ThingServiceResult;
@@ -45,11 +46,15 @@ public class TaaSResourceManagerExtImpl implements TaaSResourceManagerExt
 {
 	private Logger logger= Logger.getLogger("betaas.taas");
 	private String gwId;
+	private MessageManager mManager;
+	private String mDelimiter;
 	
 	public void setupService(){
 		logger.debug("[TaaSResourceManagerExtImpl] Starting the service");
+		mManager = MessageManager.instance();
 		TaaSRMClient.instance(gwId, "TaaSResourceManagerExtImpl");
 		logger.debug("[TaaSResourceManagerExtImpl] Service started");
+		mManager.monitoringPublish("[TaaSResourceManagerExtImpl] Service started");
 	}
 	
 	
@@ -62,6 +67,11 @@ public class TaaSResourceManagerExtImpl implements TaaSResourceManagerExt
 	public String getGwId ()
 	{
 		return gwId;
+	}
+	
+	public void setDelimiter(String delimiter)
+	{
+		mDelimiter = delimiter;
 	}
 	
 	public ResourceInfo[] synchronizeThingServices(ResourceInfo[] thingServicesList, String gateway) 
@@ -126,6 +136,13 @@ public class TaaSResourceManagerExtImpl implements TaaSResourceManagerExt
 		logger.info ("Remote Subscription method invoked! -> " + idThingService);
 		EndpointsManager invokator = new EndpointsManager(gwId);
 		return invokator.registerSubscription(idThingService, idApplication, period, realTime, gateway);
+	}
+	
+	public boolean remoteUnsubscription (String idThingService, String idFeature, boolean realTime)
+	{
+		logger.info ("Remote Unsubscription method invoked! -> " + idThingService);
+		EndpointsManager invokator = new EndpointsManager(gwId);
+		return invokator.unregisterSubscription(idThingService, idFeature, realTime);
 	}
 	
 	public boolean remoteDataNotification (String data, String idFeature, String idThingService)

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.betaas.service.instancemanager.api.InstanceManagerExternalIF;
 import eu.betaas.service.instancemanager.config.Configuration;
+import eu.betaas.service.servicemanager.ServiceManager;
 
 /**
  * The Thread in charge of requesting the join and disjoin procedures to IM*
@@ -92,12 +93,15 @@ public class JoinThread extends Thread {
 			if (!res) {
 				if (mJoin) {
 					mLogger.warn("Join refused by IM*");
+					mRequestingIM.busMessage("Join refused by IM*", "error", InstanceManager.DEPENDABILITY);
 				} else {
 					mLogger.warn("Disjoin refused by IM*");
+					mRequestingIM.busMessage("Disjoin refused by IM*", "error", InstanceManager.DEPENDABILITY);
 				}
 				return;
 			} else {
 				mLogger.info("Joined the BETaaS instance");
+				mRequestingIM.busMessage("Joined the BETaaS instance", "info", InstanceManager.MONITORING);
 			}
 			
 		} catch (Exception e) {

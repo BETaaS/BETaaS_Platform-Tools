@@ -10,6 +10,8 @@ package eu.betaas.taas.taasvmmanager.occi.datamodel;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
+
 
 /**
  * This object contains factory methods for each 

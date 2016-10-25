@@ -35,6 +35,7 @@ import eu.betaas.service.servicemanager.application.registry.AppManifest;
 import eu.betaas.service.servicemanager.application.registry.AppRegistryRow;
 import eu.betaas.service.servicemanager.application.registry.AppService;
 import eu.betaas.service.servicemanager.application.registry.ApplicationRegistry;
+import eu.betaas.service.servicemanager.application.registry.ApplicationRegistry.NotificationAddressType;
 import eu.betaas.service.servicemanager.extended.discovery.Discovery;
 import eu.betaas.taas.qosmanager.api.QoSManagerInternalIF;
 import eu.betaas.taas.taasresourcesmanager.api.Feature;
@@ -87,10 +88,17 @@ public class Installer {
 		mLogger.info("Installing the application: " + manifest.mApplicationName);
 		
 		try {
+			String addr = manifest.mNotificationAddress;
+			NotificationAddressType type = NotificationAddressType.REST_NOTIFICATION_ADDRESS;
+			if (manifest.mGCMId != null) {
+				type = NotificationAddressType.GCM_NOTIFICATION_ADDRESS;
+				addr = manifest.mGCMId;
+			}
 			// Generate a new app row in the registry
 			final AppRegistryRow regRow = applicationReg.addNewApplication(manifest.mApplicationName, 
 													  manifest.mCredentials,
-					                                  manifest.mNotificationAddress);
+					                                  addr,
+					                                  type);
 			mLogger.info("Generated app id: " + regRow.mAppID);
 			appId = regRow.mAppID;
 			
@@ -123,6 +131,7 @@ public class Installer {
 					}
 				}
 			}
+			ServiceManager.busMessage("App: " + appId + " installed", "info", ServiceManager.MONITORING);
 			
 			Thread allocationThread = new Thread() {
 				public void run() {
@@ -143,7 +152,7 @@ public class Installer {
 			return "";
 		}
 		
-
+		
 		return appId;
 	}
 	
@@ -155,13 +164,13 @@ public class Installer {
 	 * @param discovery the discovery manager
 	 * @return true on success, false otherwise
 	 */
-	public synchronized boolean uninstall(String appID, String manifestContent, Discovery discovery) {
+	public synchronized boolean uninstall(String appID,  Discovery discovery) {
 		TaaSResourceManager rmIF = null;
 		AppService serv = null;
 		String servID = null;
 		int i;
 		
-		//TODO: check credentials using the manifest
+		
 		
 		ApplicationRegistry applicationReg = ServiceManager.getInstance().getAppRegistry();
 		AppRegistryRow regRow = applicationReg.getApp(appID, true);
@@ -210,8 +219,120 @@ public class Installer {
 		}
 
 		mLogger.info("Application uninstalled");
+		ServiceManager.busMessage("Application: " + appID + "uninstalled", "info", ServiceManager.MONITORING);
 		
 		return true;		
+	}
+	
+	/**
+	 * stop the specified application
+	 * @param appID the ID returned by the installation process
+	 * @return true on success, false otherwise
+	 */
+	public synchronized boolean stop(String appID) {
+		TaaSResourceManager rmIF = null;
+		AppService serv = null;
+		String servID = null;
+		int i;
+
+		
+		ApplicationRegistry applicationReg = ServiceManager.getInstance().getAppRegistry();
+		AppRegistryRow regRow = applicationReg.getApp(appID, true);
+
+		
+		if (regRow == null) {
+			mLogger.error("The specified application ID is not in the registry. Cannot stop");
+			return false;
+		}
+
+		if ((regRow.mServiceList == null) || (regRow.mServiceList.size() == 0)) {
+			mLogger.warn("The application ID being stopped has no associated services");
+		}
+
+		// Obtain the services of the TaasRM
+		rmIF = ServiceManager.getInstance().getResourceManagerIF();
+
+		if (rmIF == null) {
+			mLogger.error("Taas RM Bundle is not available to execute stop");
+			return false;
+		}
+
+		for (i=0; i < regRow.mServiceList.size(); i++) {
+			serv = regRow.mServiceList.elementAt(i);
+			servID = serv.mServiceID;
+			byte[] decodedToken = null;
+			if (serv.mRequirements.mCredentials != null){
+
+			try {
+				decodedToken = Base64Utility.decode(serv.mRequirements.mCredentials);
+				rmIF.unRegisterService(servID, decodedToken);
+			} catch (Exception e) {
+				mLogger.error("Cannot stop service: " + servID);
+				mLogger.error("Failed to stop application");
+				regRow.mStatus = AppRegistryRow.ApplicationInstallationStatus.ERROR;
+				return false;
+			}
+			}
+		}
+		
+		mLogger.info("Application stopped");
+		ServiceManager.busMessage("Application: " + appID + " stopped", "info", ServiceManager.MONITORING);
+		
+		
+		return true;
+	}
+	
+	/**
+	 * start the specified application
+	 * @param appID the ID returned by the installation process
+	 * @return true on success, false otherwise
+	 */
+	public synchronized boolean start(String appID) {
+		TaaSResourceManager rmIF = null;
+		AppService serv = null;
+		String servID = null;
+		int i;
+		
+			
+		ApplicationRegistry applicationReg = ServiceManager.getInstance().getAppRegistry();
+		AppRegistryRow regRow = applicationReg.getApp(appID, true);
+		
+		if (regRow == null) {
+			mLogger.error("The specified application ID is not in the registry. Cannot start");
+			return false;
+		}
+		if ((regRow.mServiceList == null) || (regRow.mServiceList.size() == 0)) {
+			mLogger.warn("The application ID being stopped has no associated services");
+		}
+		
+		// Obtain the services of the TaasRM
+		rmIF = ServiceManager.getInstance().getResourceManagerIF();
+		if (rmIF == null) {
+			mLogger.error("Taas RM Bundle is not available to execute start");
+			return false;
+		}
+		
+		for (i=0; i < regRow.mServiceList.size(); i++) {
+			serv = regRow.mServiceList.elementAt(i);
+			servID = serv.mServiceID;
+			byte[] decodedToken = null;
+			if (serv.mRequirements.mCredentials != null){
+
+				try {
+					decodedToken = Base64Utility.decode(serv.mRequirements.mCredentials);
+					rmIF.startFullApplication(servID, decodedToken);
+				} catch (Exception e) {
+					mLogger.error("Cannot start service: " + servID);
+					mLogger.error("Failed to start application");
+					regRow.mStatus = AppRegistryRow.ApplicationInstallationStatus.ERROR;
+					return false;
+				}
+			}
+		}
+		
+		mLogger.info("Application stopped");
+		ServiceManager.busMessage("Application: " + appID + " stopped", "info", ServiceManager.MONITORING);
+		return true;
 	}
 	
 	
@@ -238,6 +359,19 @@ public class Installer {
 		return jsonResult.toString();
 	}
 	
+	private byte[] decodeCredentials(AppManifest manifest) {
+		byte[] decodedCredentials = null;
+		
+		mLogger.info("Checking application credentials (decoding from Base64)");
+		try {
+			decodedCredentials = Base64Utility.decode(manifest.mCredentials);
+		} catch (Base64Exception e) {
+			mLogger.error("Error decoding Base64 input credentials: " + e.getMessage());
+			return null;
+		}
+		
+		return decodedCredentials;
+	}
 
 	/**
 	 * Check if an application can be installed with the specified credentials

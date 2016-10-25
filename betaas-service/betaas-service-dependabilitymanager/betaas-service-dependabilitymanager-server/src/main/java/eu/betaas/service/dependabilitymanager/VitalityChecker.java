@@ -69,6 +69,7 @@ public class VitalityChecker extends Thread {
 							name = name.substring(name.indexOf("betaas"));
 							if (bundles[i].getState() != Bundle.ACTIVE) {
 								active = false;
+								//TODO: send message to monitoring
 							} else {
 								active = true;
 							}
@@ -112,6 +113,9 @@ public class VitalityChecker extends Thread {
 	 */
 	public synchronized VitalityReport getVitalityReport(String gwId) {
 		
+		Enumeration<String> names; 
+		String str;
+		
 		if (mReport == null) return null;
 		
 		GregorianCalendar gc = new GregorianCalendar();
@@ -120,6 +124,11 @@ public class VitalityChecker extends Thread {
 		mReport.generator = "DM from GW " + gwId;
 		mReport.generationDate = format(gc);
 		
+		names = mBundleStatus.keys();
+		while(names.hasMoreElements()) {
+	         str = (String) names.nextElement();
+	         setReportRow(str,mBundleStatus.get(str).toString() );
+	      }
 		
 		return mReport;
 	}

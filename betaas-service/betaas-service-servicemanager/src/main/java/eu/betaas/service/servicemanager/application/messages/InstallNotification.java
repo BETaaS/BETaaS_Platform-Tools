@@ -61,6 +61,26 @@ public class InstallNotification {
 	public void setServiceList(List<ServiceInstallation> serviceList) {
 		this.serviceList = serviceList;
 	}
+	
+	public String toString() {
+		String content = "<InstallNotification>" + "<message>"
+				+ getMessage() + "</message>" + "<installSuccess>"
+				+ getInstallSuccess() + "</installSuccess>" + "<appID>"
+				+ getAppID() + "</appID>";
+		
+		if (getServiceList() != null) {
+			for (int i = 0; i < getServiceList().size(); i++) {
+				content += "<ServiceInstallation>";
+				content += "<serviceID>" + getServiceList().get(i).getServiceID() + "</serviceID>";
+				content += "<token>" + getServiceList().get(i).getToken() + "</token>";
+				content += "</ServiceInstallation>";
+			}
+		}
+
+		content += "</InstallNotification>";
+
+		return content;
+	}
 
 	/** Text message describing the result (e.g. the error cause) */
 	private String message;

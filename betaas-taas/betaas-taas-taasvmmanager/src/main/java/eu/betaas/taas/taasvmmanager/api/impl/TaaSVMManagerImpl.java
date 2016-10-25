@@ -23,15 +23,26 @@ Sergio García Villalonga. Atos Research and Innovation, Atos SPAIN SA
 
 package eu.betaas.taas.taasvmmanager.api.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import eu.betaas.taas.taasvmmanager.api.TaaSVMManager;
-import eu.betaas.taas.taasvmmanager.cloudsclients.VMRequest;
-import eu.betaas.taas.taasvmmanager.occi.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Availability;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor;
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.VMRequest;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Flavor.FlavorType;
+import eu.betaas.taas.taasvmmanager.configuration.TaaSVMMAnagerConfiguration;
+import eu.betaas.taas.taasvmmanager.messaging.MessageManager;
 import eu.betaas.taas.taasvmmanager.vmsallocator.VMsAllocatorManager;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 /**
  * 
@@ -40,89 +51,78 @@ import org.apache.log4j.Logger;
  */
 public class TaaSVMManagerImpl implements TaaSVMManager {
 	
-	private String user;
-	private static Logger logger = Logger.getLogger("betaas.taas");
+	private Logger logger = Logger.getLogger("betaas.taas");
+	
+	private MessageManager  mManager;
+	private ServiceListener sl;
+	private BundleContext   context;
+	
+	public void setupService() {
+		logger.info("[TaaSVMManagerImpl] Starting the service");
+		VMsAllocatorManager.init();
+		mManager = MessageManager.instance();
+		mManager.monitoringPublish("[TaaSVMManagerImpl] Service started");
+		logger.info("[TaaSVMManagerImpl] Service started");
+	}
+	
+	public void stopService() {
+		logger.info("[TaaSVMManagerImpl] Stopping the service");
+		VMsAllocatorManager.deleteAllVMs();
+		mManager.monitoringPublish("[TaaSVMManagerImpl] Service stopped");
+		logger.info("[TaaSVMManagerImpl] Service stopped");
+	}
 	
 	public TaaSVMManagerImpl () {}
 	
-	public TaaSVMManagerImpl (String idApplication) {
-		user = idApplication;
+	public String createVM (VMRequest request) throws Exception {
+		logger.info("[TaaSVMManagerImpl] Create VM method inovked!");
+		return VMsAllocatorManager.createVM(request);
 	}
 	
-	public String createVM (VMRequest request) {
-		logger.info("Create VM method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return null;
-		}
-		
-		return myAllocator.createVM(request);
-	}
-	
-	public HashMap<InstanceType, Integer> getAvailability(boolean cpuPreference) {
-		logger.info("Get availability (with preference) method inovked");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return null;
-		}
-		
-		return myAllocator.getAvailability(cpuPreference);
+	public  List<Availability> getAvailability(boolean cpuPreference) {
+		logger.info("[TaaSVMManagerImpl] Get availability (with preference) method inovked");
+		return VMsAllocatorManager.getAvailability(cpuPreference);
 	}
 
 	public String createExtVM(VMRequest request) {
-		logger.info("Create external VM method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return null;
-		}
-		
-		return myAllocator.createExtVM(request);
+		logger.info("[TaaSVMManagerImpl] Create external VM method inovked!");
+		return VMsAllocatorManager.createExtVM(request);
 	}
 
 	public boolean deleteVM(String idVM) {
-		logger.info("Delete VM method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return false;
-		}
-		
-		return myAllocator.deleteVM(idVM);
+		logger.info("[TaaSVMManagerImpl] Delete VM method inovked!");
+		return VMsAllocatorManager.deleteVM(idVM);
 	}
 
-	public HashMap<InstanceType, Integer> getAvailability() {
-		logger.info("Get availability method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return null;
-		}
-		
-		return myAllocator.getAvailability();
+	public List<Availability> getAvailability() {
+		logger.info("[TaaSVMManagerImpl] Get availability method inovked!");
+		return VMsAllocatorManager.getAvailability();
 	}
 
 	public boolean migrateVM(String vmId, String targetInfo) {
-		logger.info("Migrate VM method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return false;
-		}
-		
-		return myAllocator.migrateVM(vmId, targetInfo);
+		logger.info("[TaaSVMManagerImpl] Migrate VM method inovked!");
+		return VMsAllocatorManager.migrateVM(vmId, targetInfo);
 	}
 
-	public boolean sendVMs(List<String> vmIds) {
-		logger.info("Send VMs method inovked!");
-		VMsAllocatorManager myAllocator = VMsAllocatorManager.instance(user);
-		if (myAllocator == null) {
-			logger.error("Error instantiating VM Allocator manager");
-			return false;
+	public boolean sendVMs(List<String> vmIds, String targetInfo) {
+		logger.info("[TaaSVMManagerImpl] Send VMs method inovked!");
+		return VMsAllocatorManager.sendVMs(vmIds, targetInfo);
+	}
+
+	public List<Flavor> getFlavors() {
+		logger.info("[TaaSVMManagerImpl] Get flavors method inovked!");
+		ArrayList<Flavor> flavors = new ArrayList<Flavor>();
+		for (FlavorType flavor : FlavorType.values()) {
+			flavors.add(TaaSVMMAnagerConfiguration.getFlavor(flavor));
 		}
-		
-		return myAllocator.sendVMs(vmIds);
+		return flavors;
+	}
+	
+	public BundleContext getContext() {
+		return context;
+	}
+
+	public void setContext(BundleContext context) {
+		this.context = context;
 	}
 }

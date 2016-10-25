@@ -35,8 +35,11 @@ limitations under the License.
   
   
 	<!-- Need to pass the BundleActivator class to the registered bundle -->
-	<bean id="serviceEcmqvExtBean" class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvExtService">
+	<bean id="serviceEcmqvExtBean" 
+		class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvExtService"
+		scope="singleton" init-method="setup">
 		<property name="gwCertificateService" ref="certificateService"/>
+		<property name="context" ref="blueprintBundleContext"/>
 	</bean>
 	
 	<service ref="serviceEcmqvExtBean" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvExtService">
@@ -48,11 +51,22 @@ limitations under the License.
 		</service-properties>
 	</service>
 	
-  <bean id="serviceEcmqvIntBean" class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvIntService">
+  <bean id="serviceEcmqvIntBean" 
+  	class="eu.betaas.taas.securitymanager.authentication.service.impl.GWEcmqvIntService"
+  	scope="singleton" init-method="setup">
   	<property name="gwCertificateService" ref="certificateService"/>
+  	<property name="context" ref="blueprintBundleContext"/>
   </bean>
   
   <service ref="serviceEcmqvIntBean" interface="eu.betaas.taas.securitymanager.authentication.service.IGatewayEcmqvIntService"/>
+  
+  <bean id="serviceEncryptBean" 
+  	class="eu.betaas.taas.securitymanager.authentication.service.impl.EncryptDecryptService"
+  	scope="singleton" init-method="setup">
+  	<property name="context" ref="blueprintBundleContext"/>
+  </bean>
+    
+  <service ref="serviceEncryptBean" interface="eu.betaas.taas.securitymanager.authentication.service.IEncryptDecryptService"/>
 	
 	<reference id="certificateService" availability="mandatory" activation="eager" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService" />
 	

@@ -3,13 +3,13 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-superpom</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-common</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS Common Components</name>
   <description>BETaaS  Common Components</description>
@@ -17,5 +17,6 @@
   <modules>
 	<module>betaas-integration</module>
 	<module>betaas-bus-layer</module>
+	<module>betaas-es-manager</module>
   </modules>
 </project>

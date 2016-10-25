@@ -60,6 +60,7 @@ import org.jboss.security.xacml.sunxacml.cond.VariableManager;
 import org.jboss.security.xacml.sunxacml.ctx.Attribute;
 import org.jboss.security.xacml.sunxacml.ctx.RequestCtx;
 import org.jboss.security.xacml.sunxacml.ctx.Subject;
+import org.osgi.framework.BundleContext;
 //import org.osgi.framework.BundleContext;
 //import org.osgi.util.tracker.ServiceTracker;
 import org.w3c.dom.Document;
@@ -74,6 +75,7 @@ import eu.betaas.service.securitymanager.capability.elements.helper.AccessType;
 import eu.betaas.service.securitymanager.capability.elements.helper.IssuerType;
 import eu.betaas.service.securitymanager.capability.model.CapabilityExternal;
 import eu.betaas.service.securitymanager.capability.model.Token;
+import eu.betaas.service.securitymanager.capability.utils.CapBetaasBus;
 import eu.betaas.service.securitymanager.capability.utils.CapToJsonUtils;
 import eu.betaas.service.securitymanager.capability.utils.CapToXmlUtils;
 import eu.betaas.service.securitymanager.capability.utils.CapabilityUtils;
@@ -114,6 +116,9 @@ public class AuthorizationService implements IAuthorizationService {
 	/** Reference to Certificate service in blueprint */
 	private IGatewayCertificateService certServ;
 	
+	/** Reference to delimiter in blueprint */
+	private String delimiter;
+	
 	/** Bundle Context used in the Activator class */
 //	private BundleContext bc;
 	
@@ -130,6 +135,19 @@ public class AuthorizationService implements IAuthorizationService {
 	private String myGwID;
 	
 	private ObjectFactory of = new ObjectFactory();
+	
+	/** Class that handles BETaaS BUS in authentication bundle */
+	private CapBetaasBus bus;
+	
+	/** Reference to Blueprint BundleContext */
+	private BundleContext context;
+	
+	/**
+	 * Initial setup method to initialize betaas bus service
+	 */
+	public void setup(){
+		bus = new CapBetaasBus(context);
+	}
 	
 	public AuthorizationService(){
 		this.appCertCatalog = AppCertCatalog.instance();
@@ -191,6 +209,7 @@ public class AuthorizationService implements IAuthorizationService {
 					DefaultDigestAlgorithmIdentifierFinder()).build(verKey));
 //			isValid = true;
 			log.info("Is credential valid? "+ isValid);
+			bus.sendData("Is credential valid? "+ isValid, "info", "SecM");
 			// add the submitted certificate by apps into the catalog
 			appCertCatalog.addAppCert(appId, appsCert);
 //		}
@@ -255,12 +274,12 @@ public class AuthorizationService implements IAuthorizationService {
 //		exCap.setAccessRights(accessRights);
 		
 		// creating digital signature
-		String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);	
-		String siJson = CapToJsonUtils.createSubjectInfoJson(si);
-		String arJson = CapToJsonUtils.createAccessRightsJson(accessRights);
-		String riJson = CapToJsonUtils.createResourceIdJson(thingServiceId);
-		String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
-		String revUrlJson = CapToJsonUtils.createRevocationUrlJson(REVOCATION_URL);
+		String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);	
+		String siJson = CapToXmlUtils.createSubjectInfoXml(si);
+		String arJson = CapToXmlUtils.createAccessRightsXml(accessRights);
+		String riJson = CapToXmlUtils.createResourceIdXml(thingServiceId);
+		String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
+		String revUrlJson = CapToXmlUtils.createRevocationUrlXml(REVOCATION_URL);
 		String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 				+revUrlJson;
 		
@@ -299,8 +318,8 @@ public class AuthorizationService implements IAuthorizationService {
 			/////////////////////////////////////////////////////
 			
 			// extract the GW ID first --> from the last chars in thingServiceId
-			String gwId = thingServiceId.substring(thingServiceId.indexOf("_", 
-					thingServiceId.indexOf("_") + 1) + 1, thingServiceId.length());
+			String gwId = thingServiceId.substring(thingServiceId.indexOf(delimiter, 
+					thingServiceId.indexOf(delimiter) + 1) + 1, thingServiceId.length());
 			
 			// procedures to invoke getToken from gwId 
 			// for now any GW can issue a token on behalf of other GW
@@ -317,8 +336,9 @@ public class AuthorizationService implements IAuthorizationService {
 			token.getCapability().add(exCap);
 		}
 		
-		// TODO: need to include all the exCap in the JSON format (JSON array)		
-		return CapToJsonUtils.createTokenJson(token);
+		// TODO: need to include all the exCap in the JSON format (JSON array)
+		return CapToXmlUtils.createTokenXml(token);
+//		return CapToJsonUtils.createTokenJson(token);
 	}
 	
 	/**
@@ -384,14 +404,15 @@ public class AuthorizationService implements IAuthorizationService {
 		accessRights.getAccessRight().add(ar1);
 		exCap.setAccessRights(accessRights);
 		log.info("The access rights have been set!!");
+		bus.sendData("The access rights have been set", "info", "SecM");
 		
 		// creating digital signature
-		String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);
-		String siJson = CapToJsonUtils.createSubjectInfoJson(si);
-		String arJson = CapToJsonUtils.createAccessRightsJson(accessRights);
-		String riJson = CapToJsonUtils.createResourceIdJson(thingServiceId);
-		String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
-		String revUrlJson = CapToJsonUtils.createRevocationUrlJson(REVOCATION_URL);
+		String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);
+		String siJson = CapToXmlUtils.createSubjectInfoXml(si);
+		String arJson = CapToXmlUtils.createAccessRightsXml(accessRights);
+		String riJson = CapToXmlUtils.createResourceIdXml(thingServiceId);
+		String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
+		String revUrlJson = CapToXmlUtils.createRevocationUrlXml(REVOCATION_URL);
 		String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 				+revUrlJson;
 		
@@ -399,6 +420,7 @@ public class AuthorizationService implements IAuthorizationService {
 		byte[] sign = CapabilityUtils.createCapSignature(myCredential, capContents);
 		exCap.setDigitalSignature(sign);
 		log.info("The digital signature has been generated!!");
+		bus.sendData("The digital signature has been generated", "info", "SecM");
 		
 		return exCap;
 	}
@@ -413,6 +435,7 @@ public class AuthorizationService implements IAuthorizationService {
 		CapabilityExternal exCap = new CapabilityExternal();
 		
 		log.info("Start creating token for application...");
+		bus.sendData("Start creating token for application", "info", "SecM");
 		// find my credential using the Certificate bundle
 //		ServiceTracker certTracker = authActivator.getCertTracker();
 //		log.info("Found Certificate service from tracker");
@@ -429,6 +452,7 @@ public class AuthorizationService implements IAuthorizationService {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				log.error("Error in encoding the certificate...");
+				bus.sendData("Error in encoding the certificate", "error", "SecM");
 				e.printStackTrace();
 			}
 			log.debug("certificate encoded...");
@@ -445,15 +469,17 @@ public class AuthorizationService implements IAuthorizationService {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				log.error("Error in creating capability external");
+				bus.sendData("Error in creating capability external", "error", "SecM");
 				e.printStackTrace();
 				return null;
 			}
 			log.info("A capability external has been created...");
+			bus.sendData("A capability external has been created", "info", "SecM");
 			
 			token.getCapability().add(exCap);
 		}
-		
-		return CapToJsonUtils.createTokenJson(token);
+		return CapToXmlUtils.createTokenXml(token);
+//		return CapToJsonUtils.createTokenJson(token);
 	}
 	
 	/**
@@ -474,6 +500,7 @@ public class AuthorizationService implements IAuthorizationService {
 			if(cert.isSignatureValid(new BcECDSAContentVerifierProviderBuilder(new 
 					DefaultDigestAlgorithmIdentifierFinder()).build(verKey))){
 				log.info("The issuer certificate is valid!!");
+				bus.sendData("The issuer certificate is valid", "info", "SecM");
 				return true;
 			}
 		}
@@ -485,6 +512,7 @@ public class AuthorizationService implements IAuthorizationService {
 			if(cert.isSignatureValid(new BcECDSAContentVerifierProviderBuilder(new 
 					DefaultDigestAlgorithmIdentifierFinder()).build(verKey))){
 				log.info("The issuer certificate is valid!!");
+				bus.sendData("The issuer certificate is valid", "info", "SecM");
 				return true;
 			}
 		}
@@ -582,6 +610,8 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 		
 		log.info("Checking Condition in the Access Right return: "+access);
+		bus.sendData("Checking Condition in the Access Right return: "+access, 
+				"info", "SecM");
 		
 		return access;
 	}
@@ -619,12 +649,16 @@ public class AuthorizationService implements IAuthorizationService {
 			else{
 				// there is no condition --> always returns true
 				log.info("There is no condition in the Access Right");
+				bus.sendData("There is no condition in the Access Right", "info", 
+						"SecM");
 				access = true;
 			}			
 			
 		}
 		
 		log.info("The overall access right check result is: "+access);
+		bus.sendData("The overall access right check result is: "+access, "info", 
+				"SecM");
 		
 		return access;
 	}
@@ -637,7 +671,9 @@ public class AuthorizationService implements IAuthorizationService {
 		OperatorException, CertException, CMSException {
 //		boolean isValid = false;
 		log.info("Start the token validation process...");
+		bus.sendData("Start the token validation process", "info", "SecM");
 		
+//		Token tokenRead = CapabilityUtils.jsonToToken(token);
 		Token tokenRead = CapabilityUtils.xmlToToken(token);
 		
 		if(tokenRead!=null){
@@ -657,12 +693,12 @@ public class AuthorizationService implements IAuthorizationService {
 				// revocation URL
 				String revocationUrl = cap.getRevocationUrl();
 				
-				String iiJson = CapToJsonUtils.createIssuerInfoJson(ii);
-				String siJson = CapToJsonUtils.createSubjectInfoJson(si);
-				String arJson = CapToJsonUtils.createAccessRightsJson(ars);
-				String riJson = CapToJsonUtils.createResourceIdJson(resourceId);
-				String vcJson = CapToJsonUtils.createValidityConditionJson(vc);
-				String revUrlJson = CapToJsonUtils.createRevocationUrlJson(revocationUrl);
+				String iiJson = CapToXmlUtils.createIssuerInfoXml(ii);
+				String siJson = CapToXmlUtils.createSubjectInfoXml(si);
+				String arJson = CapToXmlUtils.createAccessRightsXml(ars);
+				String riJson = CapToXmlUtils.createResourceIdXml(resourceId);
+				String vcJson = CapToXmlUtils.createValidityConditionXml(vc);
+				String revUrlJson = CapToXmlUtils.createRevocationUrlXml(revocationUrl);
 				String capContents = iiJson+","+siJson+","+arJson+riJson+","+vcJson+","
 						+revUrlJson;
 				
@@ -697,10 +733,12 @@ public class AuthorizationService implements IAuthorizationService {
 					return false;
 				}
 				log.info("Passed all the validation test..");
+				bus.sendData("Passed all the validation test", "info", "SecM");
 			}
 		}
 		else{
 			log.error("Error in parsing the token...");
+			bus.sendData("Error in parsing the token", "error", "SecM");
 			return false;
 		}
 		
@@ -731,5 +769,23 @@ public class AuthorizationService implements IAuthorizationService {
 	
 	public void setConditionPath(String conditionPath){
 		this.conditionPath = conditionPath;
+	}
+	
+	/**
+	 * Blueprint set reference to BundleContext
+	 * @param context BundleContext
+	 */
+	public void setContext(BundleContext context) {
+		this.context = context;
+		log.debug("Got BundleContext from the blueprint...");
+	}
+	
+	/**
+	 * bluepint set reference to delimiter
+	 * @param delimiter
+	 */
+	public void setDelimiter(String delimiter){
+		this.delimiter = delimiter;
+		log.debug("Got delimiter from blueprint...");
 	}
 }

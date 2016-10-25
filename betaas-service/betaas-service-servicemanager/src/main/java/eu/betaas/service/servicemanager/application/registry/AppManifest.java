@@ -62,6 +62,7 @@ public class AppManifest {
 		mApplicationName = null;
 		mServices = null;
 		mNotificationAddress = null;
+		mGCMId = null;
 	}
 	
 	/**
@@ -95,9 +96,16 @@ public class AppManifest {
            
            mNotificationAddress = Util.getContent(nl, "manifest/Application/notificationAddress");
            if ((mNotificationAddress == null) || (mNotificationAddress.length() == 0)) { 
-        	   mLogger.warn("Manifest/Application/notificationAddress not specified. Notification will not be sent");
+        	   mLogger.warn("Manifest/Application/notificationAddress not specified. Notifications will not be sent to the app REST service");
            } else {
-        	   mLogger.info("Notification Address: " + mNotificationAddress);
+        	   mLogger.info("Notification Address (REST): " + mNotificationAddress);
+           }
+           
+           mGCMId = Util.getContent(nl, "manifest/Application/GCMId");
+           if ((mGCMId == null) || (mGCMId.length() == 0)) { 
+        	   mLogger.warn("Manifest/Application/mGCMId not specified. Notifications will not be sent through Google Cloud Messaging");
+           } else {
+        	   mLogger.info("GCM Id: " + mGCMId);
            }
            
            ArrayList<Node> servicesList = Util.getNodeList(nl, "manifest/ServiceDescriptionTerm/ServiceDefinition");
@@ -251,16 +259,17 @@ public class AppManifest {
 						throw new Exception("PUSH service requested without specifying a notification address");
 					}
 					
-					val = Util.getContent(servicesList.get(i), "Period");
-					try {
-					  if (val == null) mServices[i].mPeriod = -1;
-						else mServices[i].mPeriod = Float.valueOf(val);
-					} catch (NumberFormatException e) {
-						throw new Exception("Wrong value for period on service n. " + i);
-					}
-					mLogger.debug("Service " + i + " period: " + mServices[i].mPeriod);
-					if (mServices[i].mPeriod <= 0) throw new Exception("Wrong value for period on service n. " + i);
+					
 				}
+				val = Util.getContent(servicesList.get(i), "Period");
+				try {
+				  if (val == null) mServices[i].mPeriod = -1;
+					else mServices[i].mPeriod = Float.valueOf(val);
+				} catch (NumberFormatException e) {
+					throw new Exception("Wrong value for period on service n. " + i);
+				}
+				mLogger.debug("Service " + i + " period: " + mServices[i].mPeriod);
+				if (mServices[i].mPeriod <= 0) throw new Exception("Wrong value for period on service n. " + i);
            }
            
            /////////////////////////////////// EXTENDED SERVICES ////////////////////////////
@@ -314,10 +323,18 @@ public class AppManifest {
 	public String mCredentials;
 	
 	/** 
-	 * The HTTP address at which the application will receive data and notifications from SM.
+	 * The REST HTTP address at which the application will receive data and notifications from SM.
 	 * It is in fact the prefix to be completed with the suffix that specifies the specific 
-	 * interface (i.e. data notification, install notification, etc). */ 
+	 * interface (i.e. data notification, install notification, etc).
+	 * In case it is not specified, REST notifications will not be sent
+	 */ 
 	public String mNotificationAddress;
+	
+	/**
+	 * The Google Cloud Message (GCM) identifier obtained by the mobile app that sent this manifest.
+	 * Such ID, if specified, will be used to send the application notifications (about data, installation, etc).
+	 */
+	public String mGCMId;
 	
 	/** Services requested by the application */
 	public ServiceRequirement[] mServices;

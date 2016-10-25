@@ -93,18 +93,18 @@ public class ExternService implements IExtern {
 	    return jsonResult.toString();
 	}
 
-	public String getFailureReport(int maxRecords) {
-		Gson gson = new Gson();		
-	    JsonObject jsonResult = new JsonObject();
-	    
-	    FailureReport failureReport = new FailureReport();
-	    
-	    //TODO: read from DB, fill in the report
-	    
-	    jsonResult.add("FailureReport", gson.toJsonTree(failureReport));
-	    
-	    return jsonResult.toString();
-	}
+//	public String getFailureReport(int maxRecords) {
+//		Gson gson = new Gson();		
+//	    JsonObject jsonResult = new JsonObject();
+//	    
+//	    FailureReport failureReport = new FailureReport();
+//	    
+//	    //TODO: read from DB, fill in the report
+//	    
+//	    jsonResult.add("FailureReport", gson.toJsonTree(failureReport));
+//	    
+//	    return jsonResult.toString();
+//	}
 
 	public boolean checkVitality() {
 		return true;

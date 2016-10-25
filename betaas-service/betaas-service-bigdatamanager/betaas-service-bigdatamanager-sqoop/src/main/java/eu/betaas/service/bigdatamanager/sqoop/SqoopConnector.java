@@ -34,6 +34,7 @@ import org.apache.sqoop.submission.counter.CounterGroup;
 import org.apache.sqoop.submission.counter.Counters;
 import org.apache.sqoop.validation.Status;
 
+
 public class SqoopConnector implements ISqoopConnector {
 	
 	private SqoopClient client;
@@ -42,7 +43,7 @@ public class SqoopConnector implements ISqoopConnector {
 	private MConnection newCon;
 	
 	public void setupService(){
-		log = Logger.getLogger(ISqoopConnector.class);
+		log = Logger.getLogger("betaas.service");
 		log.info("### Sqoop loading ");
 		
 		
@@ -56,6 +57,7 @@ public class SqoopConnector implements ISqoopConnector {
 
 	public boolean connect(String sqoop) {
 		this.sqoop=sqoop;
+		log.info("TEST 6.1.X Sqoop connect");
 		client = new SqoopClient(sqoop);
 		log.debug("### Client created ");
 		cleanUp();
@@ -92,7 +94,7 @@ public class SqoopConnector implements ISqoopConnector {
 
 		//Set connection forms the service interface
 		conForms.getStringInput("connection.connectionString").setValue(connection);
-		conForms.getStringInput("connection.connectionString").setValue("jdbc:mysql://betaashadoop/servicedb");
+		conForms.getStringInput("connection.connectionString").setValue("jdbc:mysql://10.15.5.51/servicedb");
 		conForms.getStringInput("connection.jdbcDriver").setValue("com.mysql.jdbc.Driver");
 		//conForms.getStringInput("connection.jdbcDriver").setValue(driver);
 		conForms.getStringInput("connection.username").setValue(user);
@@ -118,8 +120,9 @@ public class SqoopConnector implements ISqoopConnector {
 	public long createJob(long connection, String connectionstr,String driver, String user, String pwd) {
 		
 		//Creating dummy job object
-
+		log.info("TEST 6.1.X Sqoop creating job");
 		MJob newjob = client.newJob(connection, org.apache.sqoop.model.MJob.Type.IMPORT);
+		
 		MJobForms connectorForm = newjob.getConnectorPart();
 		MJobForms frameworkForm = newjob.getFrameworkPart();
 
@@ -142,9 +145,8 @@ public class SqoopConnector implements ISqoopConnector {
 		//Job resources
 		frameworkForm.getIntegerInput("throttling.extractors").setValue(1);
 		frameworkForm.getIntegerInput("throttling.loaders").setValue(1);
-
 		Status status = client.createJob(newjob);
-		
+		log.info("TEST 6.1.X Sqoop job created");
 		if(status.canProceed()) {
 			log.debug("New Job ID: "+ newjob.getPersistenceId());
 			return newjob.getPersistenceId();
@@ -160,7 +162,7 @@ public class SqoopConnector implements ISqoopConnector {
 	public long createJob(long connection, Timestamp from, String connectionstr,String driver, String user, String pwd) {
 		
 		//Creating dummy job object
-
+		
 		MJob newjob = client.newJob(connection, org.apache.sqoop.model.MJob.Type.IMPORT);
 		MJobForms connectorForm = newjob.getConnectorPart();
 		MJobForms frameworkForm = newjob.getFrameworkPart();
@@ -172,7 +174,7 @@ public class SqoopConnector implements ISqoopConnector {
 		//Input either table name or sql
 		//connectorForm.getStringInput("table.tableName").setValue("T_THING_DATA");
 		connectorForm.getStringInput("table.sql").setValue("select gatewayID,thingID,CAST(timestamp as CHAR(50)),location,unit,type,measurement from T_THING_DATA where timestamp >= '"+from.toString()+"' and ${CONDITIONS}");
-		log.debug("Now the time is: "+from.toString());
+		log.info("Now the time is: "+from.toString());
 		//connectorForm.getStringInput("table.columns").setValue("gatewayID,thingID,timestamp,location,unit,type,measurement");
 		connectorForm.getStringInput("table.partitionColumn").setValue("thingID");
 		//Set boundary value only if required
@@ -190,7 +192,7 @@ public class SqoopConnector implements ISqoopConnector {
 		frameworkForm.getIntegerInput("throttling.loaders").setValue(1);
 
 		Status status = client.createJob(newjob);
-		
+		log.info("TEST 6.1.X Sqoop job created");
 		if(status.canProceed()) {
 			log.debug("New Job ID: "+ newjob.getPersistenceId());
 			return newjob.getPersistenceId();
@@ -206,11 +208,12 @@ public class SqoopConnector implements ISqoopConnector {
 	public synchronized void runJob(long jobName) {
 		//log.info("Submitting job.. "+client.getConnector(1).getConnectionForms().getEnumInput("connection.connectionString").getValue());
 		//Job submission start
-		log.debug("Submitting "+new Date().toString());
+		log.info("Submitting "+new Date().toString());
+		long ts1 = System.currentTimeMillis();
 		MSubmission submission = client.startSubmission(jobName);
 		log.debug("Status : " + submission.getStatus());
 		if(submission.getStatus().isRunning() && submission.getProgress() != -1) {
-			log.debug("Progress : " + String.format("%.2f %%", submission.getProgress() * 100));
+			log.info("Progress : " + String.format("%.2f %%", submission.getProgress() * 100));
 		}
 		log.debug("Hadoop job id :" + submission.getExternalId());
 		log.debug("Job link : " + submission.getExternalLink());
@@ -236,8 +239,8 @@ public class SqoopConnector implements ISqoopConnector {
 
 		//Check job status
 		MSubmission submissionstatus = client.getSubmissionStatus(jobName);
-		log.debug("Hadoop status :" + submissionstatus.getStatus());
-		log.debug("Job  : " + submissionstatus.getProgress());
+		log.info("Hadoop status :" + submissionstatus.getStatus());
+		log.info("Job  : " + submissionstatus.getProgress());
 		
 		while(submissionstatus.getStatus() == SubmissionStatus.BOOTING) {
 		  log.debug("booting");
@@ -248,7 +251,7 @@ public class SqoopConnector implements ISqoopConnector {
 			log.debug("Hadoop status :" + submissionstatus.getStatus());
 			log.debug("Job  : " + submissionstatus.getProgress());
 		}
-		log.debug("Hadoop status :" + submissionstatus.getStatus());
+		log.info("Hadoop status :" + submissionstatus.getStatus());
 		log.debug("Job  : " + submissionstatus.getProgress());
 		
 		while(submissionstatus.getStatus()==SubmissionStatus.RUNNING ) {
@@ -260,6 +263,10 @@ public class SqoopConnector implements ISqoopConnector {
 			log.debug("Hadoop status :" + submissionstatus.getStatus());
 			log.debug("Job  : " + submissionstatus.getProgress());
 		}
+		
+		
+		long ts2 = System.currentTimeMillis();
+		log.info("TEST 6.1.X Sqoop processed job in "+(ts2-ts1));
 		log.debug("Completed "+new Date().toString());
 		
 		

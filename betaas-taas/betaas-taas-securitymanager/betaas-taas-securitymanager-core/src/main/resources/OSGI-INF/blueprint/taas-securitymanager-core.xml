@@ -27,12 +27,17 @@ limitations under the License.
 		 </cm:default-properties>
 		</cm:property-placeholder>
 		
-		<bean id="serviceInitGwStarBean" class="eu.betaas.taas.securitymanager.core.service.impl.InitGWStarService">
+		<bean id="serviceInitGwStarBean" 
+			class="eu.betaas.taas.securitymanager.core.service.impl.InitGWStarService"
+			scope="singleton" init-method="setup">
     	<property name="gwStarCertIntService" ref="gwStarCertificateIntService"/>
+    	<property name="context" ref="blueprintBundleContext"/>
     </bean>
     <service ref="serviceInitGwStarBean" interface="eu.betaas.taas.securitymanager.core.service.IInitGWStarService"/>
 
-    <bean id="serviceGwSecCommBean" class="eu.betaas.taas.securitymanager.core.service.impl.SecureGWCommService">
+    <bean id="serviceGwSecCommBean" 
+    	class="eu.betaas.taas.securitymanager.core.service.impl.SecureGWCommService"
+    	scope="singleton" init-method="setup">
     	<property name="context" ref="blueprintBundleContext"/>
     	<property name="gwCertificateService" ref="gwCertificateService"/>
     	<property name="gwEcmqvIntService" ref="gwEcmqvIntService"/>
@@ -41,7 +46,9 @@ limitations under the License.
     </bean>
     <service ref="serviceGwSecCommBean" interface="eu.betaas.taas.securitymanager.core.service.ISecGWCommService"/>
     
-    <bean id="serviceJoinInstanceBean" class="eu.betaas.taas.securitymanager.core.service.impl.JoinInstanceService">
+    <bean id="serviceJoinInstanceBean" 
+    	class="eu.betaas.taas.securitymanager.core.service.impl.JoinInstanceService"
+    	scope="singleton" init-method="setup">
     	<property name="context" ref="blueprintBundleContext"/>
     	<property name="gwCertificateService" ref="gwCertificateService"/>
     </bean>

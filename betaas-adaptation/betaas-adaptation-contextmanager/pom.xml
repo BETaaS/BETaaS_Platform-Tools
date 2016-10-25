@@ -17,7 +17,7 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-adaptation</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>betaas-adaptation-contextmanager</artifactId>
@@ -40,6 +40,22 @@
     </repository>
   </repositories>
 
+  <properties>
+    <!-- <ver.maven.bundle.plugin>2.3.7</ver.maven.bundle.plugin> -->
+    <ver.maven.bundle.plugin>2.4.0</ver.maven.bundle.plugin>
+    <ver.project.build.sourceEncoding>UTF-8</ver.project.build.sourceEncoding>
+    <!-- OJO, Jenkins: 1.7 -->
+    <ver.maven.compiler.source>1.7</ver.maven.compiler.source>
+    <ver.maven.compiler.target>1.7</ver.maven.compiler.target>
+    <ver.apache.cxf>2.7.7</ver.apache.cxf>
+    <ver.log4j>1.2.13</ver.log4j>
+    <ver.gson>2.2.4</ver.gson>
+    <ver.junit>4.11</ver.junit>
+    <ver.karaf>2.3.3</ver.karaf>
+    <ver.ops4j.pax>2.6.0</ver.ops4j.pax>
+    <ver.joda>2.7</ver.joda>
+  </properties>
+
   <dependencies>
   <dependency>
     <groupId>eu.betaas</groupId>
@@ -49,7 +65,8 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.7</version>
+      <version>${ver.joda}</version>
+<!--       <version>2.7</version> -->
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
@@ -65,17 +82,20 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>${ver.junit}</version>
+<!--       <version>4.11</version> -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
+<!--        <version>${ver.log4j}</version> -->
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.2.4</version>
+<!--       <version>2.2.4</version> -->
+       <version>${ver.gson}</version>
     </dependency>
     <dependency>
       <groupId>eu.betaas</groupId>
@@ -104,7 +124,8 @@
     <dependency>
       <groupId>org.apache.karaf</groupId>
       <artifactId>apache-karaf</artifactId>
-      <version>2.3.3</version>
+<!--       <version>2.3.3</version> -->
+      <version>${ver.karaf}</version>
       <type>zip</type>
       <scope>test</scope>
     </dependency>
@@ -118,7 +139,8 @@
     <dependency>
       <groupId>org.apache.karaf.tooling.exam</groupId>
       <artifactId>org.apache.karaf.tooling.exam.container</artifactId>
-      <version>2.3.3</version>
+<!--       <version>2.3.3</version> -->
+      <version>${ver.karaf}</version>
       <scope>test</scope>
     </dependency>
 
@@ -126,7 +148,39 @@
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-junit4</artifactId>
-      <version>2.6.0</version>
+      <version>${ver.ops4j.pax}</version>
+<!--       <version>2.6.0</version> -->
+<!--       <scope>test</scope> -->
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${ver.apache.cxf}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${ver.apache.cxf}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${ver.apache.cxf}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+      <version>${ver.apache.cxf}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>1.17.1</version>
     </dependency>
 
   </dependencies>
@@ -157,10 +211,14 @@
               eu.betaas.taas.bigdatamanager.core.services,
               eu.betaas.rabbitmq.publisher.interfaces,
               javax.activation, javax.xml.bind.annotation,
-              org.osgi.framework,
+              javax.ws.rs.*,
+<!--               org.osgi.framework, -->
+              org.osgi.framework.*,
               org.osgi.service.blueprint,
               org.h2,
-              org.osgi.util.tracker,
+<!--               org.osgi.util.tracker, -->
+              org.osgi.util.tracker.*,
+              org.apache.cxf.*,
               org.geonames,
               *
             </Import-Package>

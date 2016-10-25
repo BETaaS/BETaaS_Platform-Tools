@@ -23,6 +23,7 @@ Francisco Javier Nieto. Atos Research and Innovation, Atos SPAIN SA
 package eu.betaas.taas.taasresourcesmanager.taasrmclient;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -89,50 +90,74 @@ public class TaaSQoSMClient
 	public ArrayList<String> registerServiceQoSPull(String serviceId, ArrayList<String> thingServicesList, ArrayList< ArrayList<String> > equivalentThingServices)
 	{
 		logger.info("Invoking 'registerServiceQoS' method before invoking Thing Services...");
-		return (ArrayList<String>) myClient.registerServiceQoSPULL(serviceId, thingServicesList, equivalentThingServices);		
+		logger.info("Candidate: " + thingServicesList.get(0));
+		equivalentThingServices.get(0).trimToSize();
+		String [] tslist = new String[equivalentThingServices.get(0).size()];
+		equivalentThingServices.get(0).toArray(tslist);
+		logger.info("Equivalents: " + tslist);
+		return (ArrayList<String>) myClient.registerServiceQoSPULL(serviceId, equivalentThingServices);
+		//return thingServicesList;
 	}
 	
-	public ArrayList<String> registerServiceQoSPush (String serviceId, ArrayList<String> thingServicesList, ArrayList< ArrayList<String> > equivalentThingServices)
+	public ArrayList<String> registerServiceQoSPush (String serviceId, ArrayList<String> thingServicesList, ArrayList< ArrayList<String> > equivalentThingServices, int period)
 	{
-		Map<String, Double> pushResult = myClient.registerServiceQoSPUSH(serviceId, thingServicesList, equivalentThingServices);
+		logger.info("Invoking 'registerServiceQoSPush' method before subscribing to Thing Services for " + thingServicesList.get(0) + "...");
+		logger.info("Candidate: " + thingServicesList.get(0));
+		equivalentThingServices.get(0).trimToSize();
+		String [] tslist = new String[equivalentThingServices.get(0).size()];
+		equivalentThingServices.get(0).toArray(tslist);
+		logger.info("Equivalents: " + tslist);
+		Map<String, Double> pushResult = myClient.registerServiceQoSPUSH(serviceId, period, equivalentThingServices);
+		if (pushResult == null || pushResult.isEmpty())
+		{
+			logger.error ("The list of thing services received from the QoS Manager is empty or null!");
+			return null;
+		}
 		ArrayList<String> myResult = new ArrayList<String>();
 		myResult.addAll(pushResult.keySet());
 		return myResult;
 	}
 	
-	public boolean activateSLAMonitoring(ArrayList<String> selectedThingServicesList)
+	public boolean unregisterServiceQoS (String serviceId)
 	{
-		logger.debug("Invocation for activating SLA monitoring sent.");
-		myClient.getMeasurementSLAMonitoring(selectedThingServicesList);
-		logger.debug("Invocation for activating SLA monitoring finished.");
+		logger.info("Invoking 'unregisterServiceQoS' method for removing subscriptions...");
+		myClient.unregisterServiceQoS(serviceId);
 		return true;
 	}
-	
-	public boolean activateSLAPushMonitoring(String thingServiceId, int period)
+		
+	public boolean activateSLAMonitoring(ArrayList<String> selectedThingServicesList, String featureId)
 	{
-		logger.debug("Invocation for activating SLA Push monitoring sent.");
-		myClient.getMeasurementSLAMonitoring(thingServiceId, period);
-		logger.debug("Invocation for activating SLA Push monitoring finished.");
-		return true;
+		// Iterate through all the thing services
+		boolean result = true;
+		Iterator <String> myIter = selectedThingServicesList.iterator();
+		while (myIter.hasNext())
+		{
+			String currentThingService = myIter.next();
+			result = result & activateSLAMonitoring(currentThingService, featureId);
+		}
+		
+		logger.debug("SLA activated for a list of Thing Services!");
+		return result;
 	}	
 	
-	public boolean activateSLAMonitoring(String thingServiceId)
+	public boolean activateSLAPushMonitoring(String thingServiceId, int period, String featureId)
+	{
+		logger.debug("Invocation for activating SLA Push monitoring sent.");
+		//myClient.getMeasurementSLAMonitoring(thingServiceId, period);
+		boolean invocation = myClient.getMeasurementSLAMonitoring(thingServiceId, featureId);
+		logger.debug("Invocation for activating SLA Push monitoring finished. -> " + invocation);
+		return invocation;
+	}	
+	
+	public boolean activateSLAMonitoring(String thingServiceId, String featureId)
 	{
 		logger.debug("Invocation for activating SLA monitoring sent.");
-		myClient.getMeasurementSLAMonitoring(thingServiceId, -1);
-		logger.debug("Invocation for activating SLA monitoring finished.");
-		return true;
+		//myClient.getMeasurementSLAMonitoring(thingServiceId, -1);
+		boolean invocation = myClient.getMeasurementSLAMonitoring(thingServiceId, featureId);
+		logger.debug("Invocation for activating SLA monitoring finished. -> " + invocation);
+		return invocation;
 	}
-	
-	@Deprecated 
-	public ArrayList<SLACalculation> retrieveSLACalculations(ArrayList<String> selectedThingServicesList)
-	{
-		logger.debug("Invocation for retrieving SLA information sent.");
-		ArrayList<SLACalculation> result = myClient.calculateSLA(selectedThingServicesList);
-		logger.debug("Invocation for retrieving SLA information finished.");
-		return result;
-	}
-	
+		
 	public SLACalculation retrieveSLACalculation(String thingServiceId)
 	{
 		logger.debug("Invocation for retrieving individual SLA information sent.");

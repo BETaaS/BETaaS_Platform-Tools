@@ -51,6 +51,9 @@ public interface ConfigBundleOSGi
   public void setGwId(String gwId);
   public String getGwId();
   
+  public String getDelimiter();
+  public void setDelimiter(String delimiter);
+  
   public BundleContext getContext();
   public void setContext(BundleContext context);
   

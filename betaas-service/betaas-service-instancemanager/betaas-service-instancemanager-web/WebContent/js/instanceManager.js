@@ -1,5 +1,8 @@
-var hostAddress="192.168.31.45";
-
+var hostAddress="localhost";
+var serverport="1337"
+var app = angular.module('betaasApp', []);
+var default_settings_vector = {'im': 'localhost:8080', 'amqp': '10.15.5.55:49155', 'microserver': 'localhost:1337', 'queue':'betaas_queue' ,'active': 'off'}
+var settings_vector = default_settings_vector;
 var starIcon = "<span style=\"background-image: url(css/ui-icons-orange.png)\" style=\"background-image: url(css/ui-icons-orange.png)\" style=\"background-image: url(css/ui-icons-orange.png)\" class=\"ui-icon ui-icon-star\"></span>";
 
 function initPage() {
@@ -9,55 +12,50 @@ function initPage() {
 
 function requestInstanceInfo() {
   clearUI();	
-	xmlhttpGet("http://"+hostAddress+":8080/InstanceManager/rest/instanceInfo", manageAjaxRespInstanceInfo);
-}
-
-function xmlhttpGet(strURL, manageFunc) {
-    var xmlhttp;
-    
-    if (window.XMLHttpRequest) {
-    	// code for IE7+, Firefox, Chrome, Opera, Safari
-    	xmlhttp=new XMLHttpRequest();
-    } else {
-    	// code for IE6, IE5
-    	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-        	manageFunc(xmlhttp.responseText);
-        }
-    };
-    xmlhttp.open('GET', strURL, true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlhttp.send(""); // request parameters go here
-}
-
-function manageAjaxRespInstanceInfo(str) {
-    //alert(str);
-
-    if ((str.length >= 6) && (str.substr(0, 6) == "error:")) {
-		  alert("Cannot get info: " + str.substr(6));
-		  return;
-		}
-		
-    var resp = eval('(' + str + ')');
-    if (resp == null) {
-			alert("Cannot get the instance info from BETaaS");
-			return;
-		}
-    
-    updateUI(resp);
-}
-
-function manageAjaxRespJoin(str) {
-	alert(str);
-	document.location.reload(true);
+	//xmlhttpGet("http://"+hostAddress+":8080/InstanceManager/rest/instanceInfo", manageAjaxRespInstanceInfo);
+	jsonCall("http://"+settings_vector.im+"/InstanceManager/rest/instanceInfo");
+	
 	
 }
 
-function manageAjaxRespDisjoin(str) {
-	alert(str);
-	document.location.reload(true);
+function jsonCall(strURL){
+	console.log('new call');
+	$.ajax
+	({
+	  type: "GET",
+	  url: strURL,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+	  success: function (data, textStatus, xhr){
+		console.log('new call done'+xhr.status+textStatus);
+		if (xhr.status=='200'){
+			updateUI(data);
+	  	}
+	  }
+	});
+
+}
+
+function setupMicroserver(){
+	var postdata = '{"amqp" : "'+settings_vector.amqp+'", "queue" : "'+settings_vector.queue+'" }';
+
+	console.log(postdata);
+	$.ajax
+	({
+	  type: "POST",
+	  url: 'http://'+settings_vector.microserver+'/settings/',
+	  data: postdata,
+		headers: {
+			'Content-Type': 'application/json'
+		},
+	  success: function (data, textStatus, xhr){
+		console.log('I updated the settings'+xhr.status+textStatus);
+		if (xhr.status=='200'){
+			console.log('updated!');
+	  	}
+	  }
+	});
 }
 
 function zpad(str) {
@@ -72,30 +70,165 @@ function zpad(str) {
 }
 
 function join(gwid) {
-  xmlhttpGet("http://"+hostAddress+":8080/InstanceManager/rest/join?gwId=" + gwid, manageAjaxRespJoin);
+  jsonCall("http://"+settings_vector.im+"/InstanceManager/rest/join?gwId=" + gwid);
 }
 
 
 function disjoin() {
-  xmlhttpGet("http://"+hostAddress+":8080/InstanceManager/rest/disjoin", manageAjaxRespDisjoin);
+  jsonCall("http://"+settings_vector.im+"/InstanceManager/rest/disjoin" );
 }
 
 function clearUI() {
 	document.getElementById('subtitle').innerHTML = "N/A";
 	// Admin GW
 	document.getElementById('adminGWID').innerHTML = "N/A";
-  document.getElementById('adminGWType').innerHTML = "N/A";
+    document.getElementById('adminGWType').innerHTML = "N/A";
 	document.getElementById('adminGWDescr').innerHTML = "N/A";
 	
 	// Instance
-  document.getElementById('instanceheading').innerHTML = "No info available";
-  document.getElementById('disjoinbutton').style.display = "none";
-  document.getElementById('gwlist').innerHTML = "";
+    document.getElementById('instanceheading').innerHTML = "No info available";
+    document.getElementById('disjoinbutton').style.display = "none";
+    document.getElementById('gwlist').innerHTML = "";
 	
 	// Visible Instances
-	  document.getElementById('visibleinstancesheading').innerHTML = 
+	document.getElementById('visibleinstancesheading').innerHTML = 
 		         "<span class=\"inline\" style=\"text-align: center\">Info not available"	  
 }
+
+
+
+function MonitoringManager($scope, $http) {
+
+    $scope.messages = [];
+
+    $scope.loadMessages = function() {
+        var httpRequest = $http.get('http://'+settings_vector.microserver+'/getmessage/').success(function(data, status) {
+        	console.log('it works');
+            $scope.messages = data;
+        });
+    };
+    
+    $scope.rowForMessage = function(message){
+        return message;
+    };
+
+}
+
+function FormSettingsController($scope) {
+	
+  $scope.settings = settings_vector;
+	
+  $scope.update = function(settings) {
+	  $scope.settings = angular.copy(settings);
+	  console.log('Update requested '+$scope.settings.queue+$scope.settings.amqp);
+	  settings_vector.queue=$scope.settings.queue;
+	  settings_vector.amqp=$scope.settings.amqp;
+	  setupMicroserver();
+	  console.log($scope.settings );
+  };
+	
+  $scope.reset = function() {
+	  $scope.settings = angular.copy($scope.settings);
+	  settings_vector = default_settings_vector;
+	  console.log('restored defaults '  );
+  };
+	
+  $scope.reset();
+    
+
+}
+
+function ManageServices($scope) {
+	
+    
+
+}
+
+function ManageThings($scope) {
+	
+    
+
+}
+
+function ManageBDM($scope, $http) {
+	
+	//var adsurl = "http://localhost:18002/ads?wsdl";
+	
+	//$scope.settings = bdmtasks_vector;
+	
+	var postdata = '{"url" : "'+'localhost'+'", "port" : "'+'18002'+'" }';
+	
+	
+	$scope.tasks = {};
+	
+	$scope.getList = function() {
+        var httpRequest = $http.get('http://'+settings_vector.microserver+'/getBDMTasks/').success(function(data, status) {
+        	console.log('it works');
+        	$scope.tasks = data;
+        	//alert($scope.tasks);
+        });
+//		var service = {
+//		  url: 'http://localhost',
+//		  port: '18002'
+//		};
+//		var serviceString = JSON.stringify(service);
+//		var url = 'http://'+settings_vector.microserver+'/getBDMTasks/';
+//		$.ajax
+//		({
+//		  type: "POST",
+//		  url: url,
+//		  data: postdata,
+//			headers: {
+//				'Content-Type': 'application/json'
+//			},
+//		  success: function (data, textStatus, xhr){
+//			console.log('backend call done'+xhr.status+textStatus);
+//			if (xhr.status=='200'){
+//				$scope.tasks = data;
+//				
+//				console.log($scope.tasks);
+//		  	}
+//		  }
+//		});
+	}
+	
+	$scope.runTask = function(task) {
+		alert(task);
+		
+		 var httpRequest = $http.get('http://'+settings_vector.microserver+'/runBDMTask/'+task.task).success(function(data, status) {
+	        	console.log('it works');
+	        });
+		
+	}
+	
+    
+    $scope.rowForTask = function(task){
+        return task;
+    };
+
+}
+
+function checkBackend(){
+	var urlbe = 'http://'+settings_vector.microserver+'/status/';
+	console.log('new call');
+	$.ajax
+	({
+	  type: "GET",
+	  url: urlbe,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+	  success: function (data, textStatus, xhr){
+		console.log('backend call done'+xhr.status+textStatus);
+		if (xhr.status=='200'){
+			document.getElementById('backend').innerHTML = "On";
+	  	}
+	  }
+	});
+	
+	
+}
+
 
 function updateUI(info) {
 		
@@ -104,6 +237,9 @@ function updateUI(info) {
 	  clearUI();
 	  return;
 	}
+	
+	checkBackend();
+	
 	
 	document.getElementById('subtitle').innerHTML = info.instanceInfo.gwid;
 	

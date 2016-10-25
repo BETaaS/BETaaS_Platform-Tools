@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.betaas.net.sf.wsag4j</groupId>
 		<artifactId>wsag4j-types</artifactId>
-		<version>2.1-release</version>
+		<version>3.0.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>wsag4j-common-types</artifactId>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>eu.betaas.net.sf.wsag4j</groupId>
 			<artifactId>wsag4j-agreement-types</artifactId>
-			<version>2.1-release</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

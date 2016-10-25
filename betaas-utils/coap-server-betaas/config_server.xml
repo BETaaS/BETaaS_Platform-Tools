@@ -1,4 +1,9 @@
 <Resources>
+	<PIRResource deviceID="pir0" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
+	protocol="coap"
+	type="presence0" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 
+	floor="0" locationKeyword="hall" LocationIdentifier="1"
+	ComputationalCost="0.001" BatteryCost="0.1" measurement="false"></PIRResource>
 	<PIRResource deviceID="pir1" output="1" digital="1" maximumResponseTime="1" memoryStatus="50" batteryLevel="100"
 	protocol="coap"
 	type="presence1" unit="bool" environment="0" latitude="40" longitude="10" altitude="7" 

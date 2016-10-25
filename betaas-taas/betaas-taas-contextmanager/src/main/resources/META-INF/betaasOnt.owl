@@ -1,1268 +1,575 @@
-<?xml version="1.0"?>
-
-
-<!DOCTYPE rdf:RDF [
-    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-    <!ENTITY swrl "http://www.w3.org/2003/11/swrl#" >
-    <!ENTITY owl2 "http://www.w3.org/2006/12/owl2#" >
-    <!ENTITY swrlx "http://www.w3.org/2003/11/swrlx#" >
-    <!ENTITY swrlb "http://www.w3.org/2003/11/swrlb#" >
-    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY skos "http://www.w3.org/2004/02/skos/core#" >
-    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-]>
-
-
-<rdf:RDF xmlns="http://www.betaas.eu/2013/betaasOnt#"
-     xml:base="http://www.betaas.eu/2013/betaasOnt"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
-     xmlns:swrlx="http://www.w3.org/2003/11/swrlx#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:owl2="http://www.w3.org/2006/12/owl2#"
-     xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-    <owl:Ontology rdf:about="http://www.betaas.eu/2013/betaasOnt"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Annotation properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#altLabel -->
-
-    <owl:AnnotationProperty rdf:about="&skos;altLabel"/>
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#definition -->
-
-    <owl:AnnotationProperty rdf:about="&skos;definition"/>
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#prefLabel -->
-
-    <owl:AnnotationProperty rdf:about="&skos;prefLabel"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Datatypes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.w3.org/1999/02/22-rdf-syntax-ns#text -->
-
-    <rdfs:Datatype rdf:about="&rdf;text"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Object Properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#closeMatch -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#closeMatch">
-        <rdfs:subPropertyOf rdf:resource="&owl;topObjectProperty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#narrower -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#narrower"/>
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#broader -->
-
-    <owl:ObjectProperty rdf:about="&skos;broader"/>
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#exactMatch -->
-
-    <owl:ObjectProperty rdf:about="&skos;exactMatch"/>
-    
-
-
-    <!-- http://www.w3.org/2004/02/skos/core#narrower -->
-
-    <owl:ObjectProperty rdf:about="&skos;narrower"/>
-    
-
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#featureOfInterest -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#featureOfInterest">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasFloor -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasFloor">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Building"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasHwProperties -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasHwProperties">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasLocation -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasLocation">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasPoint -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasPoint">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasRoom -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasRoom">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Room"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasService -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasService">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#hasUnit -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#hasUnit">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#UnitOfMeasure"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#isInBuilding -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#isInBuilding">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Building"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#isInFloor -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#isInFloor">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Room"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#nearTo -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#nearTo"/>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#observedBy -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#observedBy"/>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#observedProperty -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#observedProperty">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#observes -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#observes">
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#onPlatform -->
-
-    <owl:ObjectProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#onPlatform">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Data properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#active -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#active">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="&xsd;boolean"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#altitude -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#altitude">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
-        <rdfs:range rdf:resource="&xsd;float"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#battery_cost -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#battery_cost">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#battery_level -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#battery_level">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#computational_cost -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#computational_cost">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#connection_description -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#connection_description">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#deviceID -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#deviceID">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#digital -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#digital">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#environment -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#environment">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#latitude -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#latitude">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
-        <rdfs:range rdf:resource="&xsd;float"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#location_identifier -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#location_identifier"/>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#location_keyword -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#location_keyword"/>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#longitude -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#longitude">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
-        <rdfs:range rdf:resource="&xsd;float"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#maximum_response_time -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#maximum_response_time">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#measurement -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#measurement">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#memory_available -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#memory_available">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#observation_result_time -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#observation_result_time">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
-        <rdfs:range rdf:resource="&xsd;dateTime"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#output -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#output">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#subscription -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#subscription">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#thingID -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#thingID">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#thingserviceID -->
-
-    <owl:DatatypeProperty rdf:about="http://www.betaas.eu/2013/betaasOnt#thingserviceID">
-        <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    <!-- http://www.w3.org/2004/02/skos/core#Concept -->
-
-    <owl:Class rdf:about="&skos;Concept"/>    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#AbstractEntity -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#AbstractEntity"/>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Actuator -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Actuator">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#ActuatorService -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#ActuatorService">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Area -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Area">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
-        <rdfs:comment xml:lang="en">Named area.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#AttendanceSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#AttendanceSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Building -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Building">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Device -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Device">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
-        <rdfs:comment xml:lang="en">Device that converts a signal in one form of energy to another form of energy.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-        <rdfs:comment xml:lang="en">Abstraction of (observable) real world phenomena (thing, person, event, etc)</rdfs:comment>
-        <rdfs:seeAlso xml:lang="en">http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Floor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Floor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#GeographicalPlace -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#GeographicalPlace">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#GeographicalPoint -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#GlowSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#GlowSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#HumiditySensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#HumiditySensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#HwProperties -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#HwProperties">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
-        <rdfs:seeAlso xml:lang="en">Hardware description: http://www.fipa.org/specs/fipa00091/PC00091A.html#_Toc511707121</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#LightSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#LightSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#LocationSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#LocationSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Observation -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Observation">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#observedProperty"/>
-                <owl:allValuesFrom rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#featureOfInterest"/>
-                <owl:allValuesFrom rdf:resource="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#observedProperty"/>
-                <owl:onClass rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#observedBy"/>
-                <owl:onClass rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#observedBy"/>
-                <owl:allValuesFrom rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.betaas.eu/2013/betaasOnt#featureOfInterest"/>
-                <owl:onClass rdf:resource="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:comment rdf:datatype="&rdf;text">Simplified version of SSN Observation - result of sensing a property value at particular time.</rdfs:comment>
-        <rdfs:seeAlso rdf:datatype="&rdf;text">http://purl.oclc.org/NET/ssnx/ssn#Observation</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#PhysicalEntity -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#PhysicalPlace -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-        <rdfs:seeAlso xml:lang="en">http://www.loa-cnr.it/ontologies/DUL.owl#PhysicalPlace</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#PhysicalService -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalService">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Platform -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Platform">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#PresenceSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#PresenceSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Property -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Property">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue"/>
-        <rdfs:comment xml:lang="en">Observable quality (intrinsic aspect) of a FeatureOfInterest. Its subclasses model domain-specific porperties. Their instances link a sensor with target (FeatureOfInteres) being observed.</rdfs:comment>
-        <rdfs:seeAlso xml:lang="en">http://purl.oclc.org/NET/ssnx/ssn#property</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#QuantifiedValue -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#AbstractEntity"/>
-        <rdfs:comment xml:lang="en">Superclass of measured, quantified values.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Room -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Room">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#Sensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#Sensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#SensorService -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#SensorService">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#TemperatureSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#TemperatureSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#TrafficSensor -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#TrafficSensor">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#UnitOfMeasure -->
-
-    <owl:Class rdf:about="http://www.betaas.eu/2013/betaasOnt#UnitOfMeasure">
-        <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#AbstractEntity"/>
-        <rdfs:comment xml:lang="en">Superclass of measurement units. Units are instances of this or its more specific subclasses.</rdfs:comment>
-        <rdfs:seeAlso xml:lang="en">http://www.loa.istc.cnr.it/ontologies/DUL.owl#UnitOfMeasure</rdfs:seeAlso>
-    </owl:Class>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Individuals
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#degrees -->
-
-    <owl:Thing rdf:about="http://www.betaas.eu/2013/betaasOnt#degrees">
-        <rdf:type rdf:resource="&owl;NamedIndividual"/>
-    </owl:Thing>
-    
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#humidity -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#humidity">
-        <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535643</skos:altLabel>
-        <skos:definition xml:lang="en">Wetness in the atmosphere</skos:definition>
-        <skos:prefLabel xml:lang="en">humidity</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#true -->
-
-    <owl:Thing rdf:about="http://www.betaas.eu/2013/betaasOnt#true">
-        <rdf:type rdf:resource="&owl;NamedIndividual"/>
-    </owl:Thing>
-
-
-
-
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#alarm -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#alarm">
-	<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">00872414</skos:altLabel>
-        <skos:definition xml:lang="en">Warn or arouse to a sense of danger or call to a state of preparedness</skos:definition>
-        <skos:prefLabel xml:lang="en">alarm</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;alert"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#alert 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#alert">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">00872414</skos:altLabel>
-        <skos:definition xml:lang="en">Warn or arouse to a sense of danger or call to a state of preparedness</skos:definition>
-        <skos:prefLabel xml:lang="en">alert</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#attendance 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#attendance">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">01233397</skos:altLabel>
-        <skos:definition xml:lang="en">The act of being present (at a meeting or event etc.)</skos:definition>
-        <skos:prefLabel xml:lang="en">attendance</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#brightness 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#brightness">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">05018103</skos:altLabel>
-        <skos:definition xml:lang="en">The quality of being luminous; emitting or reflecting light</skos:definition>
-        <skos:prefLabel xml:lang="en">brightness</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#building -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#building">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">02913152</skos:altLabel>
-        <skos:definition xml:lang="en">a structure that has a roof and walls and stands more or less permanently in one place; there was a three-story building on the corner; it was an imposing edifice</skos:definition>
-        <skos:prefLabel xml:lang="en">building</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#circulation 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#circulation">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">07279453</skos:altLabel>
-        <skos:definition xml:lang="en">The amount of activity over a communication system during a given period of time</skos:definition>
-        <skos:prefLabel xml:lang="en">traffic</skos:prefLabel>
-        <skos:narrower rdf:resource="&betaasOnt;traffic"/> 
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#city -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#city">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">08524735</skos:altLabel>
-        <skos:definition xml:lang="en">a large and densely populated urban area; may include several independent administrative districts; Ancient Troy was a great city</skos:definition>
-        <skos:prefLabel xml:lang="en">city</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#connect -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#connect">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">01421122</skos:altLabel>
-        <skos:definition xml:lang="en">Plug into an outlet</skos:definition>
-        <skos:prefLabel xml:lang="en">connect</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;plug"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#damp 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#damp">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535905</skos:altLabel>
-        <skos:definition xml:lang="en">A slight wetness</skos:definition>
-        <skos:prefLabel xml:lang="en">damp</skos:prefLabel>
-        <skos:exactMatch rdf:resource="&betaasOnt;moistness"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#flash 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#flash">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">02159890</skos:altLabel>
-        <skos:definition xml:lang="en">Gleam or glow intermittently</skos:definition>
-        <skos:prefLabel xml:lang="en">flash</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#glow 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#glow">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">05018785</skos:altLabel>
-        <skos:definition xml:lang="en">Light from nonthermal sources</skos:definition>
-        <skos:prefLabel xml:lang="en">glow</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#gps 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#gps">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">03440216</skos:altLabel>
-        <skos:definition xml:lang="en">A determination of the place where something is</skos:definition>
-        <skos:prefLabel xml:lang="en">gps</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#greenhouse -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#greenhouse">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">03457902</skos:altLabel>
-        <skos:definition xml:lang="en">a building with glass walls and roof; for the cultivation and exhibition of plants under controlled conditions</skos:definition>
-        <skos:prefLabel xml:lang="en">greenhouse</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#home -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#home">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">03259505</skos:altLabel>
-        <skos:prefLabel xml:lang="en">home</skos:prefLabel>
-        <skos:definition xml:lang="en">housing that someone is living in; he built a modest dwelling near the pond; they raise money to provide homes for the homeless</skos:definition>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#house -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#house">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">03545150</skos:altLabel>
-        <skos:definition xml:lang="en">a building in which something is sheltered or located; they had a large carriage house</skos:definition>
-        <skos:prefLabel xml:lang="en">house</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#humidity -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#humidity">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535643</skos:altLabel>
-        <skos:definition xml:lang="en">Wetness in the atmosphere</skos:definition>
-        <skos:prefLabel xml:lang="en">humidity</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;damp"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;moistness"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;moisture"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;wet"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;wetness"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#irrigate -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#irrigate">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">00228236</skos:altLabel>
-        <skos:definition xml:lang="en">Supply with water, as with channels or ditches or streams</skos:definition>
-        <skos:prefLabel xml:lang="en">irrigate</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;watering"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#light -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#light">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">05018103</skos:altLabel>
-        <skos:definition xml:lang="en">The quality of being luminous; emitting or reflecting light</skos:definition>
-        <skos:prefLabel xml:lang="en">light</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;brightness"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;glow"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;luminescence"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;luminosity"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#localization 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#localization">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="es">00155487</skos:altLabel>
-        <skos:definition xml:lang="es">A determination of the place where something is</skos:definition>
-        <skos:prefLabel xml:lang="es">localization</skos:prefLabel>
-        <skos:broader rdf:resource="&betaasOnt;location"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#location -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#location">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">00155487</skos:altLabel>
-        <skos:definition xml:lang="en">A determination of the place where something is</skos:definition>
-        <skos:prefLabel xml:lang="en">location</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;gps"/> -->
-        <!-- <skos:narrower rdf:resource="&betaasOnt;localization"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#luminescence 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#luminescence">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">05018785</skos:altLabel>
-        <skos:definition xml:lang="en">Light from nonthermal sources</skos:definition>
-        <skos:prefLabel xml:lang="en">luminescence</skos:prefLabel>
-        <skos:exactMatch rdf:resource="&betaasOnt;glow"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#luminosity 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#luminosity">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">05018103</skos:altLabel>
-        <skos:definition xml:lang="en">The quality of being luminous</skos:definition>
-        <skos:prefLabel xml:lang="en">luminosity</skos:prefLabel>
-        <skos:exactMatch rdf:resource="&betaasOnt;brightness"/>
-        <closeMatch rdf:resource="&betaasOnt;luminescence"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#moistness 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#moistness">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535905</skos:altLabel>
-        <skos:definition xml:lang="en">A slight wetness</skos:definition>
-        <skos:prefLabel xml:lang="en">moistness</skos:prefLabel>
-        <skos:exactMatch rdf:resource="&betaasOnt;damp"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#moisture 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#moisture">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535431</skos:altLabel>
-        <skos:definition xml:lang="en">Wetness caused by water, drops of wet gleamed on the window</skos:definition>
-        <skos:prefLabel xml:lang="en">moisture</skos:prefLabel>
-        <skos:exactMatch rdf:resource="&betaasOnt;wet"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#plug 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#plug">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">01422886</skos:altLabel>
-        <skos:definition xml:lang="en">Fill or close tightly with or as if with a plug</skos:definition>
-        <skos:prefLabel xml:lang="en">plug</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#presence -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#presence">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">01233802</skos:altLabel>
-        <skos:definition xml:lang="en">The act of being present</skos:definition>
-        <skos:prefLabel xml:lang="en">presence</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;attendance"/> -->
-    </owl:NamedIndividual>
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#ring 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#ring">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">02183787</skos:altLabel>
-        <skos:definition xml:lang="en">Ring or echo with sound</skos:definition>
-        <skos:prefLabel xml:lang="en">ring</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#road -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#road">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">04096066</skos:altLabel>
-        <skos:definition xml:lang="en">an open way (generally public) for travel or transportation</skos:definition>
-        <skos:prefLabel xml:lang="en">road</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#room -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#room">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">04105893</skos:altLabel>
-        <skos:definition xml:lang="en">an area within a building enclosed by walls and floor and ceiling; the rooms were very small but they had a nice view</skos:definition>
-        <skos:prefLabel xml:lang="en">room</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#shine 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#shine">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">02162947</skos:altLabel>
-        <skos:definition xml:lang="en">Be shiny</skos:definition>
-        <skos:prefLabel xml:lang="en">shine</skos:prefLabel>
-        <skos:narrower rdf:resource="&betaasOnt;flash"/>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#sound -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#sound">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">02180529</skos:altLabel>
-        <skos:definition xml:lang="en">Announce by means of a sound</skos:definition>
-        <skos:prefLabel xml:lang="en">sound</skos:prefLabel>
-        <!-- <skos:narrower rdf:resource="&betaasOnt;ring"/> -->
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#street -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#street">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">04334599</skos:altLabel>
-        <skos:definition xml:lang="en">a thoroughfare (usually including sidewalks) that is lined with buildings; they walked the streets of the small town; he lives on Nassau Street</skos:definition>
-        <skos:prefLabel xml:lang="en">street</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#structure -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#structure">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">04341686</skos:altLabel>
-        <skos:definition xml:lang="en">a thing constructed; a complex entity constructed of many parts; the structure consisted of a series of arches; she wore her hair in an amazing construction of whirls and ribbons</skos:definition>
-        <skos:prefLabel xml:lang="en">structure</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#traffic -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#traffic">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">07312221</skos:altLabel>
-        <skos:definition xml:lang="en">Movement through a circuit</skos:definition>
-        <skos:prefLabel xml:lang="en">traffic</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#urban_area -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#urban_area">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">08675967</skos:altLabel>
-        <skos:definition xml:lang="en">a geographical area constituting a city or town</skos:definition>
-        <skos:prefLabel xml:lang="en">urban_area</skos:prefLabel>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#watering 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#watering">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">00228236</skos:altLabel>
-        <skos:definition xml:lang="en">Supply with water, as with channels or ditches or streams</skos:definition>
-        <skos:prefLabel xml:lang="en">watering</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#wet 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#wet">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14535431</skos:altLabel>
-        <skos:definition xml:lang="en">Wetness caused by water</skos:definition>
-        <skos:prefLabel xml:lang="en">wet</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#wetness 
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#wetness">
-<rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">14534696</skos:altLabel>
-        <skos:definition xml:lang="en">The condition of containing or being covered by a liquid (especially water)</skos:definition>
-        <skos:prefLabel xml:lang="en">wetness</skos:prefLabel>
-    </owl:NamedIndividual> -->
-    
-
-
-    <!-- http://www.betaas.eu/2013/betaasOnt#yard -->
-
-    <owl:NamedIndividual rdf:about="http://www.betaas.eu/2013/betaasOnt#yard">
-        <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:altLabel xml:lang="en">04610879</skos:altLabel>
-        <skos:definition xml:lang="en">a yard or lawn adjoining a house</skos:definition>
-        <skos:prefLabel xml:lang="en">yard</skos:prefLabel>
-    </owl:NamedIndividual>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:swrlx="http://www.w3.org/2003/11/swrlx#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.betaas.eu/2013/betaasOnt#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+    xmlns:owl2="http://www.w3.org/2006/12/owl2#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#isInFloor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Room"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#presence">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">01233802</skos:altLabel>
+    <skos:definition xml:lang="en">The act of being present</skos:definition>
+    <skos:prefLabel xml:lang="en">presence</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#altLabel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#computational_cost">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#thingID">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Sensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Area">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
+    <rdfs:comment xml:lang="en">Named area.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#greenhouse">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">03457902</skos:altLabel>
+    <skos:definition xml:lang="en">a building with glass walls and roof; for the cultivation and exhibition of plants under controlled conditions</skos:definition>
+    <skos:prefLabel xml:lang="en">greenhouse</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#narrower">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Room">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Floor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#battery_cost">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#environment">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#battery_level">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#floor">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel>03365592</skos:altLabel>
+    <skos:definition>thesurface</skos:definition>
+    <skos:prefLabel>floor</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#connection_description">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#subscription">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#HumiditySensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#IrrigateSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Actuator"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#PollutionSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#ContaminationSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#TemperatureSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#street">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04334599</skos:altLabel>
+    <skos:definition xml:lang="en">a thoroughfare (usually including sidewalks) that is lined with buildings; they walked the streets of the small town; he lives on Nassau Street</skos:definition>
+    <skos:prefLabel xml:lang="en">street</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#TrafficSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#active">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#definition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#text">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#memory_available">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#HwProperties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
+    <rdfs:seeAlso xml:lang="en">Hardware description: http://www.fipa.org/specs/fipa00091/PC00091A.html#_Toc511707121</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#degrees">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#sound">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">02180529</skos:altLabel>
+    <skos:definition xml:lang="en">Announce by means of a sound</skos:definition>
+    <skos:prefLabel xml:lang="en">sound</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#closeMatch">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+  </rdf:Description>
+<!--  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#household">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel>08078020</skos:altLabel>
+    <skos:definition>a social unit living together</skos:definition>
+    <skos:prefLabel>household</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description> -->
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Platform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#narrower">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Building">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#observedBy">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Observation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#text">Simplified version of SSN Observation - result of sensing a property value at particular time.</rdfs:comment>
+    <rdfs:seeAlso rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#text">http://purl.oclc.org/NET/ssnx/ssn#Observation</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#connect">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">01421122</skos:altLabel>
+    <skos:definition xml:lang="en">Plug into an outlet</skos:definition>
+    <skos:prefLabel xml:lang="en">connect</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#LightSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Actuator">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#nearTo">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasService">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#irrigate">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">00228236</skos:altLabel>
+    <skos:definition xml:lang="en">Supply with water, as with channels or ditches or streams</skos:definition>
+    <skos:prefLabel xml:lang="en">irrigate</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#isInBuilding">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Building"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasPoint">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+    <rdfs:comment xml:lang="en">Abstraction of (observable) real world phenomena (thing, person, event, etc)</rdfs:comment>
+    <rdfs:seeAlso xml:lang="en">http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#broader">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasLocation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#onPlatform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#true">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#light">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">05018103</skos:altLabel>
+    <skos:definition xml:lang="en">The quality of being luminous; emitting or reflecting light</skos:definition>
+    <skos:prefLabel xml:lang="en">light</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#SensorService">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#thingserviceID">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#location">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">00155487</skos:altLabel>
+    <skos:definition xml:lang="en">A determination of the place where something is</skos:definition>
+    <skos:prefLabel xml:lang="en">location</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#latitude">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#humidity">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">14535643</skos:altLabel>
+    <skos:definition xml:lang="en">Wetness in the atmosphere</skos:definition>
+    <skos:prefLabel xml:lang="en">humidity</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#temperature">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel>05011790</skos:altLabel>
+    <skos:definition>the degree of hotness or coldness of a body or environment</skos:definition>
+    <skos:prefLabel>temperature</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#pollution">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel>00276987</skos:altLabel>
+    <skos:definition>the act of contaminating or polluting</skos:definition>
+    <skos:prefLabel>pollution</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#contamination">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel>14487731</skos:altLabel>
+    <skos:definition>the act of contaminating or polluting</skos:definition>
+    <skos:prefLabel>contamination</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#traffic">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">07312221</skos:altLabel>
+    <skos:definition xml:lang="en">Movement through a circuit</skos:definition>
+    <skos:prefLabel xml:lang="en">traffic</skos:prefLabel>
+    <skos:narrower>http://www.betaas.eu/2013/betaasOnt#Sensor</skos:narrower>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#house">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">03545150</skos:altLabel>
+    <skos:definition xml:lang="en">a building in which something is sheltered or located; they had a large carriage house</skos:definition>
+    <skos:prefLabel xml:lang="en">house</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#location_keyword">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#ActuatorService">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalService"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#home">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">03259505</skos:altLabel>
+    <skos:definition xml:lang="en">housing that someone is living in; he built a modest dwelling near the pond; they raise money to provide homes for the homeless</skos:definition>
+    <skos:prefLabel xml:lang="en">home</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Device">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
+    <rdfs:comment xml:lang="en">Device that converts a signal in one form of energy to another form of energy.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#observes">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#road">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04096066</skos:altLabel>
+    <skos:definition xml:lang="en">an open way (generally public) for travel or transportation</skos:definition>
+    <skos:prefLabel xml:lang="en">road</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#city">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">08524735</skos:altLabel>
+    <skos:definition xml:lang="en">a large and densely populated urban area; may include several independent administrative districts; Ancient Troy was a great city</skos:definition>
+    <skos:prefLabel xml:lang="en">city</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#building">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">02913152</skos:altLabel>
+    <skos:definition xml:lang="en">a structure that has a roof and walls and stands more or less permanently in one place; there was a three-story building on the corner; it was an imposing edifice</skos:definition>
+    <skos:prefLabel xml:lang="en">building</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#featureOfInterest">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#FeatureOfInterest"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#TemperatureSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#alarm">
+    <rdf:type rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">00872414</skos:altLabel>
+    <skos:definition xml:lang="en">Warn or arouse to a sense of danger or call to a state of preparedness</skos:definition>
+    <skos:prefLabel xml:lang="en">alarm</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#digital">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#exactMatch">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#longitude">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasFloor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Building"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#AbstractEntity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#observedProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Property"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#Concept">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#PresenceSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#AttendanceSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#prefLabel">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#Property">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue"/>
+    <rdfs:comment xml:lang="en">Observable quality (intrinsic aspect) of a FeatureOfInterest. Its subclasses model domain-specific porperties. Their instances link a sensor with target (FeatureOfInteres) being observed.</rdfs:comment>
+    <rdfs:seeAlso xml:lang="en">http://purl.oclc.org/NET/ssnx/ssn#property</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#room">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04105893</skos:altLabel>
+    <skos:definition xml:lang="en">an area within a building enclosed by walls and floor and ceiling; the rooms were very small but they had a nice view</skos:definition>
+    <skos:prefLabel xml:lang="en">room</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#QuantifiedValue">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#AbstractEntity"/>
+    <rdfs:comment xml:lang="en">Superclass of measured, quantified values.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#urban_area">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">08675967</skos:altLabel>
+    <skos:definition xml:lang="en">a geographical area constituting a city or town</skos:definition>
+    <skos:prefLabel xml:lang="en">urban_area</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalService">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#altitude">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#GeographicalPoint"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#GeographicalPlace">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasRoom">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#Room"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Floor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#PhysicalPlace">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#PhysicalEntity"/>
+    <rdfs:seeAlso xml:lang="en">http://www.loa-cnr.it/ontologies/DUL.owl#PhysicalPlace</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasHwProperties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#HwProperties"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#maximum_response_time">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#measurement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#UnitOfMeasure">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#AbstractEntity"/>
+    <rdfs:comment xml:lang="en">Superclass of measurement units. Units are instances of this or its more specific subclasses.</rdfs:comment>
+    <rdfs:seeAlso xml:lang="en">http://www.loa.istc.cnr.it/ontologies/DUL.owl#UnitOfMeasure</rdfs:seeAlso>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#output">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Device"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#yard">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04610879</skos:altLabel>
+    <skos:definition xml:lang="en">a yard or lawn adjoining a house</skos:definition>
+    <skos:prefLabel xml:lang="en">yard</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#deviceID">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Platform"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#hasUnit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.betaas.eu/2013/betaasOnt#UnitOfMeasure"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#LocationSensor">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.betaas.eu/2013/betaasOnt#Sensor"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#location_identifier">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#observation_result_time">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:domain rdf:resource="http://www.betaas.eu/2013/betaasOnt#Observation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#structure">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04341686</skos:altLabel>
+    <skos:definition xml:lang="en">a thing constructed; a complex entity constructed of many parts; the structure consisted of a series of arches; she wore her hair in an amazing construction of whirls and ribbons</skos:definition>
+    <skos:prefLabel xml:lang="en">structure</skos:prefLabel>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.betaas.eu/2013/betaasOnt#streetlight">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <skos:altLabel xml:lang="en">04335886</skos:altLabel>
+    <skos:definition xml:lang="en">a lamp supported on a lamppost; for illuminating a street</skos:definition>
+    <skos:prefLabel xml:lang="en">streetlight</skos:prefLabel>
+  </rdf:Description>
 </rdf:RDF>
-
-
-<!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
-

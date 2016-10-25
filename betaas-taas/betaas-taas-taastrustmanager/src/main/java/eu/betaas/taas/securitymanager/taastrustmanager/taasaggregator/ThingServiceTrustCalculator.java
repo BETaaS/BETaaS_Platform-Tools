@@ -27,6 +27,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import eu.betaas.taas.bigdatamanager.database.hibernate.data.ThingInformation;
+import eu.betaas.taas.securitymanager.taastrustmanager.messaging.MessageManager;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.TaaSBDMClient;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.TaaSCMClient;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.ThingLocation;
@@ -34,9 +35,11 @@ import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.ThingTrust;
 import eu.betaas.taas.securitymanager.taastrustmanager.taasproxy.ThingTrustData;
 import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.BatteryCalculator;
 import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.DataStabilityCalculator;
+import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.DependabilityCalculator;
 import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.QoSFulfillmentCalculator;
 import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.ScalabilityCalculator;
 import eu.betaas.taas.securitymanager.taastrustmanager.taastrustcalculator.SecurityMechanismsCalculator;
+
 
 public class ThingServiceTrustCalculator 
 {
@@ -48,6 +51,7 @@ public class ThingServiceTrustCalculator
 	private DataStabilityCalculator dataCalculator;
 	private ScalabilityCalculator scalabilityCalculator;
 	private SecurityMechanismsCalculator securityCalculator;
+	private DependabilityCalculator dependabilityCalculator;
 	
 	public ThingServiceTrustCalculator ()
 	{
@@ -73,7 +77,8 @@ public class ThingServiceTrustCalculator
 		securityCalculator = new SecurityMechanismsCalculator();		
 		batteryCalculator = new BatteryCalculator();		
 		dataCalculator = new DataStabilityCalculator();		
-		scalabilityCalculator = new ScalabilityCalculator();		
+		scalabilityCalculator = new ScalabilityCalculator();
+		dependabilityCalculator = new DependabilityCalculator ();
 		logger.debug("Calculators Ready! Starting calculations...");
 		
 		// Step 2 -> Calculate Security Mechanisms
@@ -85,7 +90,9 @@ public class ThingServiceTrustCalculator
 		logger.debug("QoS parameter calculated! -> " + qos);
 		
 		// Step 4 -> Calculate Dependability
-		float dependability = 2.5f;
+		dependabilityCalculator.setPreOperationData(basicData);
+		//float dependability = 2.5f;
+		float dependability = dependabilityCalculator.calculateTrustAspect(thingServiceId);
 		logger.debug("Dependability parameter calculated! -> " + dependability);
 		
 		// Step 5 -> Calculate Scalability
@@ -120,6 +127,16 @@ public class ThingServiceTrustCalculator
 		
 		// Step 10 -> Store generated information
 		myBDMClient.storeTrustData(fullTrustResult);
+		
+		// Step 11 -> Report to the monitoring panel
+		MessageManager.instance().monitoringPublish("Trust calculated for thing service " + thingServiceId);
+		MessageManager.instance().monitoringPublish("Security aspect: " + security);
+		MessageManager.instance().monitoringPublish("QoS aspect: " + qos);
+		MessageManager.instance().monitoringPublish("Dependability aspect: " + dependability);
+		MessageManager.instance().monitoringPublish("Scalability aspect: " + scalability);
+		MessageManager.instance().monitoringPublish("Battery aspect: " + battery);
+		MessageManager.instance().monitoringPublish("Data Stability aspect: " + data);
+		MessageManager.instance().monitoringPublish("Global trust: " + result);
 		
 		return fullTrustResult;
 	}
@@ -166,7 +183,9 @@ public class ThingServiceTrustCalculator
 			for (int j=0; j<equivalentsList.size(); j++)
 			{
 				// Retrieve things ids, since they are the useful ones
-				basicData.addEquivalent(myCM.retrieveThingIdentifier(equivalentsList.get(j)));
+				String equivalentId = myCM.retrieveThingIdentifier(equivalentsList.get(j));
+				logger.debug("Equivalent Thing Service added: " + equivalentId);
+				basicData.addEquivalent(equivalentId);
 			}	
 		}			
 		logger.debug ("Equivalent Thing Services received: " + equivalentsList.size());

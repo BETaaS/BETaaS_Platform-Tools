@@ -24,7 +24,6 @@ public interface AnalyticTask {
 
 	public TaskInfo getTaskInfo();
 	
-	// return a task id to retrieve data in case is asyncronous
 	public void runTask(HashMap<String,String> input);
 	
 	public TaskData getTaskData(String taskId);

@@ -120,6 +120,6 @@ public class AppRegistryRow {
 	public String mCredentials;
 	
 	/** It is the address at which the application receives data from
-	 * the SM (e.g. measurements, install notifications, etc) */
+	 * the SM (e.g. measurements, install notifications, etc) through a REST interface */
 	public String mNotificationAddress;
 }

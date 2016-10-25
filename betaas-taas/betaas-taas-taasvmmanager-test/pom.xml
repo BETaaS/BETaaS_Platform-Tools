@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ 
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>eu.betaas</groupId>
+    <artifactId>betaas-taas</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+  </parent>
+
+  <groupId>eu.betaas</groupId>
+  <artifactId>betaas-taas-taasvmmanager-test</artifactId>
+  <version>3.0.2-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>BETaaS TaaS VM Manager REST interface for testing</name>
+  <description>BETaaS TaaS VM Manager Test APÑ:qI</description>
+
+  <properties>
+  <cxf.version>2.7.7</cxf.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+  	<dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>			
+	</dependency>
+	
+	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.2.4</version>
+ 	</dependency>
+ 	
+ 	<dependency>
+		<groupId>eu.betaas</groupId>
+		<artifactId>betaas-taas-vmmanager</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+	
+	<dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+           	<Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+	        <Bundle-Name>${project.name}</Bundle-Name> 
+			<Import-Package>
+          		org.osgi.framework.*, 
+				org.osgi.util.tracker.*, 
+          		org.apache.log4j,
+                org.osgi.service.blueprint,
+                com.google.gson,
+                eu.betaas.taas.taasvmmanager.api,
+                eu.betaas.taas.taasvmmanager.api.datamodel,
+				*;resolution:=optional
+            </Import-Package>
+	    	<Export-Package>
+            </Export-Package>           
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

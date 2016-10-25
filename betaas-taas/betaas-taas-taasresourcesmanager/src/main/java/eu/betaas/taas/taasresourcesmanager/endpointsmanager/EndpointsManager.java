@@ -155,59 +155,6 @@ public class EndpointsManager
 		AdaptTAClient taClient = AdaptTAClient.instance();
 		return taClient.setThingData(thingId, theValue);
 	}
-			
-	public boolean registerSubscription (String idThingService, String idApplication, int period, boolean realTime, String gateway)
-	{
-		Resource theResource = myResCatalog.getResource(idThingService);
-		
-		// If the resource is not available, give null as result
-		if (theResource==null)
-		{
-			logger.error("Thing to be invoked was not found!! " + idThingService);
-			return false;
-		}
-		
-		// Retrieve the information about this resource		
-		String thingId = theResource.getPhysicalResourceId();
-		String location = theResource.getGatewayId();		
-				
-		logger.info("Subscribing to thing with ID: " + thingId);
-		boolean subscriptionResult = false;
-		
-		//Create Subscription object and register it
-		Subscription mySubs = new Subscription (idApplication, gateway, idThingService, period);
-		PushManager subsManager = PushManager.instance(localGateway);
-		if (!gateway.equalsIgnoreCase(localGateway))
-		{
-			//When receiving remote subscriptions, we need to guarantee the feature is available in the PushManager
-			subsManager.requestFeature(idApplication, "REMOTE");
-		}		
-		subsManager.addSubscription(mySubs, realTime);
-		
-		// Check thing location		
-		if (!location.equalsIgnoreCase("localhost"))
-		{
-			// Invoke the remote Gateway for subscribing
-			logger.info("The thing " + thingId + " is located at " + location + ". Subscribing remotely...");
-			
-			TaaSRMClient myRMCli = TaaSRMClient.instance(localGateway, "EndpointsManager");
-			subscriptionResult = myRMCli.remoteSubscription(idThingService, location, idApplication, period, realTime);					
-		}		
-		// Determine if it is real-time or non-real-time subscription		
-		else if (realTime)
-		{
-			AdaptTAClient taClient = AdaptTAClient.instance();
-			subscriptionResult = taClient.subscribeToThing(thingId, period);
-		}
-		else
-		{
-			// Note that the CM gets the Thing Service ID as parameter
-			TaaSCMClient cmClient = TaaSCMClient.instance(); 
-			subscriptionResult = cmClient.subscribeToThing(idThingService);
-		}		
-		return subscriptionResult;		
-	}
-	
 	
 	public JsonObject invokeServiceThings (String idFeatureService)
 	{
@@ -225,7 +172,7 @@ public class EndpointsManager
 				// First, we invoke QoS Manager, in order to know if the Thing Services lists must be updated				
 				ArrayList<String> thingServList = myQoSClient.registerServiceQoSPull(idFeatureService, currentFeature.getThingServices(), currentFeature.getEquivalents());
 				currentFeature.setThingServices(thingServList);
-				logger.debug("List of Thing Services updated with the QoS Manager!");
+				logger.debug("List of Thing Services updated with the QoS Manager!");	
 				ArrayList<SLACalculation> receivedSLAs = new ArrayList<SLACalculation>();
 				
 				// If info mode is PULL, we invoke the thing services
@@ -236,7 +183,7 @@ public class EndpointsManager
 					Iterator<String> invocations = thingServList.iterator();
 					
 					// We activate the SLA monitoring for the invocations
-					myQoSClient.activateSLAMonitoring(thingServList);					
+					//myQoSClient.activateSLAMonitoring(thingServList, idFeatureService); -> Moved later one by one
 					
 					// We start the invocations
 					while (invocations.hasNext())
@@ -247,6 +194,9 @@ public class EndpointsManager
 						
 						if (currentFeature.getType()==FeatureService.RTPULL)
 						{
+							// Activate SLA monitoring for the invocations
+							myQoSClient.activateSLAMonitoring(currentId, idFeatureService);
+							
 							// Invoke the Thing Service in Real-Time and put the result in the result structure	
 							ThingServiceResult received = invokeThingService(currentId, true);
 							logger.debug("Result: " + received.getMeasurement());				
@@ -258,7 +208,7 @@ public class EndpointsManager
 							if (currentSLA != null)
 							{
 								receivedSLAs.add(currentSLA);
-							}
+						}
 							
 						}
 						else
@@ -371,6 +321,61 @@ public class EndpointsManager
 		return false;	
 	}
 	
+	public boolean registerSubscription (String idThingService, String idFeature, int reqPeriod, boolean realTime, String gateway)
+	{
+		Resource theResource = myResCatalog.getResource(idThingService);
+		
+		// If the resource is not available, give null as result
+		if (theResource==null)
+		{
+			logger.error("Thing to be invoked was not found!! " + idThingService);
+			return false;
+		}
+		
+		// Retrieve the information about this resource	and recalculate period	
+		String thingId = theResource.getPhysicalResourceId();
+		String location = theResource.getGatewayId();
+		theResource.addFeature(idFeature, reqPeriod);		
+		int period = theResource.getCommonPeriod();
+				
+		logger.debug("New period requested: " + reqPeriod);
+		logger.info("Subscribing to thing with ID: " + thingId + " with period " + period);
+		boolean subscriptionResult = false;
+		
+		//Create Subscription object and register it
+		Subscription mySubs = new Subscription (idFeature, gateway, idThingService, period);
+		PushManager subsManager = PushManager.instance(localGateway);
+		if (!gateway.equalsIgnoreCase(localGateway))
+		{
+			//When receiving remote subscriptions, we need to guarantee the feature is available in the PushManager
+			subsManager.requestFeature(idFeature, "REMOTE");
+		}		
+		subsManager.addSubscription(mySubs, realTime);
+		
+		// Check thing location		
+		if (!location.equalsIgnoreCase("localhost"))
+		{
+			// Invoke the remote Gateway for subscribing
+			logger.info("The thing " + thingId + " is located at " + location + ". Subscribing remotely...");
+			
+			TaaSRMClient myRMCli = TaaSRMClient.instance(localGateway, "EndpointsManager");
+			subscriptionResult = myRMCli.remoteSubscription(idThingService, location, idFeature, period, realTime);					
+		}		
+		// Determine if it is real-time or non-real-time subscription		
+		else if (realTime)
+		{
+			AdaptTAClient taClient = AdaptTAClient.instance();
+			subscriptionResult = taClient.subscribeToThing(thingId, period);
+		}
+		else
+		{
+			// Note that the CM gets the Thing Service ID as parameter
+			TaaSCMClient cmClient = TaaSCMClient.instance(); 
+			subscriptionResult = cmClient.subscribeToThing(idThingService);
+		}		
+		return subscriptionResult;		
+	}
+	
 	public boolean subscribeFeatureService (String idFeatureService)
 	{
 		logger.info("Starting the process of subscription to " + idFeatureService + "...");
@@ -389,18 +394,32 @@ public class EndpointsManager
 				int featureType = currentFeature.getType();
 				if (featureType==FeatureService.RTPUSH || featureType==FeatureService.NRTPUSH)
 				{
+					// Retrieve the period to be used
+					int period = currentFeature.getPeriod();
+					
 					// In case of RT, first, we invoke QoS Manager, in order to know if the Thing Services lists must be updated
 					if (currentFeature.getType()==FeatureService.RTPUSH)
 					{				
 						logger.info("Real-Time Push requested. Invoking to the QoSManager...");
-						ArrayList<String> thingServList = myQoSClient.registerServiceQoSPush(idFeatureService, currentFeature.getThingServices(), currentFeature.getEquivalents());
-						currentFeature.setThingServices(thingServList);
-						logger.debug("List of Thing Services updated with the QoS Manager! " + thingServList.size() + " TSs to be used.");
-					}				
-					
-					// Retrieve the period and prepare list of thing services
-					// TODO it may change, if the period is calculated by the QoS Manager, instead of the ThingsAdaptor
-					int thePeriod = currentFeature.getPeriod();
+						ArrayList<String> mainQoSCandidates = new ArrayList<String> ();
+						ArrayList<ArrayList<String>> qosEquivalents = new ArrayList<ArrayList<String>>();
+						
+						for (int j=0; j<currentFeature.getThingServices().size(); j++)							
+						{
+							ArrayList<String> tempCandidate = new ArrayList<String>();
+							tempCandidate.add(currentFeature.getThingServices().get(j));
+							ArrayList<ArrayList<String>> tempEquivalents = new ArrayList<ArrayList<String>>();
+							tempEquivalents.add(currentFeature.getEquivalents().get(j));
+							ArrayList<String> thingServList = myQoSClient.registerServiceQoSPush(idFeatureService, tempCandidate, tempEquivalents, period);
+							mainQoSCandidates.add(thingServList.get(0));
+							qosEquivalents.add(thingServList);
+						}
+						
+						//ArrayList<String> thingServList = myQoSClient.registerServiceQoSPush(idFeatureService, currentFeature.getThingServices(), currentFeature.getEquivalents(), period);
+						currentFeature.setThingServices(mainQoSCandidates);
+						currentFeature.setEquivalentThingServices(qosEquivalents);
+						logger.debug("List of Thing Services updated with the QoS Manager! " + mainQoSCandidates.size() + " TSs to be used.");
+					}								
 					
 					// Clean previous feature subscriptions and subscribe for required Thing Services
 					PushManager.instance(localGateway).requestFeature(idFeatureService, currentFeature.getOperator());
@@ -414,13 +433,13 @@ public class EndpointsManager
 						if (currentFeature.getType()==FeatureService.RTPUSH)
 						{
 							// Prepare Real-Time subscription and register it	
-							registerSubscription(currentId, idFeatureService, thePeriod, true, "localhost");
+							registerSubscription(currentId, idFeatureService, period, true, "localhost");
 							logger.info("Real-Time subscription to " + currentId + " processed!");							
 						}
 						else
 						{
 							// Prepare Non Real-Time subscription and register it
-							registerSubscription(currentId, idFeatureService, thePeriod, false, "localhost");
+							registerSubscription(currentId, idFeatureService, period, false, "localhost");
 							logger.info("Non real-time subscription to " + currentId + " processed!");							
 						}						
 						
@@ -432,14 +451,102 @@ public class EndpointsManager
 					logger.error("Features in other mode should not be called in PUSH mode!!");
 					return false;
 				}
+				
+				return true;				
 			}
 		}
-		return true;
+		return false;
 	}
 	
-	public boolean unsubscribeFeature (String idFeatureService)
+	public boolean unregisterSubscription (String idThingService, String idFeature, boolean realTime)
 	{
-		//TODO detect when a thing service isn't local, so we can remove remote subscriptions as well
-		return PushManager.instance(localGateway).removeSubscription(idFeatureService);
+		Resource theResource = myResCatalog.getResource(idThingService);
+		
+		// If the resource is not available, give null as result
+		if (theResource==null)
+		{
+			logger.error("Thing to be unsubscribed was not found!! " + idThingService);
+			return false;
+		}
+		
+		// Retrieve the information about this resource	
+		String thingId = theResource.getPhysicalResourceId();
+		String location = theResource.getGatewayId();
+		
+		logger.info("Unsubscribing to thing with ID: " + thingId);
+		boolean unsubscriptionResult = true;
+				
+		// Check thing location	 and remove remote subscriptions / check all subscriptions removal for a thing	
+		PushManager subsManager = PushManager.instance(localGateway);
+		if (!location.equalsIgnoreCase("localhost"))
+		{
+			// Invoke the remote Gateway for subscribing
+			logger.info("The thing " + thingId + " is located at " + location + ". Unubscribing remotely...");
+			
+			TaaSRMClient myRMCli = TaaSRMClient.instance(localGateway, "EndpointsManager");
+			unsubscriptionResult = myRMCli.remoteUnsubscription(idThingService, idFeature, location, realTime);
+			
+			// Remove the local subscription		
+			unsubscriptionResult = unsubscriptionResult & subsManager.removeSubscription(idThingService, idFeature);
+		}		
+		else
+		{
+			// Remove the local subscription		
+			unsubscriptionResult = unsubscriptionResult & subsManager.removeSubscription(idThingService, idFeature);
+			
+			// This call will check whether all the subscriptions must be removed or the period must be modified
+			subsManager.determineSubscriptionsRemoval(idThingService);
+		}
+						
+		return unsubscriptionResult;		
+	}
+	
+	public boolean unsubscribeFeatureService (String idFeatureService)
+	{		
+		boolean result = false;
+		
+		logger.info("Starting the process of unsubscription to " + idFeatureService + "...");
+		String idApp = myServCatalog.getServiceFromFeatureId(idFeatureService);
+		Application theApp = myServCatalog.getApplication(idApp);
+		ArrayList<FeatureService> features = theApp.getFeatures();
+		Iterator<FeatureService> myIter = features.iterator();	
+		
+		while (myIter.hasNext())
+		{
+			// Invoke thing services subscription for the feature
+			FeatureService currentFeature = myIter.next();
+			if (currentFeature.getFeatureServiceId().equalsIgnoreCase(idFeatureService))
+			{				
+				// If info mode is PUSH, we unregister from the QoS
+				int featureType = currentFeature.getType();
+				boolean realtime = false;
+				if (featureType == FeatureService.RTPUSH)
+				{
+					realtime = true;
+					// Unregister from the QoS
+					logger.info("Unregistering QoS for the feature!");
+					result = myQoSClient.unregisterServiceQoS(idFeatureService);
+				}
+				
+				logger.info("Starting thing services unsubscriptions...");
+				// Remove subscriptions one by one
+				Iterator<String> invocations = currentFeature.getThingServices().iterator();			
+				while (invocations.hasNext())
+				{
+					// Start removing subscription
+					String currentId = invocations.next();
+					tmClient.removeThingsService(currentId);
+					
+					// Remove subscription locally
+					result = result & unregisterSubscription (currentId, idFeatureService, realtime);
+					logger.info("Unsubscription to " + currentId + " processed!");
+				}				
+				
+				logger.info("Unsubscriptions for feature " + idFeatureService + " finished!");
+				return result;
+			}
+		}		
+		
+		return result;
 	}
 }

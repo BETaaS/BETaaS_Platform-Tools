@@ -47,7 +47,7 @@ public interface IAdaptorPlugin {
 	 * @param sensorID unique identifier of the sensor
 	 * @return true iff the registration is completed successfully
 	 */
-	public boolean register(String sensorID);
+	public boolean register(String sensorID, int seconds);
 	
 	/**
 	 * Unregister for a specific sensor device. TA will stop receiving notifications.

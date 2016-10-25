@@ -28,8 +28,8 @@ import java.util.Date;
 public class Subscription implements Comparable<Subscription>
 {
 
-	private String appId;
-	private String appGateway;
+	private String featureId;
+	private String featureGateway;
 	private String thingServiceId;
 	
 	// The period is considered in seconds
@@ -38,10 +38,10 @@ public class Subscription implements Comparable<Subscription>
 	private Calendar lastReceived;
 	private int lastResponseTime;
 	
-	public Subscription (String application, String appLocation, String thingService, int thePeriod)
+	public Subscription (String feature, String appLocation, String thingService, int thePeriod)
 	{
-		appId = application;
-		appGateway = appLocation;
+		featureId = feature;
+		featureGateway = appLocation;
 		thingServiceId = thingService;
 		period = thePeriod;
 		
@@ -49,14 +49,14 @@ public class Subscription implements Comparable<Subscription>
 		startDate = lastReceived.getTime();		
 	}
 	
-	public String getApplicationId()
+	public String getFeatureId()
 	{
-		return appId;
+		return featureId;
 	}
 	
-	public String getApplicationLocation()
+	public String getFeatureLocation()
 	{
-		return appGateway;
+		return featureGateway;
 	}
 	
 	public String getThingServiceId()
@@ -82,7 +82,9 @@ public class Subscription implements Comparable<Subscription>
 	public Date getExpectedDate()
 	{
 		Calendar nextDate = (Calendar)lastReceived.clone();
-		nextDate.add(Calendar.SECOND, period);
+		// Here, we can receive notifications earlier than expected!!!! Remove in case we don't want it1
+		int expectedPeriod = (int) (period * 0.9);
+		nextDate.add(Calendar.SECOND, expectedPeriod);
 		return nextDate.getTime();
 	}
 	

@@ -1,0 +1,39 @@
+<div>	  
+    <h3>Monitoring Console</h3>    
+    <p style="text-align: center">	   
+        <button ng-click="loadMessages()"  class="btn btn-info">Load</button>	  
+        <input placeholder="Filter results" ng-model="searchText">
+    </p>	  
+    
+      <table class="table table-striped" >	  
+      <tr ng-repeat="message in messages | filter:searchText |
+  offset: currentPage*itemsPerPage |
+  limitTo: itemsPerPage" ng-class="rowForMessage(message)">
+        <td class="col-md-2">{{ message.date |  date:'MM/dd/yyyy '}}</td>
+          <td class="col-md-2">{{ message.date |  date:'h:mma '}}</td>
+        <td class="col-md-2">{{ message.layer }}</td>
+        <td class="col-md-2">{{ message.level }}</td>
+        <td class="col-md-2">{{ message.origin }}</td>
+        <td>{{ message.description }}</td>
+      </tr>
+          <tfoot>
+      <td colspan="3">
+        <div class="pagination">
+          <ul>
+            <li class="btn btn-info" ng-class="prevPageDisabled()">
+              <a href ng-click="prevPage()">« Prev</a>
+            </li>
+            <li class="btn btn-info" ng-repeat="n in range()"
+              ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+              <a href="#">{{n+1}}</a>
+            </li>
+            <li class="btn btn-info" ng-class="nextPageDisabled()">
+              <a href ng-click="nextPage()">Next »</a>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tfoot>
+    </table>	  
+
+</div>

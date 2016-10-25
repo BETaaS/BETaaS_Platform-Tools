@@ -31,7 +31,9 @@ public interface QoSManagerMonitoring
 {
   //BETAAS INTERFACE
   public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate);
+  public boolean getMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, double dTolerateJitterParam);
   public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod);
+  public boolean registerMeasurementSLAMonitoring(String sThingServiceName, int sMilisecondMinInterRequestRate, int iMilisecondPeriod, double dTolerateJitterParam);
   public boolean unregisterMeasurementSLAMonitoring(String sThingServiceName);
   public SLACalculation calculateSLA(String sThingServiceName);
   public SLACalculation calculateSLAPush(String sThingServiceName, int iMilisecondTaaSRequestRate);

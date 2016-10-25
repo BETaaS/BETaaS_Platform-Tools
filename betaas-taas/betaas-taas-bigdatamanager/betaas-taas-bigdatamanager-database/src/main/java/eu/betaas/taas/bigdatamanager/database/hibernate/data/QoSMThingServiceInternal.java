@@ -48,7 +48,7 @@ public class QoSMThingServiceInternal implements java.io.Serializable {
 
 	private Double computationalCost;
 	
-	
+	private Boolean reachable;
  
 	public QoSMThingServiceInternal() {
 	}
@@ -59,6 +59,7 @@ public class QoSMThingServiceInternal implements java.io.Serializable {
 		this.responseTime = responseTime;
 		this.batteryCost = batteryCost;
 		this.computationalCost = computationalCost;
+		this.reachable = true;
 	}
 	
 public QoSMThingServiceInternal(QoSMThingServiceInternal ts) {
@@ -67,6 +68,7 @@ public QoSMThingServiceInternal(QoSMThingServiceInternal ts) {
 		this.responseTime = ts.getResponseTime();
 		this.batteryCost = ts.getBatteryCost();
 		this.computationalCost = ts.getComputationalCost();
+		this.reachable = ts.getReachable();
 	}
 
 	//	@EmbeddedId
@@ -130,6 +132,15 @@ public QoSMThingServiceInternal(QoSMThingServiceInternal ts) {
 		msg += "\n\t\tComputationalCost: ";
 		msg += String.valueOf(this.computationalCost);
 		return msg;
+	}
+	
+	@Column(name="reachable", unique = false, nullable = true)
+	public void setReachable(Boolean reachable) {
+		this.reachable = reachable;
+	}
+
+	public Boolean getReachable() {
+		return reachable;
 	}
 }
 

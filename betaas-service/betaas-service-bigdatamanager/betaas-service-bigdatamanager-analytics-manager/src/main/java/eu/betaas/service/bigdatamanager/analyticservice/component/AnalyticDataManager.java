@@ -43,6 +43,7 @@ public class AnalyticDataManager implements Runnable{
 		trackerSqoopService.open();
 		log.debug("Starting Analytics Manager thread");
 		thread = new Thread( this, "BDM Service thread" ); 
+		log.info("TEST 6.1.X ADT Manager Component ");
 		log.debug("Starting AM thread");
 		thread.start();
 	}
@@ -63,11 +64,16 @@ public class AnalyticDataManager implements Runnable{
 				log.debug("### Tracked.... "+sqoopproviders.length);
 				ImportDataManager importDataManager = (ImportDataManager) sqoopproviders[0]; 
 				log.debug("### Starting data loading from service Sqoop .... ");
+				log.info("TEST 6.1.X Sqoop is loading data ");
+				long ts1 = System.currentTimeMillis();
 				importDataManager.loadData();
+				long ts2 = System.currentTimeMillis();
+				log.info("TEST 6.1.X Sqoop load data "+(ts2-ts1));
 				log.debug("### Job submitted .... ");
 				// check when is finished the import process
 				log.debug(" Checking if import is terinated ");
 				importDataManager.allTerminated();
+				log.info("TEST 6.1.X Sqoop Job submitted ");
 				log.debug(" Checking if import is terinated ");
 				
 			} 
@@ -76,9 +82,13 @@ public class AnalyticDataManager implements Runnable{
 			if ( hiveproviders != null && hiveproviders.length > 0 ) {
 				log.info(" Loading data into Hive Table ");
 				HiveServiceInterface hiveServiceInterface = (HiveServiceInterface) hiveproviders[0];
+				log.info("TEST 6.1.X Hive Import  ");
+				long tsu1 = System.currentTimeMillis();
 				hiveServiceInterface.createTable(false);
 				hiveServiceInterface.setConnection();
 				hiveServiceInterface.loadData();
+				long tsu2 = System.currentTimeMillis();
+				log.info("TEST 6.1.X Hive Import has ended in "+(tsu2-tsu1));
 				log.debug("Done ");
 				
 			}

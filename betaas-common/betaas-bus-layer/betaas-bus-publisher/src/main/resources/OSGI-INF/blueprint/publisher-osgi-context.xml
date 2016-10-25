@@ -29,6 +29,7 @@
 		<cm:default-properties>
 			<cm:property name="busenabled" value="false"/>
 			<cm:property name="busendpoint" value="localhost"/>
+			<cm:property name="busport" value="15672"/>
 			<cm:property name="busendexchange" value="betaas_bus"/>
 			<cm:property name="busmode" value="direct"/>
 		</cm:default-properties>
@@ -39,6 +40,7 @@
 		<property name="host" value="${busendpoint}"></property>
 		<property name="ename" value="${busendexchange}"></property>
 		<property name="mode" value="${busmode}"></property>
+		<property name="port" value="${busport}"></property>
 	</bean>
 	
     <service ref="publisherBean" interface="eu.betaas.rabbitmq.publisher.interfaces.Publisher"/>

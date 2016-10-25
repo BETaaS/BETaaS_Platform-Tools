@@ -36,6 +36,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
@@ -68,6 +71,10 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
 import org.jboss.security.xacml.core.model.policy.ConditionType;
+
+import de.odysseus.staxon.json.JsonXMLConfig;
+import de.odysseus.staxon.json.JsonXMLConfigBuilder;
+import de.odysseus.staxon.json.JsonXMLInputFactory;
 
 import eu.betaas.service.securitymanager.capability.elements.ValidityCondition;
 import eu.betaas.service.securitymanager.capability.elements.helper.ArrayOfString;
@@ -470,6 +477,43 @@ public class CapabilityUtils {
 //		return cap;
 //	}
 //	
+	
+	public static Token jsonToToken(String json){
+		JsonXMLConfig config = new JsonXMLConfigBuilder().build();
+		InputStream is = new ByteArrayInputStream(json.getBytes());
+		
+		Token token = new Token();
+		Class[] classes = {Token.class, CapabilityExternal.class, ArrayOfString.class};
+		
+		try {
+			XMLStreamReader reader =  new JsonXMLInputFactory(config).createXMLStreamReader(is);
+			JAXBContext context = JAXBContext.newInstance(classes);
+			token = (Token) context.createUnmarshaller().unmarshal(reader);
+			
+			is.close();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		} catch (FactoryConfigurationError e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return token;				
+	}
 	/**
 	 * A method to convert the XML string into token object
 	 * 

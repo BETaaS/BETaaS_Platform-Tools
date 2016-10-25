@@ -327,6 +327,7 @@ public class ExponentialSmoothingCalculator
 	    for (int i = 1; i < y.length ; i++) 
 	    {
 	    	logger.debug ("---Iteration n. " + i + " --");
+	    	logger.debug ("Actual value: " + y[i]);
 	        // Calculate overall smoothing
 	        Lt[i] = alpha * y[i] + (1.0 - alpha) * (Lt[i-1] + Bt[i-1]);
 	        logger.debug ("Overall Smoothing: " + Lt[i]);

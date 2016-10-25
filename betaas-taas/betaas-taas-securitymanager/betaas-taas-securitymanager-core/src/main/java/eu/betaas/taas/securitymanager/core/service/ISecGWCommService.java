@@ -40,15 +40,15 @@ public interface ISecGWCommService {
 	 * A method to encrypt the data to be sent to other GW
 	 * @param gwDestId: The ID of destination GW
 	 * @param data: data to be encrypted in String
-	 * @return: encrypted data in byte array
+	 * @return: encrypted data in Base64 encoding
 	 */
-	public byte[] doEncryptData(String gwDestId, String data);
+	public String doEncryptData(String gwDestId, String data);
 	
 	/**
 	 * A method to decrypt the data received from other GW
 	 * @param gwOriId: The ID of GW that originates the message
-	 * @param encrypted: The received encrypted data
+	 * @param encrypted: The received encrypted data in Base64 encoding
 	 * @return: the original data in String
 	 */
-	public String doDecryptData(String gwOriId, byte[] encrypted);
+	public String doDecryptData(String gwOriId, String encrypted);
 }

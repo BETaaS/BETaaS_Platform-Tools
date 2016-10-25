@@ -25,8 +25,10 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.osgi.framework.BundleContext;
 
 import eu.betaas.taas.securitymanager.certificate.service.IGatewayStarCertificateIntService;
+import eu.betaas.taas.securitymanager.certificate.utils.CertificateBetaasBus;
 import eu.betaas.taas.securitymanager.common.certificate.utils.Config;
 import eu.betaas.taas.securitymanager.common.certificate.utils.GWCertificateUtilsBc;
 import eu.betaas.taas.securitymanager.common.certificate.utils.PKCS12Utils;
@@ -52,8 +54,21 @@ public class GWStarCertificateIntService implements
 	private static final String INTER_ALIAS = "intermediate";
 	private static final String END_ENTITY_ALIAS = "end";
 	
+	/** Class that handles BETaaS BUS in this certificate bundle */
+	private CertificateBetaasBus bus;
+	
+	/** Bundle context reference from blueprint */
+	private BundleContext context;
+	
 	/** Path to the certificate files */
 	private String certPath;
+	
+	/**
+	 * Initial setup method to initialize the betaas bus service
+	 */
+	public void setup(){
+		bus = new CertificateBetaasBus(context);
+	}
 	
 	public void createGwStarCredentials(X500Name subjRoot, X500Name subjInter, X500Name subjEnd, String ufn) {
 		log.debug("In the beginning of createGwStarCredentials...");
@@ -66,10 +81,14 @@ public class GWStarCertificateIntService implements
 					createGwStarInterCredentials(subjRoot, subjInter, ROOT_ALIAS, INTER_ALIAS);
 		} catch (Exception e) {
 			log.error("Error creating GW* intermediate credentials: "+e.getMessage());
+			bus.sendData("Error creating GW* intermediate credentials", "error", 
+					"SecM");
 			e.printStackTrace();
 		}
 		
 		log.info("Intermediate certificate of GW* has been created...");
+		bus.sendData("Intermediate certificate of GW* has been created", "info", 
+				"SecM");
 		
 		// create a PKCS12 file from the chain of certificate within the Intermediate credential
 		AsymmetricKeyParameter priv = interCredentials.getPrivateKey();
@@ -81,10 +100,14 @@ public class GWStarCertificateIntService implements
 		} catch (FileNotFoundException e) {
 			log.error("Error creating PKCS12 file of intermediate credentials: " +e.
 					getMessage());
+			bus.sendData("Error creating PKCS12 file of intermediate credentials", 
+					"error", "SecM");
 			e.printStackTrace();
 		} catch (Exception e) {
 			log.error("Error creating PKCS12 file of intermediate credentials: " +e.
 					getMessage());
+			bus.sendData("Error creating PKCS12 file of intermediate credentials", 
+					"error", "SecM");
 			e.printStackTrace();
 		}
 		
@@ -97,6 +120,8 @@ public class GWStarCertificateIntService implements
 		} catch (Exception e) {
 			log.error("Error creating end entity credentials for GW*: "
 					+e.getMessage());
+			bus.sendData("Error creating end entity credentials for GW*", "error", 
+					"SecM");
 			e.printStackTrace();
 		}
 		
@@ -109,14 +134,20 @@ public class GWStarCertificateIntService implements
 		} catch (FileNotFoundException e) {
 			log.error("Error creating PKCS12 file of end entity credentials: "
 					+e.getMessage());
+			bus.sendData("Error creating PKCS12 file of end entity credentials", 
+					"error", "SecM");
 			e.printStackTrace();
 		} catch (Exception e) {
 			log.error("Error creating PKCS12 file of end entity credentials: "
 					+e.getMessage());
+			bus.sendData("Error creating PKCS12 file of end entity credentials", 
+					"error", "SecM");
 			e.printStackTrace();
 		}
 		
 		log.info("End entity certificate of GW* has been created...");
+		bus.sendData("End entity certificate of GW* has been created", "info", 
+				"SecM");
 		
 		// set this GW as GW*
 		Config.isGwStar = true;
@@ -124,5 +155,13 @@ public class GWStarCertificateIntService implements
 	
 	public void setCertificatePath(String certificatePath){
 		this.certPath = certificatePath;
+	}
+	
+	/**
+	 * Blueprint set reference to BundleContext
+	 * @param context BundleContext
+	 */
+	public void setContext(BundleContext context) {
+		this.context = context;
 	}
 }

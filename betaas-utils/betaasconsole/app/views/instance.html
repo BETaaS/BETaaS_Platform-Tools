@@ -1,0 +1,37 @@
+<div class="body-header">
+
+    <div class="row">
+        <div class="col-md-5">
+            <h4><p>Instance Information</p></h4>
+            <h5>BETaaS Backend <span style="color: rgb(241,145,75)" id="backend">{{ connected }}</span>
+            <button class="button-thingsim ui-state-default ui-corner-all" ng-click="check()" ng-if="connected==false">Connect</button>
+        </h5>
+            <h5>Current Instance: <span style="color: rgb(241,145,75)" >{{ info.instance }}</span></h5>
+            <h5>Gateway ID: <span style="color: rgb(241,145,75)" >{{ info.gw }}</span></h5>
+            <h5>Description: <span style="color: rgb(241,145,75)" >{{ info.description }}</span></h5>
+            <h5>Type: <span style="color: rgb(241,145,75)" >{{ info.type }}</span></h5>
+        </div>
+        <div class="col-md-5">
+            <img src="images/betaas_logo.png" class="img-responsive" />
+        </div>
+    </div>
+    <div class="row">
+        <br></br>
+        <div>
+            <h4>Gateways List</h4>
+            <table class="table table-striped">
+                <tr ng-click="" ng-repeat="gw in gws" ng-class="rowForGw(gw)">
+                    <td>{{ gw.gwid }}</td>
+                    <td>{{ gw.description }}</td>
+                    <td>{{ gw.address }}</td>
+                    <td>
+                        <input type="button" value="join" class="btn btn-primary" ng-click="join(gw)" />
+                    </td>
+                    <td>
+                        <input type="button" value="disjoin" class="btn btn-primary" ng-click="disjoin(gw)" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

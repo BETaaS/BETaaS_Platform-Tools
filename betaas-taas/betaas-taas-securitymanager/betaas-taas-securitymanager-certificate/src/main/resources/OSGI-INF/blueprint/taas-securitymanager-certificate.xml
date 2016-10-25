@@ -34,6 +34,15 @@ limitations under the License.
     </cm:default-properties>
   </cm:property-placeholder>
 	
+	<bean id="serviceGwIntBean" 
+  	class="eu.betaas.taas.securitymanager.certificate.service.impl.GWCertificateService"
+  	scope="singleton" init-method="setup">
+  	<property name="context" ref="blueprintBundleContext"/>
+  	<property name="certificatePath" value="${certificatePath}"/>
+  </bean>
+  
+  <service ref="serviceGwIntBean" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService"/>
+	
 	<bean id="serviceGwStarExtBean" 
 		class="eu.betaas.taas.securitymanager.certificate.service.impl.GWStarCertificateExtService"
 		scope="singleton" init-method="setup" destroy-method="close">
@@ -52,16 +61,13 @@ limitations under the License.
 		</service-properties>
 	</service>  
 	
-  <bean id="serviceGwStarIntBean" class="eu.betaas.taas.securitymanager.certificate.service.impl.GWStarCertificateIntService">
+  <bean id="serviceGwStarIntBean" 
+  	class="eu.betaas.taas.securitymanager.certificate.service.impl.GWStarCertificateIntService"
+  	scope="singleton" init-method="setup">
+  	<property name="context" ref="blueprintBundleContext"/>
   	<property name="certificatePath" value="${certificatePath}"/>
   </bean>
   
   <service ref="serviceGwStarIntBean" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayStarCertificateIntService"/>
-    
-  <bean id="serviceGwIntBean" class="eu.betaas.taas.securitymanager.certificate.service.impl.GWCertificateService">
-  	<property name="certificatePath" value="${certificatePath}"/>
-  </bean>
-  
-  <service ref="serviceGwIntBean" interface="eu.betaas.taas.securitymanager.certificate.service.IGatewayCertificateService"/>
   
 </blueprint>

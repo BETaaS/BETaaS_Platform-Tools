@@ -17,10 +17,29 @@
     
     requires that install mvn:com.h2database/h2/1.3.163 is installed
 -->
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint  default-activation="eager" 
+            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+            xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0">
+	
+		
+	<cm:property-placeholder persistent-id="betaas.gateway"  >
+		<cm:default-properties>
+			<cm:property name="loadfrequency" value="1000"/>
+			<cm:property name="sizetest" value="0"/>
+			<cm:property name="simthings" value="10"/>
+		</cm:default-properties>
+	</cm:property-placeholder>
+
+
 
     <bean id="serviceTaasLoggerBean" class="eu.betaas.taas.bigdatamanager.logger.service.impl.BDLocalLoggerService" init-method="setup"  >
     	<property name="service" ref="taasCoreService"/>
+    		<property name="freq" value="${loadfrequency}"/>
+		<property name="things" value="${simthings}"></property>
+			<property name="size" value="${sizetest}"/>
     </bean>
 
 	<reference id="taasCoreService" availability="mandatory" activation="eager" interface="eu.betaas.taas.bigdatamanager.core.services.ITaasBigDataManager">

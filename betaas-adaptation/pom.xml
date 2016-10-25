@@ -3,13 +3,13 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-superpom</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-adaptation</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>BETaaS Adaptation</name>
   <description>BETaaS  Adaptation</description>
@@ -18,5 +18,6 @@
   	<module>betaas-adaptation-thingsadaptor</module>
   	<module>betaas-adaptation-contextmanager</module>
   	<module>betaas-adaptation-securitymanager</module>
+  	<module>betaas-adaptation-restplugin</module>
   </modules>
 </project>

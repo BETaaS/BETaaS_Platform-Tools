@@ -20,7 +20,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -55,6 +57,9 @@ public class BDLocalLoggerService implements IBigDataLoggerService, Runnable {
 	private static final String CHECK_THING_EXISTS_SQL="SELECT count(*) FROM things WHERE THING_ID = ?";
 	private static final String COUNT_READS_SQL="SELECT COUNT(*) FROM reads";
 	private ResultSet rs;
+	private long size=0;
+	private int things=1000;
+	private int freq=1000;
 	//private IBigDataDatabaseService service;
 	private ITaasBigDataManager service;
 	private Thread thread; 
@@ -62,7 +67,7 @@ public class BDLocalLoggerService implements IBigDataLoggerService, Runnable {
 	public void setLogger(String conf) {
 		// TODO Auto-generated method stub
 		logger = Logger.getLogger(conf);
-		
+		logger.info("TEST 6.1.X Data Injector");
 		
 	}
 	
@@ -84,8 +89,10 @@ public class BDLocalLoggerService implements IBigDataLoggerService, Runnable {
 			
 			logger.info("logger not set, will log on betaas appender");
 		}
-		logger.info("Connection has been provided");
-		
+		logger.info("TEST 6.1.X Simulating every "+freq);
+		logger.info("TEST 6.1.X Things IDS available "+things);
+		logger.info("TEST 6.1.X Size Constraints "+size);
+		//logger.info("Connection has been provided");
 		//this.clearTables();
 
 	}
@@ -443,6 +450,8 @@ public class BDLocalLoggerService implements IBigDataLoggerService, Runnable {
 	public synchronized void run() {
 		Thread current = Thread.currentThread(); 
 		int n = 0; 
+		logger.info("TEST 6.1.X Injecting Data");
+		int counter =1;
 		while ( current == thread ) { 
 				
 			if (service==null){
@@ -468,23 +477,67 @@ public class BDLocalLoggerService implements IBigDataLoggerService, Runnable {
 	        }else {
 	        	locazione="Sunspear";
 	        }
-	        
+	        y = counter;
 	        Calendar calendar = Calendar.getInstance();
 	        java.util.Date now = calendar.getTime();
 	        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
+	        String  msg="";
+	        if (size >0){
+	        	String alfa = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	        	Random rnd = new Random();
+       		   StringBuilder sb = new StringBuilder( (int) size );
+	        	   for( int i = 0; i < size; i++ )  sb.append( alfa.charAt( rnd.nextInt(alfa.length()) ) );
+	        	   
+	       
+	        	  msg="{\"timestamp\":\""+currentTimestamp+"\",\"is_output\":true,\"is_digital\":true,\"maximum_response_time\":\"30\",\"memory_status\":\"12\",\"computational_cost\":\"100\",\"battery_level\":\"100\",\"battery_cost\":\"200\",\"measurement\":\""+sb.toString()+"\",\"protocol\":\"etsi\",\"deviceID\":\"00000"+y+"\",\"thingID\":\"GARM_GPS"+y+"\",\"type\":\"TRAFFIC\",\"unit\":\"machineperminutes\",\"environment\":true,\"latitude\":\"43.654987380589200\",\"longitude\":\"10.436325073242100\",\"altitude\":\"7.0\",\"floor\":\"0\",\"location_keyword\":\"car\",\"location_identifier\":\""+locazione+"\"}";
+	        } else {
+	        	  msg="{\"timestamp\":\""+currentTimestamp+"\",\"is_output\":true,\"is_digital\":true,\"maximum_response_time\":\"30\",\"memory_status\":\"12\",\"computational_cost\":\"100\",\"battery_level\":\"100\",\"battery_cost\":\"200\",\"measurement\":\""+x+"\",\"protocol\":\"etsi\",\"deviceID\":\"00000"+y+"\",\"thingID\":\"GARM_GPS"+y+"\",\"type\":\"TRAFFIC\",\"unit\":\"machineperminutes\",\"environment\":true,\"latitude\":\"43.654987380589200\",\"longitude\":\"10.436325073242100\",\"altitude\":\"7.0\",\"floor\":\"0\",\"location_keyword\":\"car\",\"location_identifier\":\""+locazione+"\"}";
+	        }
 	        
-	        String  msg="{\"timestamp\":\""+currentTimestamp+"\",\"is_output\":true,\"is_digital\":true,\"maximum_response_time\":\"30\",\"memory_status\":\"12\",\"computational_cost\":\"100\",\"battery_level\":\"100\",\"battery_cost\":\"200\",\"measurement\":\""+x+"\",\"protocol\":\"etsi\",\"deviceID\":\"00000"+y+"\",\"thingID\":\"GARM_GPS"+y+"\",\"type\":\"TRAFFIC\",\"unit\":\"machineperminutes\",\"environment\":true,\"latitude\":\"43.654987380589200\",\"longitude\":\"10.436325073242100\",\"altitude\":\"7.0\",\"floor\":\"0\",\"location_keyword\":\"car\",\"location_identifier\":\""+locazione+"\"}";
-	        logger.debug(msg);
+	        
 	        String id = "GARM_GPS"+y;
 	        jo = (JsonObject)jp.parse(msg);
-	       
-	        service.setThingsBDM(id,  jo);
-			
-			try { wait( 2000 ); } catch( InterruptedException e ) {} 
+	        long ts1 = System.currentTimeMillis();
+	        
+	        if (counter<=10000)logger.info("TEST 6.1.X Sendig data to TaaS BDM");
+	        if (counter<=10000)service.setThingsBDM(id,  jo);
+	        if (counter==10000)logger.info("TEST 6.1.X Data Sent to BDM completed with a batch of 10000 data "+ "at "+System.currentTimeMillis());
+	        if (counter==0)logger.info("TEST 6.1.X Data Start at "+System.currentTimeMillis());
+	        counter++;
+	        long ts2 = System.currentTimeMillis();
+	        if (counter<=10000) logger.info("TEST 6.1.X Data Sent to BDM"+ "*"+System.currentTimeMillis());
+	        if (counter<=10000)logger.info("TEST 6.1.X BDM Processed "+jo.toString().length()+" data in ms "+ (ts2-ts1));
+	        if (counter<=10000)logger.info("TEST 6.1.X BDM Generated data since its start "+counter);
+	      
+			try { wait( freq ); } catch( InterruptedException e ) {} 
 		} 
 		
 		
 		
+	}
+
+	public int getThings() {
+		return things;
+	}
+
+	public void setThings(int things) {
+		this.things = things;
+	}
+
+	public int getFreq() {
+		return freq;
+	}
+
+	public void setFreq(int freq) {
+		this.freq = freq;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
+	public void setSize(long size) {
+		this.size = size;
 	}
 
 

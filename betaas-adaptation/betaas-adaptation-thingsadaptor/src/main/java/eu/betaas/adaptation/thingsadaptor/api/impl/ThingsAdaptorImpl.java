@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import eu.betaas.adaptation.contextmanager.api.SemanticParserAdaptator;
 import eu.betaas.adaptation.plugin.api.IAdaptorPlugin;
@@ -35,17 +37,20 @@ import eu.betaas.adaptation.thingsadaptor.config.Thing;
 import eu.betaas.adaptation.thingsadaptor.config.ThingWithContext;
 import eu.betaas.adaptation.thingsadaptor.port.ThingConstructor;
 import eu.betaas.adaptation.thingsadaptor.port.ThingsObserver;
+import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
 import eu.betaas.taas.bigdatamanager.database.service.ThingsData;
 
 public class ThingsAdaptorImpl implements ThingsAdaptor{
 	
 	private SemanticParserAdaptator adaptationcm;
-	private IAdaptorPlugin adaptationPlugin;
+	private List<IAdaptorPlugin> adaptationPlugin;
 	private static BundleContext context;
+	private String key = "monitoring.adaptation";
 	Logger mLogger;
 	Vector<HashMap<String, String>> discoveredSensors = new Vector<HashMap<String,String>>();
 	private String sensorsFolder;
-	Thread readerThread;
+	private volatile ThingsObserver observer;
+	private ScheduledExecutorService executor;
 	
 	
 	public void startTAModule() {
@@ -53,27 +58,39 @@ public class ThingsAdaptorImpl implements ThingsAdaptor{
 		mLogger = Logger.getLogger("betaas.adaptation");
 		mLogger.info("ThingsAdaptor Started..................................");
 		AdaptorClient sClient = AdaptorClient.instance(context);
-		adaptationPlugin = sClient.getApService();		
-		//service = null;
-		//DISCOver the available Sensors....
-		final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-		ThingsObserver observer = new ThingsObserver(adaptationPlugin, adaptationcm, this, sensorsFolder);
+		adaptationPlugin = sClient.getApService();
+		//Discover the available Sensors....
+		executor = Executors.newScheduledThreadPool(1);
+		observer = new ThingsObserver(adaptationPlugin, adaptationcm, this, sensorsFolder);
 		observer.init();
-		readerThread = new Thread(observer);
+//		readerThread = new Thread(observer);
 		mLogger.info("FInished with Discovered Sensors:" + discoveredSensors.size());
 		if (discoveredSensors.size() > 0){
 			mLogger.info("SEARCHED AND FOUND "+discoveredSensors.size()+" DEVICES");
+			busMessage("Found:"+discoveredSensors.size()+" Devices");
 			ThingConstructor thingConstructor = new ThingConstructor(adaptationcm);
 			thingConstructor.constructSendThings(discoveredSensors);			
 		} else {
 			mLogger.info("NO DEVICES FOUND!");
 		}
-		executor.schedule(readerThread, 1, TimeUnit.MINUTES);
-		//readerThread.start();
+
+		try {
+			executor.schedule(observer, 10, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			mLogger.error("While executing ThingObserver Thread");
+			e.printStackTrace();
+		}
+
 	}
 
 	public void stopTAModule() {
-		readerThread.interrupt();
+		mLogger.info("ThingsAdaptor STOPPED..................................");
+		try {
+			executor.shutdown();
+			observer.stopThread();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 
@@ -128,17 +145,27 @@ public class ThingsAdaptorImpl implements ThingsAdaptor{
 	}
 
 	public boolean register(String sensorId) {
-		return adaptationPlugin.register(sensorId);
+		boolean result = false;
+		for (int i = 0; i < adaptationPlugin.size(); i++) {
+			result = result || adaptationPlugin.get(i).register(sensorId, 5);
+		}
+		return result;
 	}
 
 	public String getData(String thingId) {
-		
-		return adaptationPlugin.getData(thingId);
+		String result="";
+		for (int i = 0; i < adaptationPlugin.size(); i++) {
+			result += adaptationPlugin.get(i).getData(thingId);
+		}
+		return result;
 	}
 	
 	public String setThingValue(String thingId, String value) {
-		
-		return adaptationPlugin.setData(thingId,value);
+		String result="";
+		for (int i = 0; i < adaptationPlugin.size(); i++) {
+			result += adaptationPlugin.get(i).setData(thingId,value);
+		}
+		return result;
 	}
 
 	public List<ThingsData> getMeasurement(List<ThingsData> selectedThingsList) {
@@ -160,7 +187,7 @@ public class ThingsAdaptorImpl implements ThingsAdaptor{
 		ThingConstructor thingConstructor = new ThingConstructor(adaptationcm);
 		for (HashMap<String, String> map : discoveredSensors) {
 			if(thingId.equals(map.get("ID"))){
-				String measurement = adaptationPlugin.getData(thingId);
+				String measurement = this.getData(thingId);
 				map.put("measurement", measurement);
 				mLogger.info("getMeasurement will return : " + map);
 				result = thingConstructor.constructSendThing(map);
@@ -172,24 +199,28 @@ public class ThingsAdaptorImpl implements ThingsAdaptor{
 
 	public List<ThingsData> getMeasurementThingsMonitoring(
 			List<ThingsData> thingsList) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public boolean subscribe(String thingId, int seconds) {
-		boolean result = adaptationPlugin.register(thingId);
+		boolean result = false;
+		for (int i = 0; i < adaptationPlugin.size(); i++) {
+			result = result || adaptationPlugin.get(i).register(thingId, seconds);
+		}
 		return result;
 	}
 
 	public boolean unsubscribe(List<String> thingIdsList) {
+		boolean result = true;
 		for (String thingId : thingIdsList) {
-			adaptationPlugin.unregister(thingId);
+			boolean partialResult = false;
+			for (int i = 0; i < adaptationPlugin.size(); i++) {
+				mLogger.info("UNSUBSCRIBE Thing:"+thingId);
+				busMessage("UNSUBSCRIBE Thing:"+thingId);
+				partialResult = partialResult || adaptationPlugin.get(i).unregister(thingId);
+			}
+			result = result && partialResult;
 		}
-		return true;
-	}
-
-	public boolean subscribe(String thingId) {
-		boolean result = adaptationPlugin.register(thingId);
 		return result;
 	}
 	
@@ -199,8 +230,23 @@ public class ThingsAdaptorImpl implements ThingsAdaptor{
 
 	public void setDiscoveredSensors(
 			Vector<HashMap<String, String>> discoveredSensors) {
+		mLogger.info("Setting Discovered Sensors in TA!");
 		this.discoveredSensors = discoveredSensors;
 	}
 	
+	private void busMessage(String message){
+		mLogger.debug("Checking queue");
+		
+		mLogger.debug("Sending to queue");
+		ServiceReference serviceReference = context.getServiceReference(Publisher.class.getName());
+		mLogger.debug("Sending to queue");
+		if (serviceReference==null){
+			return;
+		}		
+		Publisher service = (Publisher) context.getService(serviceReference); 
+		mLogger.debug("Sending");
+		service.publish(key,message);
+		mLogger.debug("Sent");	
+	}
 
 }

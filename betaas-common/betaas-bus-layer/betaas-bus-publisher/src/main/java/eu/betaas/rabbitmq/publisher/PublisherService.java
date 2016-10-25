@@ -30,6 +30,7 @@ import eu.betaas.rabbitmq.publisher.interfaces.Publisher;
 public class PublisherService implements Publisher{
 
 	private String host="localhost";
+	private int port=15672;
 	private String ename="my_queue";
 	private String mode="direct";
 	private boolean enabled=false;
@@ -47,21 +48,16 @@ public class PublisherService implements Publisher{
 			log.info("#BUS not enabled #");
 			return;
 		}
-		log.info("#BUS enabled: #");
+		log.info("#BUS config #"+host+" # "+port);
 		factory = new ConnectionFactory();
         factory.setHost(host);
+        factory.setPort(port);
         log.info("#Connected #");
         try {
-        	
 			connection = factory.newConnection();
-		
 	        channel = connection.createChannel();
-	        
-	       
 			channel.exchangeDeclare(ename, mode);
 			log.info("#Exchange "+ ename +" declared as "+mode+" #");
-	     
-	        
         } catch (IOException e) {
         	enabled=false;
 			// TODO Auto-generated catch block
@@ -74,7 +70,8 @@ public class PublisherService implements Publisher{
 		 try {
 			
 			channel.basicPublish(ename, key, null, message.getBytes());
-			log.debug("Sent to "+ename);
+			//log.info("################################################");
+			log.info("Sent to "+ename+ " key "+key+" message "+message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,6 +117,14 @@ public class PublisherService implements Publisher{
 	public void setMode(String mode) {
 		this.mode=mode;
 		
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 	
 	

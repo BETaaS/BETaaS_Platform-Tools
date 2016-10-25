@@ -72,48 +72,14 @@ public interface QoSManagerExternalIF {
 	 */
 	public boolean modifyThingsServicesQoS(ArrayList<String> thingServices, QoSManagerInternalIF caller);
 	
-	/**
-	 * Delete already committed services.
-	 *
-	 * @param serviceList the service list
-	 */
-	public void deleteAlreadyCommittedServices(ArrayList<String> serviceList);
-	
-	/**
-	 * Removes the reservations.
-	 *
-	 * @param serviceID the service id
-	 * @return true, if successful
-	 */
-	public boolean removeReservations(String serviceID);
-	
-	/**
-	 *  It is used by TaaSRM at the time of service invocation for selecting for each thing service required one
-	 *	among the equivalent thing services. The listOfEquivalentThingServices has been already checked for
-	 *	security, dependability, etc... requirements.
-	 * @param serviceId is the service ID
-	 * @param thingServicesList list of required thing services
-	 * @param equivalentThingServices list of equivalent thing services for each thing service required 
-	 * @return is the list of selected thing services 
-	 */
-
-	public  Map<String, Double> registerServiceQoS(String serviceId, ArrayList<String> thingServicesList, ArrayList< ArrayList<String> > equivalentThingServices);
 	
 	/**
 	 * Unregister service.
 	 *
 	 * @param serviceId the service id
-	 * @param selectedThingServicesList the selected thing services list
 	 */
-	public void unregisterServiceQoS(String serviceId, ArrayList<String> selectedThingServicesList);
+	public void unregisterServiceQoS(String serviceId);
 	
-	/**
-	 * Un allocate.
-	 *
-	 * @param serviceId the service id
-	 * @param ThingServicesList the thing services list
-	 */
-	public void unallocate(String serviceId, ArrayList<String> ThingServicesList);
 	
 	/**
 	 * Synchronize thing service QoS. 
@@ -170,5 +136,9 @@ public interface QoSManagerExternalIF {
 	public QoSRankList createAgreementAssured(String serviceid,
 			ArrayList<ArrayList<String>> rank, QoSrequirements req,
 			QoSManagerInternalIF caller, boolean all) throws WrongArgumentException;
+
+	public void reachable(String tsid);
+
+	public void unreachable(String tsid);
 
 }

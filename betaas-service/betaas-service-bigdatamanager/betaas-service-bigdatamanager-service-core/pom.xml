@@ -3,11 +3,11 @@
   <parent>
     <groupId>eu.betaas</groupId>
     <artifactId>betaas-service-bigdatamanager</artifactId>
-    <version>2.1-release</version>
+    <version>3.0.2-SNAPSHOT</version>
   </parent>
   <groupId>eu.betaas</groupId>
   <artifactId>betaas-service-bigdatamanager-service-core</artifactId>
-  <version>2.1-release</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BETaaS Service Big Data Manager Core</name>
   <description>BDM Core Service</description>
@@ -48,15 +48,20 @@
 	<dependency>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-taas-bigdatamanager-core</artifactId>
-		<version>2.1-release</version>
+		<version>${project.version}</version>
 	</dependency>
 		                        
  	<dependency>
 		<groupId>eu.betaas</groupId>
 		<artifactId>betaas-service-bigdatamanager-data-connector-interface</artifactId>
-		<version>2.1-release</version>
+		<version>${project.version}</version>
 	</dependency>	 
 	
+	<dependency>
+	 	<groupId>eu.betaas</groupId>
+		<artifactId>betaas-bus-interface</artifactId>
+ 		<version>${project.version}</version>
+	</dependency>
             
 	
   </dependencies>
@@ -78,7 +83,8 @@
                         com.google.gson, 
                         eu.betaas.taas.bigdatamanager.core.services,
                         eu.betaas.taas.bigdatamanager.core.services.impl,
-                        eu.betaas.service.bigdatamanager.dataservice
+                        eu.betaas.service.bigdatamanager.dataservice,
+                        eu.betaas.rabbitmq.publisher.interfaces,eu.betaas.rabbitmq.publisher.interfaces.utils
                      </Import-Package>
                      <Export-Package>
                          eu.betaas.service.bigdatamanager.core.services,

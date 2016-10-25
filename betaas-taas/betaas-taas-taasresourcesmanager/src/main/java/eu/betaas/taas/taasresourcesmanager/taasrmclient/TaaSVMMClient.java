@@ -22,13 +22,18 @@ Francisco Javier Nieto. Atos Research and Innovation, Atos SPAIN SA
 
 package eu.betaas.taas.taasresourcesmanager.taasrmclient;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 
 import eu.betaas.taas.taasvmmanager.api.TaaSVMManager;
-import eu.betaas.taas.taasvmmanager.cloudsclients.VMRequest;
+import eu.betaas.taas.taasvmmanager.api.datamodel.Availability;
+import eu.betaas.taas.taasvmmanager.api.datamodel.InstanceType;
+import eu.betaas.taas.taasvmmanager.api.datamodel.VMRequest;
 
 public class TaaSVMMClient 
 {
@@ -83,7 +88,19 @@ public class TaaSVMMClient
 	
 	public String createLocalVM(VMRequest request)
 	{
-		logger.info("Local VM requested!");
-		return myClient.createVM(request);
+		logger.info("Local VM requested!");		
+		try {
+			return myClient.createVM(request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void getCurrentResources ()
+	{
+		logger.info("Retrieve available resources for VM allocation");
+		List<Availability> result = myClient.getAvailability();
 	}
 }
